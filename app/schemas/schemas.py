@@ -1,4 +1,12 @@
-from pydantic import BaseModel, Field, field_validator
+"""
+Concept: Pydantic Schemas
+
+This file defines the data transfer objects (DTOs) used for API validation and serialization.
+It ensures that incoming JSON data matches expected formats and provides a structured
+`ProductCreate` model that serves as the "Universal Book Object" for the system.
+"""
+
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional, List, Any
 from uuid import UUID
 from datetime import datetime
@@ -15,8 +23,7 @@ class PublisherCreate(PublisherBase):
 
 class PublisherResponse(PublisherBase):
     id: UUID
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Author Schemas ---
@@ -29,8 +36,7 @@ class AuthorCreate(AuthorBase):
 
 class AuthorResponse(AuthorBase):
     id: UUID
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Collection Schemas ---
@@ -43,8 +49,7 @@ class CollectionCreate(CollectionBase):
 
 class CollectionResponse(CollectionBase):
     id: UUID
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Product Author Schema ---
@@ -61,8 +66,8 @@ class TextContent(BaseModel):
     text: str
 
 class SupportingResource(BaseModel):
-    resource_content_type: str = Field(..., description="ONIX List 158, e.g., 01 for Cover")
-    resource_mode: str = Field("03", description="ONIX List 159, e.g., 03 for Image")
+    resource_content_type: str = Field(..., description="ONIX List 158, e.g., 01 for Cover, 11 for Video")
+    resource_mode: str = Field("03", description="ONIX List 159, e.g., 03 for Image, 04 for Audio, 05 for Video")
     resource_link: str
 
 class Price(BaseModel):
@@ -72,11 +77,54 @@ class Price(BaseModel):
     tax_rate_code: Optional[str] = Field("S", description="ONIX List 62")
     tax_rate_percent: Optional[float] = Field(20.0)
 
+class Subject(BaseModel):
+    subject_scheme_identifier: str = Field(..., description="ONIX List 27, e.g., 10 for BISAC, 20 for Keywords")
+    subject_code: Optional[str] = None
+    subject_heading_text: Optional[str] = None
+
+class Extent(BaseModel):
+    extent_type: str = Field(..., description="ONIX List 23, e.g., 00 for Main Content Page Count")
+    extent_value: float
+    extent_unit: str = Field(..., description="ONIX List 24, e.g., 03 for Pages")
+
+class Measure(BaseModel):
+    measure_type: str = Field(..., description="ONIX List 48, e.g., 01 for Height, 02 for Width")
+    measurement: float
+    measure_unit: str = Field(..., description="ONIX List 50, e.g., mm, g")
+
+class Contributor(BaseModel):
+    contributor_role: str = Field(..., description="ONIX List 17, e.g., B06 for Translator, A12 for Illustrator")
+    person_name: str
+    biographical_note: Optional[str] = None
+
+class TitleDetail(BaseModel):
+    title_type: str = Field(..., description="ONIX List 15, e.g., 01 for Distinctive Title, 03 for Original Title")
+    title_text: str
+
+class CollectionDetail(BaseModel):
+    collection_type: str = Field("10", description="ONIX List 148, 10 for Publisher Collection")
+    title_text: str
+
+class ProductAvailability(BaseModel):
+    product_availability: str = Field(..., description="ONIX List 65, e.g., 20 for In Stock, 21 for Out of Stock")
+
+class SupplyDetail(BaseModel):
+    supplier_name: str = Field(..., description="Name of the supplier (e.g., Vivat)")
+    product_availability: str = Field(..., description="ONIX List 65")
+    prices: Optional[List[Price]] = None
+
 class OnixJson(BaseModel):
+    titles: Optional[List[TitleDetail]] = None
+    contributors: Optional[List[Contributor]] = None
+    collections: Optional[List[CollectionDetail]] = None
     text_content: Optional[List[TextContent]] = None
     supporting_resources: Optional[List[SupportingResource]] = None
     prices: Optional[List[Price]] = None
-    subjects: Optional[List[dict]] = None  # For UDC/УДК codes
+    subjects: Optional[List[Subject]] = None
+    extents: Optional[List[Extent]] = None
+    measures: Optional[List[Measure]] = None
+    supply_details: Optional[List[SupplyDetail]] = None
+    publishing_date: Optional[str] = None # YYYYMMDD
     extra: Optional[dict] = None  # Catch-all for other ONIX data
 
 
@@ -106,8 +154,7 @@ class ProductResponse(ProductBase):
     updated_at: datetime
     authors: Optional[List[ProductAuthorBase]] = None
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # --- Search Schemas ---

@@ -1,3 +1,11 @@
+"""
+Concept: Data Models
+
+This module defines the SQLAlchemy ORM models representing the database schema.
+It includes the core `Product` entity with its `JSONB` ONIX data field and
+`Vector` embedding field, as well as relational entities like `Publisher` and `Author`.
+"""
+
 import uuid
 from sqlalchemy import Column, String, Text, Integer, ForeignKey, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB

@@ -1,3 +1,11 @@
+"""
+Concept: ONIX XML Generator
+
+This service is responsible for constructing valid ONIX 3.1 XML messages.
+It maps internal Product models to the complex ONIX XML schema, handling
+data blocks like ProductSupply, DescriptiveDetail, and TextContent.
+"""
+
 from lxml import etree
 from datetime import datetime
 from typing import Optional, List
@@ -182,4 +190,4 @@ class OnixXmlGenerator:
         if product.onix_json:
             self._create_product_supply(product_elem, product.onix_json)
         
-        return etree.tostring(root, encoding="unicode", pretty_print=True, xml_declaration=True)
+        return etree.tostring(root, encoding="UTF-8", pretty_print=True, xml_declaration=True).decode("utf-8")

@@ -1,3 +1,11 @@
+"""
+Concept: Embedding Service
+
+This service handles the generation of vector embeddings for book metadata.
+It uses `sentence-transformers` to convert text (Title, Authors, Description)
+into dense vectors for semantic search in PostgreSQL (via pgvector).
+"""
+
 from sentence_transformers import SentenceTransformer
 from typing import List, Optional
 import numpy as np

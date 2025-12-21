@@ -1,24 +1,32 @@
+"""
+Concept: Product API Endpoints
+
+This module defines the RESTful API routes for managing Book Products.
+It handles creation, retrieval, searching (hybrid vector+SQL), and ONIX export.
+It integrates ValidationService and EmbeddingService into the request flow.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy.future import select
 from typing import List, Optional
-from uuid import UUID
-
 from app.core.database import get_db
-from app.models.models import Product, Author, Publisher, Collection, ProductAuthor
+from app.models.models import Product, Publisher, Author, Collection, ProductAuthor
 from app.schemas.schemas import (
-    ProductCreate, ProductResponse, SearchQuery,
+    ProductCreate, ProductResponse, 
     PublisherCreate, PublisherResponse,
-    AuthorCreate, AuthorResponse
+    AuthorCreate, AuthorResponse,
+    SearchQuery
 )
 from app.services.onix_service import OnixXmlGenerator
 from app.services.embedding_service import EmbeddingService
+from app.services.validation_service import ValidationService
 
-router = APIRouter(prefix="/api", tags=["Products"])
+router = APIRouter()
 
 
 # --- Publisher Endpoints ---
-@router.post("/publishers", response_model=PublisherResponse, status_code=201)
+@router.post("/publishers", response_model=PublisherResponse)
 async def create_publisher(publisher: PublisherCreate, db: AsyncSession = Depends(get_db)):
     db_publisher = Publisher(**publisher.model_dump())
     db.add(db_publisher)
@@ -28,7 +36,7 @@ async def create_publisher(publisher: PublisherCreate, db: AsyncSession = Depend
 
 
 # --- Author Endpoints ---
-@router.post("/authors", response_model=AuthorResponse, status_code=201)
+@router.post("/authors", response_model=AuthorResponse)
 async def create_author(author: AuthorCreate, db: AsyncSession = Depends(get_db)):
     db_author = Author(**author.model_dump())
     db.add(db_author)
@@ -38,56 +46,15 @@ async def create_author(author: AuthorCreate, db: AsyncSession = Depends(get_db)
 
 
 # --- Product Endpoints ---
-@router.post("/products", response_model=ProductResponse, status_code=201)
+@router.post("/products", response_model=ProductResponse)
 async def create_product(product: ProductCreate, db: AsyncSession = Depends(get_db)):
-    """Ingest a new product with ONIX metadata."""
-    
-    # Check if ISBN already exists
-    existing = await db.execute(select(Product).where(Product.isbn_13 == product.isbn_13))
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Product with this ISBN-13 already exists")
-    
-    # Extract annotation for embedding
-    annotation = None
-    if product.onix_json and product.onix_json.text_content:
-        annotations = [tc.text for tc in product.onix_json.text_content if tc.text_type == "03"]
-        annotation = annotations[0] if annotations else None
-    
-    # Get author names for embedding
-    author_names = []
-    if product.authors:
-        author_ids = [a.author_id for a in product.authors]
-        result = await db.execute(select(Author).where(Author.id.in_(author_ids)))
-        authors = result.scalars().all()
-        author_names = [a.full_name for a in authors]
-    
-    # Generate embedding
-    embed_text = EmbeddingService.create_product_text(product.title, author_names, annotation)
-    embedding = EmbeddingService.generate_embedding(embed_text)
-    
-    # Create product
-    product_data = product.model_dump(exclude={"authors"})
-    if product_data.get("onix_json"):
-        product_data["onix_json"] = product_data["onix_json"]
-    
-    db_product = Product(**product_data, embedding=embedding)
-    db.add(db_product)
-    await db.commit()
-    await db.refresh(db_product)
-    
-    # Add author associations
-    if product.authors:
-        for author_data in product.authors:
-            pa = ProductAuthor(
-                product_id=db_product.id,
-                author_id=author_data.author_id,
-                role_code=author_data.role_code,
-                sequence_number=author_data.sequence_number
-            )
-            db.add(pa)
-        await db.commit()
-    
-    return db_product
+    """Ingest a new product with ONIX metadata and validation."""
+    from app.services.product_service import ProductService
+    service = ProductService(db)
+    try:
+        return await service.create_product(product)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/products/{isbn}", response_model=ProductResponse)
@@ -96,7 +63,7 @@ async def get_product(isbn: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Product).where(Product.isbn_13 == isbn))
     product = result.scalar_one_or_none()
     if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Товар не знайдено")
     return product
 
 
@@ -106,7 +73,7 @@ async def export_product_onix(isbn: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Product).where(Product.isbn_13 == isbn))
     product = result.scalar_one_or_none()
     if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Товар не знайдено")
     
     # Get related data
     authors = []

@@ -1,3 +1,11 @@
+"""
+Concept: Application Entry Point
+
+This is the main FastAPI application entry point. It initializes the app,
+sets up middleware (CORS), and registers the API routers. It serves as the
+gateway for all incoming HTTP requests.
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
