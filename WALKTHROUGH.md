@@ -1,71 +1,82 @@
-# Walkthrough: Scraper Module Implementation
+# 🚀 Implementation Walkthrough: Scraper Module
 
-I have implemented a complete web scraping module for the ONIX Book Metadata System, targeting `vivat.com.ua`.
+This document provides a detailed overview of the web scraping and monitoring system implemented for the ONIX Book Metadata System.
 
-## Changes Made
+---
 
-### New Files Created
-| File | Purpose |
-|------|---------|
-| [scraper_service.py](file:///home/ubuntu/onix_project/app/scraper/scraper_service.py) | HTTP fetching, `__NEXT_DATA__` extraction, image/sample/review parsing |
-| [transformer.py](file:///home/ubuntu/onix_project/app/scraper/transformer.py) | Maps Vivat JSON to `ProductCreate` schema (ONIX-compliant) |
-| [monitor_service.py](file:///home/ubuntu/onix_project/app/scraper/monitor_service.py) | Sitemap polling, new product discovery, change detection |
-| [test_scraper.py](file:///home/ubuntu/onix_project/tests/test_scraper.py) | Unit tests for all scraper components |
+## 🛠️ System Overview
 
-### Modified Files
-| File | Change |
-|------|--------|
-| [requirements.txt](file:///home/ubuntu/onix_project/requirements.txt) | Added `httpx` and `beautifulsoup4` |
+The scraper is designed as a **high-performance, non-headless extraction engine** specifically optimized for Next.js-based bookstores like `vivat.com.ua`.
 
-## Architecture
+### Core Components
+
+| Component | Responsibility | Technical Key |
+| :--- | :--- | :--- |
+| **ScraperService** | Network I/O & JSON Extraction | Extracting `__NEXT_DATA__` script tags |
+| **VivatTransformer** | Data Normalization | Mapping messy JSON to ONIX 3.1 Schemas |
+| **MonitorService** | Change Detection | Sitemap polling + Content Hashing (SHA-256) |
+| **ProductService** | DB Orchestration | Handling Author creation & pgvector Embeddings |
+
+---
+
+## 🏗️ Data Flow Architecture
 
 ```mermaid
-flowchart LR
-    subgraph Monitor
-        A[Sitemap Poller] --> B{New URL?}
-    end
-    subgraph Scraper
-        B -->|Yes| C[Fetch HTML]
-        C --> D[Extract __NEXT_DATA__]
-        D --> E[Parse Product JSON]
-    end
-    subgraph Transformer
-        E --> F[Map to ProductCreate]
-        F --> G[Build OnixJson]
-    end
-    G --> H[(Database)]
+graph TD
+    A[MonitorService] -->|Polls Sitemap| B(Sitemap Change Detected)
+    B --> C[ScraperService]
+    C -->|Fetch HTML| D[Next.js JSON Extraction]
+    D --> E[VivatTransformer]
+    E -->|Map to ONIX Schema| F[ProductCreate Payload]
+    F --> G[ProductService]
+    G -->|AI Processing| H[Sentence-Transformers Embedding]
+    G -->|Persistence| I[(PostgreSQL / pgvector)]
+    I --> J[Success: Product & Author Saved]
 ```
 
-## Verification
+---
 
-All tests passed:
-```
-✓ ScraperService.extract_next_data: Found product = True
-✓ ScraperService.extract_product_data: Title = Тестова книга
-✓ ScraperService.extract_images: Found 1 images
-✓ Transformer.extract_isbn: 9786171234567
-✓ Transformer.extract_authors: ['Іван Петренко']
-✓ Transformer.extract_price: 350.0 UAH
-✓ Transformer.extract_product_form: BB (Hardback)
-✓ Monitor.parse_sitemap: Found 3 entries
-✓ Monitor.filter_product_urls: Found 2 product URLs
-```
+## ✨ Exhaustive Media & Metadata Extraction
 
-## Browser Analysis Recording
-![Browser analysis of vivat.com.ua](/home/ubuntu/.gemini/antigravity/brain/9ce8559a-5ebd-4ba0-b4ec-8631e4bed575/vivat_analysis_1766346385784.webp)
+We don't just grab the title; we extract **all** available data points:
 
-### Exhaustive Data Extraction (Vivat)
-I upgraded the scraper to extract every available piece of metadata from the target site.
+> [!IMPORTANT]
+> **Data Captured:**
+> - **Full Identity**: ISBN-13, Ukrainian Title, Cleaned Original Title.
+> - **Contributors**: Primary Authors, Translators (Role B06), Illustrators (Role A12).
+> - **Physical Specs**: Binding Type, Pages, Height/Width/Thickness (mm), Weight (g).
+> - **Rich Media**: High-res covers, gallery images, and sample PDFs.
+> - **Commercials**: Prices in UAH and stock availability.
+> - **Semantic Info**: Annotations, reviews (Top 5), and breadcrumb-based subjects.
 
-**New Capabilities:**
-- **Original Title**: Captured and cleaned from extra text.
-- **Contributors**: Successfully identified translators and illustrators.
-- **Collections**: Extracted series names.
-- **Precise Dimensions**: Decoupled height, width, and weight.
-- **Publishing Date**: Extracted and normalized to ONIX format.
+---
 
-### Documentation & Git Lifecycle
-- **Comprehensive Documentation**: Updated `README.md` and `ARCHITECTURE.md` to include all new features and scripts.
-- **Git Commit**: Performed a full project commit including all source files, schemas, and tests.
+## ✅ Verification Results
 
-**All work is now saved and documented in the repository.**
+I have verified the implementation using the [save_scrape.py](file:///home/ubuntu/onix_project/scripts/save_scrape.py) script against live data.
+
+### Sample Test: "Twisted. Ігри"
+- **Status**: SUCCESS
+- **DB Record ID**: `77386dc8-65a0-4f5b-8e73-54c6635122dd`
+- **Result Snapshot**:
+  ```json
+  {
+    "isbn": "9786171713062",
+    "title": "Twisted. Ігри",
+    "original_title": "Twisted Games",
+    "translator": "Марія Мочалова",
+    "dimensions": "197x127mm",
+    "embedding_size": 384
+  }
+  ```
+
+---
+
+> [!TIP]
+> To run the background scraper continuously, execute:
+> ```bash
+> python app/worker.py
+> ```
+
+---
+*Created by Antigravity AI for the ONIX Book Metadata Project.*
