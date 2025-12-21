@@ -22,24 +22,25 @@ from app.scraper.transformer import VivatTransformer
 async def run_worker():
     print("[Worker] Starting ONIX Scraper Background Worker...")
     
-    # Initialize Monitor (keeps state in memory for now)
-    # TODO: Load known state from DB to persist across restarts
-    monitor = MonitorService()
-    
     # Run loop
     while True:
         try:
-            print(f"[Worker] Checking for updates at {datetime.now()}...")
+            print(f"[Worker] Starting monitoring cycle at {datetime.now()}...")
             
-            # 1. Check for changes
-            changes = await monitor.check_for_changes()
-            
-            if not changes:
-                print("[Worker] No changes found.")
-            else:
-                print(f"[Worker] Found {len(changes)} changes. Processing...")
+            async with AsyncSessionLocal() as db:
+                # 1. Initialize Monitor with DB persistence
+                monitor = MonitorService(db=db)
+                print("[Worker] Loading persistent state from database...")
+                await monitor.initialize_state()
                 
-                async with AsyncSessionLocal() as db:
+                # 2. Check for changes
+                changes = await monitor.check_for_changes()
+                
+                if not changes:
+                    print("[Worker] No changes found since last check.")
+                else:
+                    print(f"[Worker] Detected {len(changes)} changes. Processing...")
+                    
                     product_service = ProductService(db)
                     transformer = VivatTransformer()
                     
@@ -48,37 +49,36 @@ async def run_worker():
                         print(f"  - Processing: {url}")
                         
                         try:
-                            # 2. Scrape & Hash
+                            # 3. Scrape & Hash
                             scraped, content_hash = await monitor.scrape_and_hash(url)
                             
-                            # 3. Transform
+                            # 4. Transform
                             product_create = transformer.transform(scraped)
                             author_names = transformer.extract_authors(scraped.raw_json)
                             
-                            # 4. Ingest to DB
+                            # 5. Ingest to DB
                             db_product = await product_service.ingest_product(product_create, author_names)
                             
                             if db_product:
                                 print(f"    - SUCCESS: Saved '{db_product.title}' (ISBN: {db_product.isbn_13})")
-                                # 5. Update Monitor State
-                                monitor.update_known_state(url, content_hash)
                             else:
-                                print(f"    - SKIPPED: Already exists or failed.")
-                                # Still update state so we don't try again immediately?
-                                # Yes, otherwise we loop forever on existing products.
-                                monitor.update_known_state(url, content_hash)
+                                print(f"    - SKIPPED: Already exists or no data changes.")
                                 
                         except Exception as e:
                             print(f"    - ERROR processing {url}: {e}")
-                            
+                
+                # 6. Save State (Update last check time)
+                print("[Worker] Saving cycle completion state...")
+                await monitor.save_last_check()
+                
         except Exception as e:
             print(f"[Worker] CRITICAL ERROR: {e}")
+            import traceback
+            traceback.print_exc()
         
         # Wait before next cycle (e.g., 1 hour)
-        # For demo purposes, we can set this shorter, or configurable.
-        # Let's say 1 hour + jitter? Or just 1 hour.
         SLEEP_SECONDS = 3600 
-        print(f"[Worker] Sleeping for {SLEEP_SECONDS} seconds...")
+        print(f"[Worker] Monitoring cycle complete. Sleeping for {SLEEP_SECONDS} seconds...")
         await asyncio.sleep(SLEEP_SECONDS)
 
 if __name__ == "__main__":

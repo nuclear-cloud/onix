@@ -6,6 +6,8 @@ It polls sitemaps to find new products and tracks content hashes to detect
 when existing products have been updated.
 """
 
+import os
+import json
 import asyncio
 import hashlib
 import xml.etree.ElementTree as ET
@@ -16,6 +18,10 @@ import httpx
 
 from app.scraper.scraper_service import ScraperService, ScrapedProduct
 from app.scraper.transformer import VivatTransformer
+from app.models.models import Product
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy import update
 
 
 @dataclass
@@ -44,13 +50,16 @@ class MonitorService:
     """
     
     SITEMAP_URL = "https://vivat.com.ua/sitemap.xml"
-    PRODUCT_URL_PATTERN = "/knyha-"  # Vivat product URLs contain this pattern
+    PRODUCT_URL_PATTERN = "/product/"  # Vivat product URLs contain this pattern
+    STATE_KEY_LAST_CHECK = "vivat_last_check"
     
-    def __init__(self, scraper: Optional[ScraperService] = None):
+    def __init__(self, scraper: Optional[ScraperService] = None, db: Optional[AsyncSession] = None):
         self.scraper = scraper or ScraperService()
+        self.db = db
         self.transformer = VivatTransformer()
         self._known_hashes: Dict[str, str] = {}  # url -> content_hash
         self._known_urls: Set[str] = set()
+        self._last_check_time: Optional[datetime] = None
     
     async def fetch_sitemap(self, sitemap_url: Optional[str] = None) -> str:
         """Fetch sitemap XML content."""
@@ -190,6 +199,61 @@ class MonitorService:
         
         return updated_urls
     
+    async def initialize_state(self):
+        """
+        Initialize the monitor state.
+        Loads known URLs and hashes from the database (if available).
+        Loads the last check time from a local JSON file.
+        """
+        # 1. Load Last Check Time from File
+        if os.path.exists(self.STATE_FILE):
+            try:
+                with open(self.STATE_FILE, "r") as f:
+                    state = json.load(f)
+                    if "last_check" in state:
+                        self._last_check_time = datetime.fromisoformat(state["last_check"])
+            except Exception as e:
+                print(f"[Monitor] Помилка завантаження стану з файлу: {e}")
+
+        # 2. Load Known URLs and Hashes from DB (Read-Only)
+        if self.db:
+            try:
+                result = await self.db.execute(select(Product))
+                products = result.scalars().all()
+                for p in products:
+                    onix = p.onix_json or {}
+                    extra = onix.get("extra", {})
+                    url = extra.get("source_url")
+                    chash = extra.get("content_hash")
+                    
+                    if url:
+                        self._known_urls.add(url)
+                        if chash:
+                            self._known_hashes[url] = chash
+            except Exception as e:
+                print(f"[Monitor] Помилка завантаження стану з БД: {e}")
+
+    async def save_last_check(self, timestamp: Optional[datetime] = None):
+        """Save the last check time to a local JSON file."""
+        check_time = timestamp or datetime.now()
+        self._last_check_time = check_time
+        
+        try:
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(self.STATE_FILE), exist_ok=True)
+            
+            state = {}
+            if os.path.exists(self.STATE_FILE):
+                with open(self.STATE_FILE, "r") as f:
+                    state = json.load(f)
+            
+            state["last_check"] = check_time.isoformat()
+            
+            with open(self.STATE_FILE, "w") as f:
+                json.dump(state, f, indent=4)
+        except Exception as e:
+            print(f"[Monitor] Помилка збереження стану у файл: {e}")
+
     async def check_for_changes(
         self, 
         last_check: Optional[datetime] = None
@@ -201,10 +265,13 @@ class MonitorService:
         """
         changes = []
         
-        # Discover all products from sitemap
+        # 1. Discover all products from sitemap
         product_entries = await self.discover_products()
         
-        # Find new URLs
+        # 2. Determine effective last check time
+        effective_last_check = last_check or self._last_check_time
+        
+        # 3. Find new URLs
         new_urls = self.find_new_urls(product_entries)
         for url in new_urls:
             changes.append(ProductChange(
@@ -212,14 +279,16 @@ class MonitorService:
                 change_type="new"
             ))
         
-        # Find updated URLs
-        updated_urls = self.find_updated_urls(product_entries, last_check)
+        # 4. Find updated URLs (based on sitemap lastmod vs last check)
+        updated_urls = self.find_updated_urls(product_entries, effective_last_check)
         for url in updated_urls:
-            changes.append(ProductChange(
-                url=url,
-                change_type="updated",
-                old_hash=self._known_hashes.get(url)
-            ))
+            # Avoid adding if already marked as new
+            if url not in new_urls:
+                changes.append(ProductChange(
+                    url=url,
+                    change_type="updated",
+                    old_hash=self._known_hashes.get(url)
+                ))
         
         return changes
     
