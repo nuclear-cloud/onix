@@ -7,7 +7,6 @@ Business logic for book catalog operations.
 from typing import Optional, List
 from prisma import Prisma
 from app.repositories.prisma_repositories import PrismaProductRepository
-from app.schemas.product_full import ProductFull
 
 
 class PrismaCatalogService:
