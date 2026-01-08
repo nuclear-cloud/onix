@@ -1,8 +1,16 @@
 # ONIX Aggregator (V2 Architecture)
 
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-14+-blue.svg)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/prisma-0.15.0-2D3748.svg)](https://prisma-client-py.readthedocs.io/)
+[![SQLAlchemy](https://img.shields.io/badge/sqlalchemy-2.0-red.svg)](https://www.sqlalchemy.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 **Centralized Book Catalog & Price Aggregator for Ukraine**
 
 This project implements a high-performance system for aggregating book metadata and prices from multiple retailers, strictly adhering to the **ONIX for Books 3.0** standard.
+
+> 📚 **Currently contains: 897,918 Ukrainian books from Yakaboo**
 
 ## 🏗 Architecture
 
