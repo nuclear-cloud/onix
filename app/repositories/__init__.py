@@ -1,5 +1,11 @@
-"""Data access layer."""
+"""Data access layer - Prisma ORM repositories."""
 
-from app.repositories.product_repository import ProductRepository
+from app.repositories.prisma_repositories import (
+    PrismaProductRepository,
+    PrismaPublisherRepository,
+)
 
-__all__ = ["ProductRepository"]
+__all__ = [
+    "PrismaProductRepository",
+    "PrismaPublisherRepository",
+]

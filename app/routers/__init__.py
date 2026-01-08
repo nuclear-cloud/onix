@@ -1,5 +1,6 @@
-"""API routers."""
+"""API routers - Prisma ORM version."""
 
-from app.routers.catalog import router as catalog_router
+from app.routers.prisma_catalog import router as catalog_router
 
 __all__ = ["catalog_router"]
+
