@@ -4,13 +4,73 @@ __pycache__/
 *$py.class
 *.so
 .Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual envs
 venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Env files (secrets)
 .env
+.env.*
+!.env.example
+
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
+.tox/
+
+# Local runtime state
+.state/
+.cache/
 
 # IDE
 .vscode/
 .idea/
+.cursor/
+.gemini/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
+*.log
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Data files (too large for git)
+data/*.jsonl
+data/*.json
+!data/ONIX_BookProduct_Codelists_Issue_71.json
+data/*.xml
+data/*.txt
+
+# Prisma
+node_modules/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

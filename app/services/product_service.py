@@ -1,138 +1,380 @@
+# app/services/product_service.py
 """
-Concept: Product Service
+Сервіс управління продуктами: "Завскладом" + "Мерчендайзер".
 
-This service handles the core business logic for managing products.
-It encapsulates database operations, validation calls, and embedding generation,
-allowing product creation to be shared between the API and background workers.
+Два режими роботи:
+1. FULL MODE (Шлях 1) - Щоденний імпорт каталогу
+2. MARKET MODE (Шлях 2) - Погодинне оновлення цін
 """
-
+from typing import List, Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from fastapi import HTTPException
+from sqlalchemy import select, update
+from datetime import datetime
+import asyncio
 
-from app.models.models import Product, Publisher, Author, Collection, ProductAuthor
-from app.schemas.schemas import ProductCreate, ProductAuthorBase, AuthorCreate
-from app.services.validation_service import ValidationService
-from app.services.embedding_service import EmbeddingService
+from app.models.catalog import CatalogProduct, Publisher
+from app.schemas.product_full import ProductFullDTO, ProductCreateDTO
+from app.schemas.product_market import ProductMarketDTO, MarketUpdateResult
+from app.adapters import YakabooAdapter
+
 
 class ProductService:
+    """
+    Головний сервіс для роботи з продуктами.
+    
+    Responsibilities:
+    - Створення нових продуктів
+    - Оновлення існуючих (повне і часткове)
+    - Синхронізація з джерелами даних
+    """
+    
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.validator = ValidationService(db)
-
-    async def create_product(self, product: ProductCreate) -> Product:
+        self.yakaboo = YakabooAdapter()
+    
+    # ============================================================
+    # ШЛЯХ 1: ПОВНИЙ ІМПОРТ КАТАЛОГУ (Daily Catalog)
+    # ============================================================
+    
+    async def import_full_product(
+        self,
+        raw_data: Dict[str, Any],
+        adapter: YakabooAdapter
+    ) -> Optional[CatalogProduct]:
         """
-        Create a new product with full validation and embedding generation.
-        """
-        # 1. Real-time ONIX Codelist Validation
-        errors = await self.validator.validate_product_metadata(product.model_dump())
-        if errors:
-            raise ValueError(f"Validation errors: {'; '.join(errors)}")
-
-        # Check if ISBN already exists
-        result = await self.db.execute(select(Product).where(Product.isbn_13 == product.isbn_13))
-        existing_product = result.scalar_one_or_none()
+        Повний імпорт одного продукту.
         
-        # If exists, we might want to update it? For now, we'll error or skip.
-        # But for the worker, we might want `upsert`. 
-        # Let's keep it simple: Error if exists, treating it as "New Product" flow.
-        if existing_product:
-            raise ValueError(f"Product with ISBN {product.isbn_13} already exists")
-        
-        # Get author names for embedding
-        author_names = []
-        annotation = ""
-        if product.onix_json and product.onix_json.text_content:
-            for text_item in product.onix_json.text_content:
-                if text_item.text_type == "03":  # Description
-                    annotation = text_item.text
-        
-        if product.authors:
-            # Note: This assumes authors already exist in DB. 
-            # If coming from scraper, we might need to create them dynamically?
-            # The current API logic expects IDs. The scraper creates "Text" authors but no IDs.
-            # We need logic here to Handle "By Name" authors if IDs are missing.
-            # But ProductCreate schema requires `author_id`.
-            # This is a gap. The Scraper produces "Authors" list of STRINGS.
-            # ProductCreate expects `ProductAuthorBase` with UUIDs.
-            # I need to handle this lookup/creation.
-            pass
-
-        # For the Scraper integration, we need a way to `get_or_create_author`.
-        # I will address this in the worker or helper method.
-        # For now, let's stick to the exact logic from the API.
-
-        if product.authors:
-            author_ids = [pa.author_id for pa in product.authors]
-            result = await self.db.execute(select(Author).where(Author.id.in_(author_ids)))
-            authors = result.scalars().all()
-            author_names = [a.full_name for a in authors]
-        
-        # Generate embedding
-        embed_text = EmbeddingService.create_product_text(product.title, author_names, annotation)
-        embedding = EmbeddingService.generate_embedding(embed_text)
-        
-        # Create product
-        product_data = product.model_dump(exclude={"authors"})
-        db_product = Product(**product_data, embedding=embedding)
-        self.db.add(db_product)
-        # We don't commit here to allow transaction control by caller? 
-        # API usually commits. Let's commit here for simplicity of service method.
-        await self.db.commit()
-        await self.db.refresh(db_product)
-        
-        # Add author associations
-        if product.authors:
-            for author_data in product.authors:
-                pa = ProductAuthor(
-                    product_id=db_product.id,
-                    author_id=author_data.author_id,
-                    role_code=author_data.role_code,
-                    sequence_number=author_data.sequence_number
-                )
-                self.db.add(pa)
-            await self.db.commit()
-        
-        return db_product
-
-    async def get_or_create_author(self, name: str) -> Author:
-        """Find an author by name or create a new one."""
-        result = await self.db.execute(select(Author).where(Author.full_name == name))
-        author = result.scalar_one_or_none()
-        
-        if not author:
-            author = Author(full_name=name)
-            self.db.add(author)
-            await self.db.commit()
-            await self.db.refresh(author)
+        Args:
+            raw_data: Сирі дані від джерела
+            adapter: Адаптер для парсингу
             
-        return author
-
-    async def ingest_product(self, product_data: ProductCreate, author_names: list[str]) -> Product:
+        Returns:
+            CatalogProduct або None якщо помилка
         """
-        Ingest a scraped product, handling author creation/lookup automatically.
-        """
-        # Resolve authors
-        product_authors = []
-        for i, name in enumerate(author_names):
-            author = await self.get_or_create_author(name)
-            product_authors.append(ProductAuthorBase(
-                author_id=author.id,
-                role_code="A01", # Default to Author
-                sequence_number=i+1
-            ))
-        
-        # Attach resolved authors to the product DTO
-        product_data.authors = product_authors
-        
-        # Create the product
-        # Should catch "already exists" and maybe update? 
-        # For now, just try to create.
         try:
-            return await self.create_product(product_data)
-        except ValueError as e:
-            if "already exists" in str(e):
-                # Optionally fetch and return existing? or just re-raise
-                print(f"Skipping existing product: {product_data.isbn_13}")
+            # 1. Валідація
+            is_valid, errors = adapter.validate(raw_data)
+            if not is_valid:
+                adapter.log_error(f"Validation failed: {errors}")
                 return None
-            raise e
+            
+            # 2. Парсинг (повний режим)
+            parsed = adapter.parse_full(raw_data)
+            dto = ProductFullDTO(**parsed)
+            
+            # 3. Пошук існуючого
+            existing = await self.get_by_isbn13(dto.isbn13)
+            
+            if existing:
+                # Оновлюємо існуючий
+                updated = await self._update_full_product(existing, dto)
+                adapter.log_success(f"Updated: {dto.name} ({dto.isbn13})")
+                return updated
+            else:
+                # Створюємо новий
+                created = await self._create_full_product(dto)
+                adapter.log_success(f"Created: {dto.name} ({dto.isbn13})")
+                return created
+                
+        except Exception as e:
+            adapter.log_error(f"Import failed: {str(e)}")
+            return None
+    
+    async def import_full_batch(
+        self,
+        raw_products: List[Dict[str, Any]],
+        adapter: YakabooAdapter,
+        batch_size: int = 100
+    ) -> Dict[str, int]:
+        """
+        Повний імпорт списку продуктів (пакетний режим).
+        
+        Args:
+            raw_products: Список сирих даних
+            adapter: Адаптер
+            batch_size: Розмір пакету
+            
+        Returns:
+            Статистика: {created, updated, errors, skipped}
+        """
+        stats = {"created": 0, "updated": 0, "errors": 0, "skipped": 0}
+        total = len(raw_products)
+        
+        print(f"🚀 Starting FULL import: {total} products")
+        
+        for i in range(0, total, batch_size):
+            batch = raw_products[i:i + batch_size]
+            print(f"📦 Processing batch {i//batch_size + 1}/{(total-1)//batch_size + 1}")
+            
+            for raw_data in batch:
+                result = await self.import_full_product(raw_data, adapter)
+                
+                if result:
+                    if result.id:  # Existing (updated)
+                        stats["updated"] += 1
+                    else:
+                        stats["created"] += 1
+                else:
+                    stats["errors"] += 1
+            
+            # Commit після кожного батча
+            await self.db.commit()
+        
+        print(f"✅ FULL import completed: {stats}")
+        return stats
+    
+    # ============================================================
+    # ШЛЯХ 2: ШВИДКЕ ОНОВЛЕННЯ ЦІН (Hourly Market Sync)
+    # ============================================================
+    
+    async def update_market_data(
+        self,
+        raw_data: Dict[str, Any],
+        adapter: YakabooAdapter
+    ) -> Optional[CatalogProduct]:
+        """
+        Швидке оновлення тільки маркет-даних (ціна, наявність).
+        
+        Args:
+            raw_data: Сирі дані від джерела
+            adapter: Адаптер
+            
+        Returns:
+            CatalogProduct або None
+        """
+        try:
+            # 1. Швидкий парсинг (тільки критичні поля)
+            parsed = adapter.parse_market(raw_data)
+            dto = ProductMarketDTO(**parsed)
+            
+            # 2. Пошук продукту
+            product = await self.get_by_isbn13(dto.isbn13)
+            
+            if not product:
+                # Продукт не знайдено - пропускаємо
+                # (в режимі market ми НЕ створюємо нові продукти)
+                adapter.log_warning(f"Product not found: {dto.isbn13}")
+                return None
+            
+            # 3. Оновлення тільки маркет-полів
+            updated = await self._update_market_fields(product, dto)
+            adapter.log_success(f"Market updated: {dto.isbn13}")
+            
+            return updated
+            
+        except Exception as e:
+            adapter.log_error(f"Market update failed: {str(e)}")
+            return None
+    
+    async def update_market_batch(
+        self,
+        raw_products: List[Dict[str, Any]],
+        adapter: YakabooAdapter,
+        batch_size: int = 500  # Більший батч для швидкої операції
+    ) -> MarketUpdateResult:
+        """
+        Пакетне оновлення маркет-даних.
+        
+        Args:
+            raw_products: Список сирих даних
+            adapter: Адаптер
+            batch_size: Розмір пакету
+            
+        Returns:
+            MarketUpdateResult з статистикою
+        """
+        start_time = datetime.now()
+        stats = {
+            "total": len(raw_products),
+            "updated": 0,
+            "created": 0,
+            "errors": 0,
+            "skipped": 0
+        }
+        
+        print(f"⚡ Starting MARKET sync: {stats['total']} products")
+        
+        for i in range(0, stats['total'], batch_size):
+            batch = raw_products[i:i + batch_size]
+            print(f"📦 Processing batch {i//batch_size + 1}/{(stats['total']-1)//batch_size + 1}")
+            
+            for raw_data in batch:
+                result = await self.update_market_data(raw_data, adapter)
+                
+                if result:
+                    stats["updated"] += 1
+                else:
+                    stats["skipped"] += 1
+            
+            # Commit після батча
+            await self.db.commit()
+        
+        duration = (datetime.now() - start_time).total_seconds()
+        
+        result = MarketUpdateResult(
+            total=stats["total"],
+            updated=stats["updated"],
+            created=stats["created"],
+            errors=stats["errors"],
+            skipped=stats["skipped"],
+            duration_seconds=duration
+        )
+        
+        print(f"⚡ MARKET sync completed in {duration:.1f}s: {result.dict()}")
+        return result
+    
+    # ============================================================
+    # ПРИВАТНІ МЕТОДИ (Internal Operations)
+    # ============================================================
+    
+    async def _create_full_product(self, dto: ProductFullDTO) -> CatalogProduct:
+        """Створює новий продукт з повними даними."""
+        product = CatalogProduct(
+            record_reference=dto.isbn13,  # Using ISBN as record reference
+            isbn_13=dto.isbn13,
+            sku=dto.sku,
+            product_form="BB",  # Default: Hardback book (ONIX List 150 code)
+            # Store full data in JSONB for now
+            onix_full={
+                "title": dto.name,
+                "author": dto.author,
+                "publisher": dto.publisher,
+                "description": dto.description,
+                "short_description": dto.short_description,
+                "pages": dto.pages,
+                "year": dto.year,
+                "language": dto.language,
+                "binding": dto.binding,
+                "thema_subject": dto.thema_subject,
+                "categories": dto.categories,
+                # Market data
+                "price": dto.price,
+                "old_price": dto.old_price,
+                "currency": dto.currency,
+                "in_stock": dto.in_stock,
+                "url": dto.url,
+                "source": dto.source,
+                "external_id": dto.external_id,
+                "main_image": dto.main_image,
+                "images": dto.images,
+            }
+        )
+        
+        self.db.add(product)
+        await self.db.flush()
+        return product
+    
+    async def _update_full_product(
+        self,
+        product: CatalogProduct,
+        dto: ProductFullDTO
+    ) -> CatalogProduct:
+        """Оновлює всі поля існуючого продукту."""
+        # Update JSONB field
+        if product.onix_full is None:
+            product.onix_full = {}
+        
+        product.onix_full.update({
+            "title": dto.name,
+            "author": dto.author,
+            "publisher": dto.publisher,
+            "description": dto.description,
+            "short_description": dto.short_description,
+            "pages": dto.pages,
+            "year": dto.year,
+            "language": dto.language,
+            "binding": dto.binding,
+            "thema_subject": dto.thema_subject,
+            "categories": dto.categories,
+            # Market data
+            "price": dto.price,
+            "old_price": dto.old_price,
+            "currency": dto.currency,
+            "in_stock": dto.in_stock,
+            "url": dto.url,
+            "main_image": dto.main_image,
+            "images": dto.images,
+        })
+        
+        # Flag JSONB as modified
+        from sqlalchemy.orm.attributes import flag_modified
+        flag_modified(product, "onix_full")
+        
+        product.updated_at = datetime.utcnow()
+        
+        await self.db.flush()
+        return product
+    
+    async def _update_market_fields(
+        self,
+        product: CatalogProduct,
+        dto: ProductMarketDTO
+    ) -> CatalogProduct:
+        """
+        Оновлює ТІЛЬКИ маркет-поля (швидка операція).
+        НЕ чіпає опис, автора, видавництво, etc.
+        """
+        if product.onix_full is None:
+            product.onix_full = {}
+        
+        product.onix_full.update({
+            "price": dto.price,
+            "old_price": dto.old_price,
+            "currency": dto.currency,
+            "in_stock": dto.in_stock,
+            "url": dto.url,
+        })
+        
+        # Flag JSONB as modified
+        from sqlalchemy.orm.attributes import flag_modified
+        flag_modified(product, "onix_full")
+        
+        product.updated_at = datetime.utcnow()
+        
+        await self.db.flush()
+        return product
+    
+    # ============================================================
+    # ДОПОМІЖНІ МЕТОДИ (Helpers)
+    # ============================================================
+    
+    async def get_by_isbn13(self, isbn13: str) -> Optional[CatalogProduct]:
+        """Знайти продукт по ISBN-13."""
+        result = await self.db.execute(
+            select(CatalogProduct).where(CatalogProduct.isbn_13 == isbn13)
+        )
+        return result.scalars().first()
+    
+    async def get_by_source_id(
+        self,
+        source: str,
+        external_id: str
+    ) -> Optional[CatalogProduct]:
+        """Знайти продукт по ID джерела."""
+        result = await self.db.execute(
+            select(CatalogProduct).where(
+                CatalogProduct.sku == external_id
+            )
+        )
+        return result.scalars().first()
+    
+    async def count_products(self, source: Optional[str] = None) -> int:
+        """Порахувати кількість продуктів."""
+        from sqlalchemy import func
+        
+        query = select(func.count(CatalogProduct.id))
+        # Note: source filtering would require querying JSONB
+        
+        result = await self.db.execute(query)
+        return result.scalar()
+    
+    async def get_products_without_description(
+        self,
+        limit: int = 100
+    ) -> List[CatalogProduct]:
+        """Знайти продукти без опису (для повного оновлення)."""
+        # This would require JSONB queries in real implementation
+        result = await self.db.execute(
+            select(CatalogProduct).limit(limit)
+        )
+        return list(result.scalars().all())

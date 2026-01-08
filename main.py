@@ -1,49 +1,100 @@
 """
-Concept: Application Entry Point
+FastAPI Application Entry Point
 
-This is the main FastAPI application entry point. It initializes the app,
-sets up middleware (CORS), and registers the API routers. It serves as the
-gateway for all incoming HTTP requests.
+Основний app з інтеграцією всіх шарів.
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from app.api.products import router as products_router
+from app.core.database import engine, Base
+from app.routers import catalog_router
+
+
+# ===== Lifecycle Events =====
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Управління життєвим циклом додатку."""
+    # Startup
+    async with engine.begin() as conn:
+        # При потребі можна виконати міграції тут
+        pass
+    
+    print("✅ Application started")
+    
+    yield
+    
+    # Shutdown
+    print("🛑 Application shutdown")
+
+
+# ===== Create App =====
 
 app = FastAPI(
-    title="ONIX Book Metadata System",
-    description="Backend system for managing book metadata based on ONIX 3.1 standard",
-    version="1.0.0"
+    title="ONIX Catalog API",
+    description="REST API для каталогу книг з ONIX метаданими",
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
-# CORS Middleware
+
+# ===== CORS =====
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Замінити на конкретні домени в production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(products_router)
+
+# ===== Include Routers =====
+
+app.include_router(catalog_router, prefix="/api/v1")
 
 
-@app.get("/")
+# ===== Health Check =====
+
+@app.get("/health", tags=["system"])
+async def health_check():
+    """Перевірка стану сервісу."""
+    return {"status": "ok"}
+
+
+# ===== Root =====
+
+@app.get("/", tags=["system"])
 async def root():
+    """Інформація про API."""
     return {
-        "message": "ONIX Book Metadata System API",
+        "name": "ONIX Catalog API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "openapi": "/openapi.json",
     }
 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+# ===== Error Handlers =====
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    """Глобальна обробка помилок."""
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal Server Error", "detail": str(exc)},
+    )
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+    )

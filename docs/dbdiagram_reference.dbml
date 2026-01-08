@@ -1,0 +1,47 @@
+// DBML for dbdiagram.io — Reference tables and key catalog links
+// Date: 2026-01-06
+
+Table ref_onix_codelists {
+  list_number int [pk]
+  code varchar(50) [pk]
+  description text
+  notes text
+  issue_number varchar(10)
+  modified_number varchar(10)
+  deprecated_number varchar(10)
+  is_active boolean [not null, default: true]
+  indexes {
+    list_number [name: "ix_ref_onix_codelists_list_number"]
+  }
+}
+
+Table ref_thema_subjects {
+  code varchar(20) [pk]
+  parent_code varchar(20) [ref: > ref_thema_subjects.code]
+  label_en varchar(255) [not null]
+  label_uk varchar(255)
+  description_en text
+  description_uk text
+  is_active boolean [not null, default: true]
+  indexes {
+    label_uk [name: "ix_ref_thema_label_uk"]
+    parent_code [name: "ix_ref_thema_subjects_parent_code"]
+  }
+}
+
+Table catalog_products {
+  id uuid [pk]
+  record_reference varchar(100)
+  isbn_13 varchar(13)
+}
+
+Table catalog_subjects {
+  id uuid [pk]
+  product_id uuid [ref: > catalog_products.id]
+  scheme_identifier varchar(10)
+  subject_code varchar(100)
+  subject_heading_text varchar(500)
+}
+
+// Logical (soft) relationship: only enforced for scheme_identifier = '93'
+Ref: catalog_subjects.subject_code > ref_thema_subjects.code

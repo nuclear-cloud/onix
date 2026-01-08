@@ -1,0 +1,148 @@
+{
+  "RecordReference": "978-966-1234-56-7",
+  "NotificationType": "03",
+  "ProductIdentifier": [
+    {
+      "ProductIDType": "15",
+      "IDValue": "9789661234567"
+    },
+    {
+      "ProductIDType": "01",
+      "IDValue": "SKU-12345-UA"
+    }
+  ],
+  "Barcode": [
+    "9789661234567"
+  ],
+  "ProductForm": "BB",
+  "TitleDetail": [
+    {
+      "TitleType": "01",
+      "TitleElement": [
+        {
+          "TitleElementLevel": "01",
+          "TitleText": "Тіні забутих предків. Графічний роман",
+          "Subtitle": "Спеціальне ілюстроване видання"
+        }
+      ]
+    },
+    {
+      "TitleType": "03",
+      "TitleElement": [
+        {
+          "TitleElementLevel": "01",
+          "TitleText": "Тіні забутих предків"
+        }
+      ]
+    }
+  ],
+  "Contributor": [
+    {
+      "SequenceNumber": 1,
+      "ContributorRole": ["A01"],
+      "PersonName": "Михайло Коцюбинський",
+      "PersonNameInverted": "Коцюбинський, Михайло",
+      "BiographicalNote": "Класик української літератури..."
+    },
+    {
+      "SequenceNumber": 2,
+      "ContributorRole": ["A12"],
+      "PersonName": "Іван Ілюстратор",
+      "PersonNameInverted": "Ілюстратор, Іван",
+      "BiographicalNote": "Сучасний графічний дизайнер..."
+    }
+  ],
+  "Language": [
+    {
+      "LanguageRole": "01",
+      "LanguageCode": "ukr"
+    }
+  ],
+  "Subject": [
+    {
+      "SubjectSchemeIdentifier": "93",
+      "SubjectCode": "FBA",
+      "SubjectHeadingText": "Modern & contemporary fiction"
+    },
+    {
+      "SubjectSchemeIdentifier": "20",
+      "SubjectHeadingText": "Гуцульщина; Карпати; Містика"
+    }
+  ],
+  "AudienceRange": [
+    {
+      "AudienceRangeQualifier": "11",
+      "AudienceRangePrecision1": "03",
+      "AudienceRangeValue1": "16"
+    }
+  ],
+  "TextContent": [
+    {
+      "TextType": "03",
+      "ContentAudience": "00",
+      "Text": "Графічна адаптація відомої повісті..."
+    },
+    {
+      "TextType": "06",
+      "ContentAudience": "00",
+      "Text": "Це шедевр! - Літературний Оглядач"
+    }
+  ],
+  "SupportingResource": [
+    {
+      "ResourceContentType": "01",
+      "ResourceMode": "03",
+      "ResourceVersion": [
+        {
+          "ResourceLink": "https://images.example.com/cover_front.jpg"
+        }
+      ]
+    }
+  ],
+  "Publisher": [
+    {
+      "PublishingRole": "01",
+      "PublisherName": "А-БА-БА-ГА-ЛА-МА-ГА"
+    }
+  ],
+  "PublishingDate": [
+    {
+      "PublishingDateRole": "01",
+      "Date": "20240901",
+      "DateFormat": "00"
+    }
+  ],
+  "RelatedProduct": [
+    {
+      "ProductRelationCode": "06",
+      "ProductIdentifier": [
+        {
+          "ProductIDType": "15",
+          "IDValue": "9789660000000"
+        }
+      ]
+    }
+  ],
+  "SupplyDetail": [
+    {
+      "Supplier": {
+        "PublishingRole": "03",
+        "PublisherName": "Yakaboo"
+      },
+      "ProductAvailability": "20",
+      "Price": [
+        {
+          "PriceType": "02",
+          "PriceAmount": 450.00,
+          "CurrencyCode": "UAH"
+        }
+      ]
+    }
+  ],
+  "extra": {
+     "source_url": "https://yakaboo.ua/ua/book/tini...",
+     "is_ukrainian_content": true
+  }
+}
+
+

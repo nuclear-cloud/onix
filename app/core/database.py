@@ -16,3 +16,7 @@ async def get_db():
             yield session
         finally:
             await session.close()
+
+
+# Alias для FastAPI Depends
+get_session = get_db

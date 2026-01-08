@@ -1,0 +1,893 @@
+ZVIT SCHEMA YAKABOO (Deep Scan)
+Total Records: 972,266
+====================================================================================================
+FIELD NAME                                         | % FILL   | TYPES           | EXAMPLES
+----------------------------------------------------------------------------------------------------
+_category_id                                       |  100.0%  | int             | 5321; 5321; 5321
+_scraped_at                                        |  100.0%  | str             | 2025-12-28T23:20:16.094599; 2025-12-28T23:20:16.094855; 2025-12-28T23:20:16.095028
+age                                                |   10.7%  | list            | 
+age_label                                          |   10.7%  | list            | 
+age_label[].attribute_id                           |   14.0%  | str             | 2867
+age_label[].attribute_label                        |   14.0%  | str             | Возраст ребенка
+age_label[].label                                  |   14.0%  | str             | Подросткам; Родителям; От 6 до 8 лет
+age_label[].option_code                            |   14.0%  | str             | podrostkam; roditeljam; ot_6_do_8_let
+age_label[].option_id                              |   14.0%  | str             | 286219; 289066; 286295
+age_label[].sort_order                             |   14.0%  | str             | 0; 100
+age_label[].url_path                               |   14.0%  | str             | age/view/podrostkam; age/view/roditeljam; age/view/ot-6-do-8-let
+another_formats                                    |    2.8%  | list            | 
+another_formats[].entity_id                        |   11.0%  | str             | 2383333; 2968504; 2140155
+another_formats[].final_price                      |   11.0%  | int             | 1620; 983; 983
+another_formats[].regular_price                    |   11.0%  | int             | 1620; 983; 983
+another_formats[].type                             |   11.0%  | str             | book; ebook; abook
+another_formats[].url                              |   11.0%  | str             | https://www.yakaboo.ua/quantum-supremacy.html; https://www.yakaboo.ua/life-after-google-the-fa...; https://www.yakaboo.ua/notes-on-a-nervous-plane...
+another_link                                       |   32.5%  | list            | 
+attribute_set_id                                   |  100.0%  | int             | 20; 20; 20
+author                                             |   82.7%  | list            | 
+author_label                                       |   82.7%  | list            | 
+author_label[].attribute_id                        |  109.2%  | str             | 2942
+author_label[].attribute_label                     |  109.2%  | str             | Автор
+author_label[].label                               |  109.2%  | str             | В. Кушнарев; Владимир Варенко; Владимир Касьян
+author_label[].option_code                         |  109.2%  | str             | v_kushnarev; Vladimir_Varenko; volodymyr-kasyan
+author_label[].option_id                           |  109.2%  | str             | 897217; 423571; 1553652
+author_label[].sort_order                          |  109.2%  | str             | 100; 0; 199
+author_label[].url_path                            |  109.2%  | str, null       | author/view/v_kushnarev; author/view/Vladimir_Varenko; author/view/volodymyr-kasyan
+barcode                                            |   93.2%  | str             | 9789666023998; 9781484265963; 9780691264486
+boardgame_difficulty                               |    0.0%  | list            | 
+boardgame_difficulty_label                         |    0.0%  | list            | 
+boardgame_difficulty_label[].attribute_id          |    0.0%  | str             | 4123
+boardgame_difficulty_label[].attribute_label       |    0.0%  | str             | Уровень сложности
+boardgame_difficulty_label[].label                 |    0.0%  | str             | Средний; Простой; Детский
+boardgame_difficulty_label[].option_code           |    0.0%  | str             | Srednij; Prostoj; Detskij
+boardgame_difficulty_label[].option_id             |    0.0%  | str             | 772669; 772668; 772667
+boardgame_difficulty_label[].sort_order            |    0.0%  | str             | 3; 2; 1
+boardgame_difficulty_label[].url_path              |    0.0%  | null            | 
+boardgame_element                                  |    0.1%  | list            | 
+boardgame_mindbreaker                              |    0.0%  | list            | 
+boardgame_mindbreaker_label                        |    0.0%  | list            | 
+boardgame_mindbreaker_label[].attribute_id         |    0.0%  | str             | 4126
+boardgame_mindbreaker_label[].attribute_label      |    0.0%  | str             | Тип
+boardgame_mindbreaker_label[].label                |    0.0%  | str             | Мини наборы; Большие наборы; Пятнашки
+boardgame_mindbreaker_label[].option_code          |    0.0%  | str             | Mini_nabory; Bol_shie_nabory; Pjatnashki
+boardgame_mindbreaker_label[].option_id            |    0.0%  | str             | 772759; 772758; 772752
+boardgame_mindbreaker_label[].sort_order           |    0.0%  | str             | 100
+boardgame_mindbreaker_label[].url_path             |    0.0%  | null            | 
+boardgame_mode                                     |    0.2%  | list            | 
+boardgame_mode_label                               |    0.2%  | list            | 
+boardgame_mode_label[].attribute_id                |    0.2%  | str             | 4119
+boardgame_mode_label[].attribute_label             |    0.2%  | str             | Вид
+boardgame_mode_label[].label                       |    0.2%  | str             | Веселые; Обучающие; Домино
+boardgame_mode_label[].option_code                 |    0.2%  | str             | Veselye; Obuchajuschie; Domino
+boardgame_mode_label[].option_id                   |    0.2%  | str             | 772784; 772782; 772777
+boardgame_mode_label[].sort_order                  |    0.2%  | str             | 100; 0
+boardgame_mode_label[].url_path                    |    0.2%  | str, null       | book_series/view/guess-who-903067
+boardgame_players                                  |    0.2%  | list            | 
+boardgame_players_label                            |    0.2%  | list            | 
+boardgame_players_label[].attribute_id             |    0.2%  | str             | 4120
+boardgame_players_label[].attribute_label          |    0.2%  | str             | Количество игроков
+boardgame_players_label[].label                    |    0.2%  | str             | Для 1-го; От 2 до 5; От 2 до 6
+boardgame_players_label[].option_code              |    0.2%  | str             | Dlja_1_go; Ot_2_do_5; Ot_2_do_5_1
+boardgame_players_label[].option_id                |    0.2%  | str             | 772635; 774833; 839840
+boardgame_players_label[].sort_order               |    0.2%  | str             | 1; 4; 100
+boardgame_players_label[].url_path                 |    0.2%  | null            | 
+boardgame_pro                                      |    0.0%  | list            | 
+boardgame_pro_label                                |    0.0%  | list            | 
+boardgame_pro_label[].attribute_id                 |    0.0%  | str             | 4125
+boardgame_pro_label[].attribute_label              |    0.0%  | str             | Для кого
+boardgame_pro_label[].label                        |    0.0%  | str             | Новичок; Коллекционер; Профессионал
+boardgame_pro_label[].option_code                  |    0.0%  | str             | Novichok; Kollekcioner; Professional
+boardgame_pro_label[].option_id                    |    0.0%  | str             | 772673; 772672; 772674
+boardgame_pro_label[].sort_order                   |    0.0%  | str             | 2; 1; 3
+boardgame_pro_label[].url_path                     |    0.0%  | null            | 
+boardgame_rubik                                    |    0.0%  | list            | 
+boardgame_rubik_label                              |    0.0%  | list            | 
+boardgame_rubik_label[].attribute_id               |    0.0%  | str             | 4127
+boardgame_rubik_label[].attribute_label            |    0.0%  | str             | Тип
+boardgame_rubik_label[].label                      |    0.0%  | str             | Стандартный; Пирамидка рубик; Головоломка Скьюб
+boardgame_rubik_label[].option_code                |    0.0%  | str             | Standartnyj; Piramidka_rubik; Golovolomka_Sk_jub
+boardgame_rubik_label[].option_id                  |    0.0%  | str             | 772679; 772680; 772685
+boardgame_rubik_label[].sort_order                 |    0.0%  | str             | 1; 2; 100
+boardgame_rubik_label[].url_path                   |    0.0%  | null            | 
+boardgame_size                                     |    0.0%  | list            | 
+boardgame_size_label                               |    0.0%  | list            | 
+boardgame_size_label[].attribute_id                |    0.0%  | str             | 4124
+boardgame_size_label[].attribute_label             |    0.0%  | str             | Размер головоломки
+boardgame_size_label[].label                       |    0.0%  | str             | 4х4; 3х3; 7х7
+boardgame_size_label[].option_code                 |    0.0%  | str             | 4h4; 3h3; 7h7
+boardgame_size_label[].option_id                   |    0.0%  | str             | 772676; 772675; 777610
+boardgame_size_label[].sort_order                  |    0.0%  | str             | 3; 2; 100
+boardgame_size_label[].url_path                    |    0.0%  | null            | 
+boardgame_subjects                                 |    0.3%  | list            | 
+boardgame_subjects_label                           |    0.3%  | list            | 
+boardgame_subjects_label[].attribute_id            |    0.4%  | str             | 4121
+boardgame_subjects_label[].attribute_label         |    0.4%  | str             | Тематика
+boardgame_subjects_label[].label                   |    0.4%  | str             | Города и страны; Животные; Абстракция
+boardgame_subjects_label[].option_code             |    0.4%  | str             | Goroda_i_strany; Zhivotnye; abstrakcija
+boardgame_subjects_label[].option_id               |    0.4%  | str             | 772646; 772647; 887658
+boardgame_subjects_label[].sort_order              |    0.4%  | str             | 6; 5; 3
+boardgame_subjects_label[].url_path                |    0.4%  | null            | 
+boardgame_type                                     |    0.2%  | list            | 
+boardgame_type_label                               |    0.2%  | list            | 
+boardgame_type_label[].attribute_id                |    0.3%  | str             | 4118
+boardgame_type_label[].attribute_label             |    0.3%  | str             | Тип
+boardgame_type_label[].label                       |    0.3%  | str             | Развивающие; Ходилки; Семейные
+boardgame_type_label[].option_code                 |    0.3%  | str             | Razvivajuschie; Hodilki; Semejnye
+boardgame_type_label[].option_id                   |    0.3%  | str             | 772625; 772618; 772620
+boardgame_type_label[].sort_order                  |    0.3%  | str             | 100
+boardgame_type_label[].url_path                    |    0.3%  | null            | 
+book_author_former                                 |    0.0%  | list            | 
+book_author_former_label                           |    0.0%  | list            | 
+book_author_former_label[].attribute_id            |    0.0%  | str             | 2943
+book_author_former_label[].attribute_label         |    0.0%  | str             | Автор-составитель
+book_author_former_label[].label                   |    0.0%  | str             | Наталия Лебеденко; Венди Коуп; Э. Ф. Гаррольд
+book_author_former_label[].option_code             |    0.0%  | str             | Natalija_Lebedenko; vendi-koup-wendy-cope-1182491; Je_F_Garrol_d
+book_author_former_label[].option_id               |    0.0%  | str             | 881219; 1182491; 860604
+book_author_former_label[].sort_order              |    0.0%  | str             | 100; 0
+book_author_former_label[].url_path                |    0.0%  | str, null       | book_painter/view/zenovij-zherebeckij-765818; author/view/jurij-mitrofanenko
+book_binding                                       |   89.1%  | str             | 145х200 мм; 178x254 мм; 156x235 мм
+book_binding_label                                 |   89.1%  | list            | 
+book_binding_label[].attribute_label               |   89.1%  | str             | Формат
+book_binding_label[].label                         |   89.1%  | str             | 145х200 мм; 178x254 мм; 156x235 мм
+book_binding_type                                  |   96.8%  | list            | 
+book_binding_type_label                            |   96.8%  | list            | 
+book_binding_type_label[].attribute_id             |   97.3%  | str             | 2945
+book_binding_type_label[].attribute_label          |   97.3%  | str             | Тип обложки
+book_binding_type_label[].label                    |   97.3%  | str             | Мягкий; Твердый; Коробка
+book_binding_type_label[].option_code              |   97.3%  | str             | Mjagkij; Tverdyj; Korobka
+book_binding_type_label[].option_id                |   97.3%  | str             | 332270; 332541; 343350
+book_binding_type_label[].sort_order               |   97.3%  | str             | 0; 1; 100
+book_binding_type_label[].url_path                 |   97.3%  | null            | 
+book_box_binding                                   |    0.0%  | str             | 260x345x35 мм; 235x315x33мм; 250х180х60 мм
+book_box_binding_label                             |    0.0%  | list            | 
+book_box_binding_label[].attribute_label           |    0.0%  | str             | Формат бокса
+book_box_binding_label[].label                     |    0.0%  | str             | 260x345x35 мм; 235x315x33мм; 250х180х60 мм
+book_circulation                                   |    2.2%  | str             | 2000; 1000; 300
+book_circulation_label                             |    2.2%  | list            | 
+book_circulation_label[].attribute_label           |    2.2%  | str             | Тираж
+book_circulation_label[].label                     |    2.2%  | str             | 2000; 1000; 300
+book_class                                         |    1.5%  | list            | 
+book_class_label                                   |    1.5%  | list            | 
+book_class_label[].attribute_id                    |    2.0%  | str             | 3570
+book_class_label[].attribute_label                 |    2.0%  | str             | Класс
+book_class_label[].label                           |    2.0%  | str             | 8-й класс; 10-й класс; 6-й класс
+book_class_label[].option_code                     |    2.0%  | str             | 8_j_klass; 10_j_klass; 6_j_klass
+book_class_label[].option_id                       |    2.0%  | str             | 715231; 715233; 715229
+book_class_label[].sort_order                      |    2.0%  | str             | 8; 10; 6
+book_class_label[].url_path                        |    2.0%  | null            | 
+book_country                                       |    3.6%  | list            | 
+book_description_nouniq                            |    0.0%  | str             |  ; У роботі над книжкою Філіп К. Дік використав св...; ,
+book_description_nouniq_label                      |    0.0%  | list            | 
+book_description_nouniq_label[].attribute_label    |    0.0%  | str             | Знаете ли вы что
+book_description_nouniq_label[].label              |    0.0%  | str             |  ; У роботі над книжкою Філіп К. Дік використав св...; ,
+book_edition                                       |    0.4%  | str             | 3-е ; 2-е ; 2-е
+book_edition_label                                 |    0.4%  | list            | 
+book_edition_label[].attribute_label               |    0.4%  | str             | Видання
+book_edition_label[].label                         |    0.4%  | str             | 3-е ; 2-е ; 2-е
+book_editor                                        |    0.5%  | list            | 
+book_editor_label                                  |    0.5%  | list            | 
+book_editor_label[].attribute_id                   |    0.6%  | str             | 2951
+book_editor_label[].attribute_label                |    0.6%  | str             | Под редакцией
+book_editor_label[].label                          |    0.6%  | str             | Эстер Руэлфс; Тулга Бейерле; Виктория Хайнрих
+book_editor_label[].option_code                    |    0.6%  | str             | jester-rujelfs-ester-ruel-fs-esther-ruelfs; tulga-bejerle; viktorija-hajnrih
+book_editor_label[].option_id                      |    0.6%  | str             | 1545529; 1545534; 1545535
+book_editor_label[].sort_order                     |    0.6%  | str             | 199; 0; 100
+book_editor_label[].url_path                       |    0.6%  | str, null       | author/view/pavel-kuftyrev; author/view/natal-ja-koval-682442; book_translator/view/mark-andrejchik
+book_first_year                                    |    0.7%  | int             | 2018; 2018; 2019
+book_first_year_label                              |    0.7%  | list            | 
+book_first_year_label[].attribute_label            |    0.7%  | str             | Рік першого видання
+book_first_year_label[].label                      |    0.7%  | int             | 2018; 2018; 2019
+book_font                                          |    0.9%  | str             | Mysl; Georgia; Times New Roman
+book_font_label                                    |    0.9%  | list            | 
+book_font_label[].attribute_label                  |    0.9%  | str             | Шрифт
+book_font_label[].label                            |    0.9%  | str             | Mysl; Georgia; Times New Roman
+book_former                                        |    0.3%  | list            | 
+book_former_label                                  |    0.3%  | list            | 
+book_former_label[].attribute_id                   |    0.4%  | str             | 2954
+book_former_label[].attribute_label                |    0.4%  | str             | Составитель
+book_former_label[].label                          |    0.4%  | str             | Леся Дудченко; Маркиян Домбровский; Роман Гамада
+book_former_label[].option_code                    |    0.4%  | str             | Lesja_Dudchenko; Markijan_Dombrovskij; Roman_Gamada
+book_former_label[].option_id                      |    0.4%  | str             | 699126; 515298; 494999
+book_former_label[].sort_order                     |    0.4%  | str             | 100; 0
+book_former_label[].url_path                       |    0.4%  | str, null       | author/view/roman-gamada-494999; author/view/kristina-dorozhovec; author/view/inna-bereznickaja
+book_gift                                          |    0.5%  | list            | 
+book_gift_label                                    |    0.5%  | list            | 
+book_gift_label[].attribute_id                     |    0.5%  | str             | 3565
+book_gift_label[].attribute_label                  |    0.5%  | str             | Подарочные издания и комплекты
+book_gift_label[].label                            |    0.5%  | str             | Подарочное оформление; Комплекты; Коллекционные издания
+book_gift_label[].option_code                      |    0.5%  | str             | Podarochnoe_oformlenie; Komplekty; Kollekcionnye_izdanija
+book_gift_label[].option_id                        |    0.5%  | str             | 715177; 715178; 715176
+book_gift_label[].sort_order                       |    0.5%  | str             | 100; 0
+book_gift_label[].url_path                         |    0.5%  | null            | 
+book_history                                       |    0.4%  | list            | 
+book_history_label                                 |    0.4%  | list            | 
+book_history_label[].attribute_id                  |    0.5%  | str             | 3568
+book_history_label[].attribute_label               |    0.5%  | str             | Исторический период
+book_history_label[].label                         |    0.5%  | str             | Первобытное общество. Древний мир. Античность; Средние века. Эпоха Возрождения; Новейшее время (с 1918 г.)
+book_history_label[].option_code                   |    0.5%  | str             | Pervobytnoe_obschestvo_Drevnij_mir_Antichnost_; Srednie_veka_Jepoha_Vozrozhdenija_; Novejshee_vremja_s_1918_g_
+book_history_label[].option_id                     |    0.5%  | str             | 715218; 715219; 715221
+book_history_label[].sort_order                    |    0.5%  | str             | 100
+book_history_label[].url_path                      |    0.5%  | null            | 
+book_illustration                                  |   86.8%  | list            | 
+book_illustration_label                            |   86.8%  | list            | 
+book_illustration_label[].attribute_id             |   87.9%  | str             | 3988
+book_illustration_label[].attribute_label          |   87.9%  | str             | Иллюстрации
+book_illustration_label[].label                    |   87.9%  | str             | Схемы; Нет иллюстраций; Черно-белые
+book_illustration_label[].option_code              |   87.9%  | str             | Shemy; Net_illjustracij; Cherno_belye
+book_illustration_label[].option_id                |   87.9%  | str             | 733261; 733254; 733256
+book_illustration_label[].sort_order               |   87.9%  | str             | 100; 0
+book_illustration_label[].url_path                 |   87.9%  | str             | book_illustration/view/Shemy; book_illustration/view/Net_illjustracij; book_illustration/view/Cherno_belye
+book_isbn                                          |   94.4%  | str             | 978-966-602-399-8; 9781484265963; 9780691264486
+book_isbn_label                                    |   94.4%  | list            | 
+book_isbn_label[].attribute_label                  |   94.4%  | str             | ISBN
+book_isbn_label[].label                            |   94.4%  | str             | 978-966-602-399-8; 9781484265963; 9780691264486
+book_lang                                          |   97.0%  | list            | 
+book_lang_label                                    |   97.0%  | list            | 
+book_lang_label[].attribute_id                     |   97.7%  | str             | 2957
+book_lang_label[].attribute_label                  |   97.7%  | str             | Язык
+book_lang_label[].label                            |   97.7%  | str             | Украинский; Английский; Немецкий
+book_lang_label[].option_code                      |   97.7%  | str             | Ukrainskij; Anglijskij; Nemeckij
+book_lang_label[].option_id                        |   97.7%  | str             | 332272; 332987; 332965
+book_lang_label[].sort_order                       |   97.7%  | str             | 1; 2; 5
+book_lang_label[].url_path                         |   97.7%  | null            | 
+book_literature                                    |    0.2%  | list            | 
+book_literature_label                              |    0.2%  | list            | 
+book_literature_label[].attribute_id               |    0.2%  | str             | 3710
+book_literature_label[].attribute_label            |    0.2%  | str             | Литература
+book_literature_label[].label                      |    0.2%  | str             | Зарубежная; Украинская
+book_literature_label[].option_code                |    0.2%  | str             | Zarubezhnaja; Ukrainskaja
+book_literature_label[].option_id                  |    0.2%  | str             | 723594; 723595
+book_literature_label[].sort_order                 |    0.2%  | str             | 0; 100
+book_literature_label[].url_path                   |    0.2%  | null            | 
+book_occasion                                      |    0.1%  | list            | 
+book_occasion_label                                |    0.1%  | list            | 
+book_occasion_label[].attribute_id                 |    0.4%  | str             | 4115
+book_occasion_label[].attribute_label              |    0.4%  | str             | Повод
+book_occasion_label[].label                        |    0.4%  | str             | День рождения; Новый год; Юбилей
+book_occasion_label[].option_code                  |    0.4%  | str             | Den_rozhdenija; Novyj_god; Jubilej
+book_occasion_label[].option_id                    |    0.4%  | str             | 772381; 772382; 772384
+book_occasion_label[].sort_order                   |    0.4%  | str             | 1; 2; 6
+book_occasion_label[].url_path                     |    0.4%  | null            | 
+book_page_count                                    |   86.1%  | str             | 266; 301; 200
+book_page_count_label                              |   86.1%  | list            | 
+book_page_count_label[].attribute_label            |   86.1%  | str             | Количество страниц
+book_page_count_label[].label                      |   86.1%  | str             | 266; 301; 200
+book_painter                                       |    2.9%  | list            | 
+book_painter_label                                 |    2.9%  | list            | 
+book_painter_label[].attribute_id                  |    3.3%  | str             | 2959
+book_painter_label[].attribute_label               |    3.3%  | str             | Иллюстратор
+book_painter_label[].label                         |    3.3%  | str             | Джордж Бокхуа; Эдвард Берн-Джонс; Уильям Моррис
+book_painter_label[].option_code                   |    3.3%  | str             | dzhordzh-bokhua; Jedvard_Bern_Dzhons; Uil_jam_Morris
+book_painter_label[].option_id                     |    3.3%  | str             | 1542779; 611121; 681740
+book_painter_label[].sort_order                    |    3.3%  | str             | 199; 100; 0
+book_painter_label[].url_path                      |    3.3%  | str             | book_painter/view/dzhordzh-bokhua; book_painter/view/Jedvard_Bern_Dzhons; book_painter/view/Uil_jam_Morris
+book_paper                                         |    1.0%  | str             | Офсетная; Мелованная; Газетная
+book_paper_label                                   |    1.0%  | list            | 
+book_paper_label[].attribute_label                 |    1.0%  | str             | Папір
+book_paper_label[].label                           |    1.0%  | str             | Офсетная; Мелованная; Газетная
+book_period                                        |    3.8%  | list            | 
+book_period_label                                  |    3.8%  | list            | 
+book_period_label[].attribute_id                   |    3.9%  | str             | 3567
+book_period_label[].attribute_label                |    3.9%  | str             | Литература по периодам
+book_period_label[].label                          |    3.9%  | str             | Современная литература; Античная литература. Древний мир; Средневековая литература. Возрождение
+book_period_label[].option_code                    |    3.9%  | str             | Sovremennaja_literatura; Antichnaja_literatura_Drevnij_mir; Srednevekovaja_literatura_Vozrozhdenie_
+book_period_label[].option_id                      |    3.9%  | str             | 715197; 715202; 715201
+book_period_label[].sort_order                     |    3.9%  | str             | 100
+book_period_label[].url_path                       |    3.9%  | str             | book_period/view/Sovremennaja_literatura; book_period/view/Antichnaja_literatura_Drevnij_mir; book_period/view/Srednevekovaja_literatura_Vozr...
+book_print                                         |    6.9%  | list            | 
+book_print_label                                   |    6.9%  | list            | 
+book_print_label[].attribute_id                    |    7.0%  | str             | 3987
+book_print_label[].attribute_label                 |    7.0%  | str             | Бумага
+book_print_label[].label                           |    7.0%  | str             | Офсетная; Книжная; Мелованная
+book_print_label[].option_code                     |    7.0%  | str             | Ofsetnaja; Knizhnaja; Melovannaja
+book_print_label[].option_id                       |    7.0%  | str             | 733264; 733271; 733267
+book_print_label[].sort_order                      |    7.0%  | str             | 0; 100
+book_print_label[].url_path                        |    7.0%  | null            | 
+book_program                                       |    0.3%  | list            | 
+book_publication                                   |   97.0%  | list            | 
+book_publication_label                             |   97.0%  | list            | 
+book_publication_label[].attribute_id              |   97.0%  | str             | 4153
+book_publication_label[].attribute_label           |   97.0%  | str             | Тип
+book_publication_label[].label                     |   97.0%  | str             | Бумажная; Электронная; Аудио
+book_publication_label[].option_code               |   97.0%  | str             | Bumazhnaja; Jelektronnaja; Audio
+book_publication_label[].option_id                 |   97.0%  | str             | 781497; 781498; 781519
+book_publication_label[].sort_order                |   97.0%  | str             | 0; 99; 100
+book_publication_label[].url_path                  |   97.0%  | null            | 
+book_publisher                                     |   95.1%  | list            | 
+book_publisher_label                               |   95.1%  | list            | 
+book_publisher_label[].attribute_id                |   95.7%  | str             | 2961
+book_publisher_label[].attribute_label             |   95.7%  | str             | Издательство
+book_publisher_label[].label                       |   95.7%  | str             | Ліра-К; APress; Princeton University Press
+book_publisher_label[].option_code                 |   95.7%  | str             | Lira_K; apress; princeton-university-press
+book_publisher_label[].option_id                   |   95.7%  | str             | 475664; 914294; 909447
+book_publisher_label[].sort_order                  |   95.7%  | str             | 100; 0; 2
+book_publisher_label[].url_path                    |   95.7%  | str, null       | book_publisher/view/Lira_K; book_publisher/view/apress; book_publisher/view/princeton-university-press
+book_reference                                     |    0.3%  | list            | 
+book_reference_label                               |    0.3%  | list            | 
+book_reference_label[].attribute_id                |    0.3%  | str             | 3564
+book_reference_label[].attribute_label             |    0.3%  | str             | Справочные издания
+book_reference_label[].label                       |    0.3%  | str             | Справочники; Энциклопедии; Словари
+book_reference_label[].option_code                 |    0.3%  | str             | Spravochniki; Jenciklopedii; Slovari
+book_reference_label[].option_id                   |    0.3%  | str             | 715148; 715149; 715147
+book_reference_label[].sort_order                  |    0.3%  | str             | 100
+book_reference_label[].url_path                    |    0.3%  | null            | 
+book_salary                                        |    0.0%  | str             |  Miscellaneous Items Stationery Puzzle ; І. ВСТУП
+
+    Верховенство права як „верховен...;  зміст
+ПЕРЕДМОВА
+Ернест Ґелнер і теорія націо...
+book_salary_label                                  |    0.0%  | list            | 
+book_salary_label[].attribute_label                |    0.0%  | str             | Зміст
+book_salary_label[].label                          |    0.0%  | str             |  Miscellaneous Items Stationery Puzzle ; І. ВСТУП
+
+    Верховенство права як „верховен...;  зміст
+ПЕРЕДМОВА
+Ернест Ґелнер і теорія націо...
+book_seria_former                                  |    0.0%  | list            | 
+book_seria_former_label                            |    0.0%  | list            | 
+book_seria_former_label[].attribute_id             |    0.0%  | str             | 2963
+book_seria_former_label[].attribute_label          |    0.0%  | str             | Составитель серии
+book_seria_former_label[].label                    |    0.0%  | str             | Дженни Тайлер; Инна Булкина; Владимир Зубанов
+book_seria_former_label[].option_code              |    0.0%  | str             | Dzhenni_Tajler; Inna_Bulkina; Vladimir_Zubanov
+book_seria_former_label[].option_id                |    0.0%  | str             | 860525; 706762; 533471
+book_seria_former_label[].sort_order               |    0.0%  | str             | 100; 0
+book_seria_former_label[].url_path                 |    0.0%  | null            | 
+book_series                                        |   30.7%  | list            | 
+book_series_label                                  |   30.7%  | list            | 
+book_series_label[].attribute_id                   |   30.9%  | str             | 2964
+book_series_label[].attribute_label                |   30.9%  | str             | Серия книг
+book_series_label[].label                          |   30.9%  | str             | De Gruyter Series on the Applications of Mathem...; Elements in Evolutionary Economics; What Everyone Needs To Know®
+book_series_label[].option_code                    |   30.9%  | str             | de-gruyter-series-on-the-applications-of-mathem...; elements-in-evolutionary-economics; what-everyone-needs-to-knowr
+book_series_label[].option_id                      |   30.9%  | str             | 925580; 1089298; 1093235
+book_series_label[].sort_order                     |   30.9%  | str             | 0; 100
+book_series_label[].url_path                       |   30.9%  | str             | book_series/view/de-gruyter-series-on-the-appli...; book_series/view/elements-in-evolutionary-econo...; book_series/view/what-everyone-needs-to-knowr
+book_style                                         |    0.1%  | list            | 
+book_style_label                                   |    0.1%  | list            | 
+book_style_label[].attribute_id                    |    0.2%  | str             | 4117
+book_style_label[].attribute_label                 |    0.2%  | str             | По стилю
+book_style_label[].label                           |    0.2%  | str             | Практичные подарки; VIP; Дорогой
+book_style_label[].option_code                     |    0.2%  | str             | Praktichnye_podarki; VIP; Dorogoj
+book_style_label[].option_id                       |    0.2%  | str             | 772355; 772348; 772351
+book_style_label[].sort_order                      |    0.2%  | str             | 100; 1; 5
+book_style_label[].url_path                        |    0.2%  | null            | 
+book_translator                                    |    2.1%  | list            | 
+book_translator_label                              |    2.1%  | list            | 
+book_translator_label[].attribute_id               |    2.5%  | str             | 2965
+book_translator_label[].attribute_label            |    2.5%  | str             | Переводчик
+book_translator_label[].label                      |    2.5%  | str             | Юрий Дубленич; Сергей Стець; Татьяна Микитюк
+book_translator_label[].option_code                |    2.5%  | str             | jurij-dublenich; Sergej_Stec_; Tat_jana_Mikitjuk
+book_translator_label[].option_id                  |    2.5%  | str             | 1377107; 742383; 757331
+book_translator_label[].sort_order                 |    2.5%  | str             | 0; 100; 199
+book_translator_label[].url_path                   |    2.5%  | str             | book_translator/view/jurij-dublenich; book_translator/view/Sergej_Stec_; book_translator/view/Tat_jana_Mikitjuk
+book_type                                          |    0.1%  | list            | 
+book_type_label                                    |    0.1%  | list            | 
+book_type_label[].attribute_id                     |    0.1%  | str             | 3569
+book_type_label[].attribute_label                  |    0.1%  | str             | Тип издания
+book_type_label[].label                            |    0.1%  | str             | Путеводители; Атласы; Книга рекордов
+book_type_label[].option_code                      |    0.1%  | str             | Putevoditeli; Atlasy; Kniga_rekordov
+book_type_label[].option_id                        |    0.1%  | str             | 715208; 715209; 739871
+book_type_label[].sort_order                       |    0.1%  | str             | 100
+book_type_label[].url_path                         |    0.1%  | null            | 
+book_weight                                        |   67.4%  | float, int      | 1; 583; 240
+book_weight_label                                  |   67.4%  | list            | 
+book_weight_label[].attribute_label                |   67.4%  | str             | Вес
+book_weight_label[].label                          |   67.4%  | float, int      | 1; 583; 240
+book_whom                                          |    0.1%  | list            | 
+book_whom_label                                    |    0.1%  | list            | 
+book_whom_label[].attribute_id                     |    0.5%  | str             | 4116
+book_whom_label[].attribute_label                  |    0.5%  | str             | Кому
+book_whom_label[].label                            |    0.5%  | str             | Мужчине; Женщине; Коллеге
+book_whom_label[].option_code                      |    0.5%  | str             | Muzhchine; Zhenschine; Kollege
+book_whom_label[].option_id                        |    0.5%  | str             | 772356; 772357; 772359
+book_whom_label[].sort_order                       |    0.5%  | str             | 1; 2; 3
+book_whom_label[].url_path                         |    0.5%  | null            | 
+book_year                                          |   94.9%  | int             | 2025; 2020; 2025
+book_year_label                                    |   94.9%  | list            | 
+book_year_label[].attribute_label                  |   94.9%  | str             | Год издания
+book_year_label[].label                            |   94.9%  | int             | 2025; 2020; 2025
+cards_quantity                                     |    0.0%  | list            | 
+cards_quantity_label                               |    0.0%  | list            | 
+cards_quantity_label[].attribute_id                |    0.0%  | str             | 4112
+cards_quantity_label[].attribute_label             |    0.0%  | str             | Количество
+cards_quantity_label[].label                       |    0.0%  | str             | 60-100
+cards_quantity_label[].option_code                 |    0.0%  | str             | 60_100
+cards_quantity_label[].option_id                   |    0.0%  | str             | 772107
+cards_quantity_label[].sort_order                  |    0.0%  | str             | 3
+cards_quantity_label[].url_path                    |    0.0%  | null            | 
+category                                           |  100.0%  | list            | 
+category[].breadcrumb                              | 1108.4%  | int             | 0; 1; 0
+category[].category_id                             | 1108.4%  | int             | 2; 4723; 4724
+category[].level                                   | 1108.4%  | str             | 1; 2; 3
+category[].name                                    | 1108.4%  | str             | Default Category; Книги; Бизнес, деньги, экономика
+category[].parent_id                               | 1108.4%  | str             | 1; 2; 4723
+category[].position                                | 1108.4%  | int             | 10000; 10000; 10000
+category[].url_path                                | 1108.4%  | str             | ; knigi.html; knigi/business-money-economy.html
+category_ids                                       |  100.0%  | list            | 
+children_article                                   |    0.8%  | str             | 10100625У; 10100623У; 10100626У
+children_article_label                             |    0.8%  | list            | 
+children_article_label[].attribute_label           |    0.8%  | str             | Артикул
+children_article_label[].label                     |    0.8%  | str             | 10100625У; 10100623У; 10100626У
+children_brand                                     |    0.8%  | list            | 
+children_brand_label                               |    0.8%  | list            | 
+children_brand_label[].attribute_id                |    0.8%  | str             | 2906
+children_brand_label[].attribute_label             |    0.8%  | str             | Бренд
+children_brand_label[].label                       |    0.8%  | str             | Ranok-Creative; Кенгуру; Зірка
+children_brand_label[].option_code                 |    0.8%  | str             | Ranok_Creative_Ranok_Creative; Kenguru; Zirka
+children_brand_label[].option_id                   |    0.8%  | str             | 431555; 804335; 714821
+children_brand_label[].sort_order                  |    0.8%  | str             | 100; 1; 0
+children_brand_label[].url_path                    |    0.8%  | str             | children_brand/view/Ranok_Creative_Ranok_Creative; children_brand/view/Kenguru; children_brand/view/Zirka
+children_elems_count                               |    0.1%  | str             | 25; 1000; 48
+children_elems_count_label                         |    0.1%  | list            | 
+children_elems_count_label[].attribute_label       |    0.1%  | str             | Количество элементов
+children_elems_count_label[].label                 |    0.1%  | str             | 25; 1000; 48
+children_lang                                      |    0.2%  | list            | 
+children_lang_label                                |    0.2%  | list            | 
+children_lang_label[].attribute_id                 |    0.2%  | str             | 2910
+children_lang_label[].attribute_label              |    0.2%  | str             | Язык
+children_lang_label[].label                        |    0.2%  | str             | Украинский; Английский; Немецкий
+children_lang_label[].option_code                  |    0.2%  | str             | Ukrainskij; Anglijskij; Nemeckij
+children_lang_label[].option_id                    |    0.2%  | str             | 430748; 431004; 431437
+children_lang_label[].sort_order                   |    0.2%  | str             | 100
+children_lang_label[].url_path                     |    0.2%  | null            | 
+children_packing                                   |    0.6%  | list            | 
+children_packing_size                              |    0.2%  | str             | 265х131х2 мм; 190х120х10 мм; 90х150х15 мм
+children_packing_size_label                        |    0.2%  | list            | 
+children_packing_size_label[].attribute_label      |    0.2%  | str             | Размер упаковки
+children_packing_size_label[].label                |    0.2%  | str             | 265х131х2 мм; 190х120х10 мм; 90х150х15 мм
+children_scale                                     |    0.0%  | str             | 1:144; 1:110
+children_scale_label                               |    0.0%  | list            | 
+children_scale_label[].attribute_label             |    0.0%  | str             | Масштаб
+children_scale_label[].label                       |    0.0%  | str             | 1:144; 1:110
+children_series                                    |    0.1%  | list            | 
+children_series_label                              |    0.1%  | list            | 
+children_series_label[].attribute_id               |    0.1%  | str             | 2914
+children_series_label[].attribute_label            |    0.1%  | str             | Серия игрушек
+children_series_label[].label                      |    0.1%  | str             | Одягалка Fashion Look; Чарівний світ; Create & Play
+children_series_label[].option_code                |    0.1%  | str             | odjagalka-fashion-look; charivnij-svit; create-play
+children_series_label[].option_id                  |    0.1%  | str             | 904046; 906907; 905006
+children_series_label[].sort_order                 |    0.1%  | str             | 0; 100; 4
+children_series_label[].url_path                   |    0.1%  | str             | children_series/view/odjagalka-fashion-look; children_series/view/charivnij-svit; children_series/view/create-play
+children_size                                      |    0.4%  | str             | 100х140 мм; 215х420 мм; 300x420 мм
+children_size_label                                |    0.4%  | list            | 
+children_size_label[].attribute_label              |    0.4%  | str             | Размер товара
+children_size_label[].label                        |    0.4%  | str             | 100х140 мм; 215х420 мм; 300x420 мм
+children_weight                                    |    0.1%  | float, int      | 100; 110; 110
+children_weight_label                              |    0.1%  | list            | 
+children_weight_label[].attribute_label            |    0.1%  | str             | Вес
+children_weight_label[].label                      |    0.1%  | float, int      | 100; 110; 110
+colored                                            |    0.3%  | int             | 0; 0; 0
+created_at                                         |  100.0%  | str             | 2025-10-15 07:22:06; 2025-09-24 12:46:18; 2025-09-24 12:35:46
+custom_options                                     |    0.0%  | list            | 
+custom_options[].image_size_x                      |    0.0%  | str             | 0
+custom_options[].image_size_y                      |    0.0%  | str             | 0
+custom_options[].is_require                        |    0.0%  | bool            | True; True; False
+custom_options[].max_characters                    |    0.0%  | str             | 0; 500
+custom_options[].option_id                         |    0.0%  | int             | 24; 25; 26
+custom_options[].price                             |    0.0%  | int             | 0; 0; 0
+custom_options[].price_type                        |    0.0%  | str, null       | fixed
+custom_options[].sku                               |    0.0%  | str             | recipient_email; recipient_name; recipient_description
+custom_options[].sort_order                        |    0.0%  | int             | 5; 26; 15
+custom_options[].title                             |    0.0%  | str             | Denomination(do_not_change); E_mail(do_not_change); Name(do_not_change)
+custom_options[].type                              |    0.0%  | str             | radio; field; area
+custom_options[].values                            |    0.0%  | list            | 
+custom_options[].values[].option_type_id           |    0.0%  | int             | 45; 46; 47
+custom_options[].values[].price                    |    0.0%  | int             | 159; 459; 1559
+custom_options[].values[].price_type               |    0.0%  | str             | fixed
+custom_options[].values[].sku                      |    0.0%  | str             | 1m; 3m; 1y
+custom_options[].values[].sort_order               |    0.0%  | int             | 0; 1; 2
+custom_options[].values[].title                    |    0.0%  | str             | 1 міс; 3 міс; 1 рік
+default_category                                   |  100.0%  | list            | 
+description                                        |   88.5%  | str             | <p>У навчальному посібнику розкрито суть, катег...; <p>Discover the methods and techniques required...; <p><b>An engaging and accessible presentation o...
+discount_percent                                   |  100.0%  | int             | 0; 0; 0
+downloadable_product_format                        |    1.6%  | list            | 
+downloadable_product_samples                       |    0.1%  | list            | 
+downloadable_product_samples[].default_title       |    0.1%  | str             | Слухати уривок; Sample; Слушать отрывок
+downloadable_product_samples[].id                  |    0.1%  | str             | 527851; 524214; 524213
+downloadable_product_samples[].product_id          |    0.1%  | str             | 2381209; 2346403; 2346402
+downloadable_product_samples[].sample_file         |    0.1%  | str             | https://www.yakaboo.ua/ua/downloadable/download...; https://magento.yakaboo.ua/admin/downloadable/d...; https://www.yakaboo.ua/ua/downloadable/download...
+downloadable_product_samples[].sample_type         |    0.1%  | str             | file
+downloadable_product_samples[].sample_url          |    0.1%  | null            | 
+downloadable_product_samples[].sort_order          |    0.1%  | str             | 1; 0
+downloadable_product_samples[].store_title         |    0.1%  | null            | 
+downloadable_product_samples[].title               |    0.1%  | str             | Слухати уривок; Sample; Слушать отрывок
+film_name_en                                       |    1.5%  | str             | Quantum Supremacy: How the Quantum Computer Rev...; Next Generation Internet; Life After Google: The Fall of Big Data and the...
+film_name_en_label                                 |    1.5%  | list            | 
+film_name_en_label[].attribute_label               |    1.5%  | str             | Оригинальное название
+film_name_en_label[].label                         |    1.5%  | str             | Quantum Supremacy: How the Quantum Computer Rev...; Next Generation Internet; Life After Google: The Fall of Big Data and the...
+filterable_category_ids                            |   98.4%  | list            | 
+final_price                                        |  100.0%  | int             | 303; 4158; 1891
+final_price_incl_tax                               |   99.6%  | int             | 303; 4158; 1891
+final_price_tax                                    |   99.6%  | int             | 0; 0; 0
+for_filter_is_in_stock                             |   34.7%  | list            | 
+free_shipping                                      |  100.0%  | int             | 0; 1; 1
+gift_article                                       |    0.8%  | str             | orner-1357; orner-1744; orner-1743
+gift_article_label                                 |    0.8%  | list            | 
+gift_article_label[].attribute_label               |    0.8%  | str             | Артикул
+gift_article_label[].label                         |    0.8%  | str             | orner-1357; orner-1744; orner-1743
+gift_brand                                         |    0.8%  | list            | 
+gift_brand_label                                   |    0.8%  | list            | 
+gift_brand_label[].attribute_id                    |    0.8%  | str             | 4303
+gift_brand_label[].attribute_label                 |    0.8%  | str             | Бренд
+gift_brand_label[].label                           |    0.8%  | str             | Orner; Kiri sketch; Fun Games Shop
+gift_brand_label[].option_code                     |    0.8%  | str             | Orner_Store; kiri; fun-games-shop
+gift_brand_label[].option_id                       |    0.8%  | str             | 868433; 885404; 900659
+gift_brand_label[].sort_order                      |    0.8%  | str             | 100; 0
+gift_brand_label[].url_path                        |    0.8%  | str             | gift_brand/view/Orner_Store; gift_brand/view/kiri; gift_brand/view/fun-games-shop
+gift_color                                         |    0.8%  | list            | 
+gift_color_label                                   |    0.8%  | list            | 
+gift_color_label[].attribute_id                    |    0.9%  | str             | 3476
+gift_color_label[].attribute_label                 |    0.9%  | str             | Цвет
+gift_color_label[].label                           |    0.9%  | str             | Мультицвет; Крафт; Желтый
+gift_color_label[].option_code                     |    0.9%  | str             | Mul_ticvet; Kraft; Zheltyj
+gift_color_label[].option_id                       |    0.9%  | str             | 714027; 712482; 712287
+gift_color_label[].sort_order                      |    0.9%  | str             | 100
+gift_color_label[].url_path                        |    0.9%  | null            | 
+gift_color_pages                                   |    0.2%  | list            | 
+gift_color_pages_label                             |    0.2%  | list            | 
+gift_color_pages_label[].attribute_id              |    0.2%  | str             | 3551
+gift_color_pages_label[].attribute_label           |    0.2%  | str             | Цвет страниц
+gift_color_pages_label[].label                     |    0.2%  | str             | Кремовый; Белый; Черный
+gift_color_pages_label[].option_code               |    0.2%  | str             | Kremovyj; Belyj; Chernyj
+gift_color_pages_label[].option_id                 |    0.2%  | str             | 714498; 714495; 714496
+gift_color_pages_label[].sort_order                |    0.2%  | str             | 100
+gift_color_pages_label[].url_path                  |    0.2%  | null            | 
+gift_event                                         |    0.2%  | list            | 
+gift_event_label                                   |    0.2%  | list            | 
+gift_event_label[].attribute_id                    |    0.2%  | str             | 4113
+gift_event_label[].attribute_label                 |    0.2%  | str             | Событие
+gift_event_label[].label                           |    0.2%  | str             | День рождения; Другое; День отца и День защитника Украины
+gift_event_label[].option_code                     |    0.2%  | str             | Den_rozhdenija; Drugoe; Den_otca_i_Den_zaschitnika_Ukrainy
+gift_event_label[].option_id                       |    0.2%  | str             | 772133; 772142; 772136
+gift_event_label[].sort_order                      |    0.2%  | str             | 100
+gift_event_label[].url_path                        |    0.2%  | null            | 
+gift_material                                      |    0.7%  | list            | 
+gift_organiser                                     |    0.2%  | list            | 
+gift_organiser_label                               |    0.2%  | list            | 
+gift_organiser_label[].attribute_id                |    0.2%  | str             | 3550
+gift_organiser_label[].attribute_label             |    0.2%  | str             | Тип
+gift_organiser_label[].label                       |    0.2%  | str             | Тематический; Универсальный; Недатированный
+gift_organiser_label[].option_code                 |    0.2%  | str             | Tematicheskij_bloknot_zapisnaja_knizhka; Universal_nyj_bloknot_zapisnaja_knizhka; Nedatirovannyj
+gift_organiser_label[].option_id                   |    0.2%  | str             | 772067; 772068; 772054
+gift_organiser_label[].sort_order                  |    0.2%  | str             | 100; 4; 2
+gift_organiser_label[].url_path                    |    0.2%  | null            | 
+gift_packing                                       |    0.3%  | str             | Коробка; 250х160 мм; Банка
+gift_packing_label                                 |    0.3%  | list            | 
+gift_packing_label[].attribute_label               |    0.3%  | str             | Упаковка
+gift_packing_label[].label                         |    0.3%  | str             | Коробка; 250х160 мм; Банка
+gift_packing_size                                  |    0.0%  | str             | 25х16х6 см; 250х160х60 мм; 150х120х36 мм
+gift_packing_size_label                            |    0.0%  | list            | 
+gift_packing_size_label[].attribute_label          |    0.0%  | str             | Размер упаковки
+gift_packing_size_label[].label                    |    0.0%  | str             | 25х16х6 см; 250х160х60 мм; 150х120х36 мм
+gift_series                                        |    0.4%  | list            | 
+gift_series_label                                  |    0.4%  | list            | 
+gift_series_label[].attribute_id                   |    0.5%  | str             | 3491
+gift_series_label[].attribute_label                |    0.5%  | str             | Серия
+gift_series_label[].label                          |    0.5%  | str             | Замок із кришталю; Абетка. Навчальні матеріали; Dream&Do Talks
+gift_series_label[].option_code                    |    0.5%  | str             | zamok-iz-krishtalju; abetka-navchal-ni-materiali; Dream_Do
+gift_series_label[].option_id                      |    0.5%  | str             | 909355; 906613; 876293
+gift_series_label[].sort_order                     |    0.5%  | str             | 0; 100
+gift_series_label[].url_path                       |    0.5%  | str             | gift_series/view/zamok-iz-krishtalju; gift_series/view/abetka-navchal-ni-materiali; gift_series/view/dream-do
+gift_size                                          |    0.7%  | str             | 470х320 мм; 250х160 мм; 150х210 мм
+gift_size_label                                    |    0.7%  | list            | 
+gift_size_label[].attribute_label                  |    0.7%  | str             | Размер товара
+gift_size_label[].label                            |    0.7%  | str             | 470х320 мм; 250х160 мм; 150х210 мм
+gift_subjects                                      |    0.1%  | list            | 
+gift_subjects_label                                |    0.1%  | list            | 
+gift_subjects_label[].attribute_id                 |    0.2%  | str             | 4114
+gift_subjects_label[].attribute_label              |    0.2%  | str             | Тематика
+gift_subjects_label[].label                        |    0.2%  | str             | Кино; Игры; Религия, вера
+gift_subjects_label[].option_code                  |    0.2%  | str             | Kino; Igry; Religija_vera
+gift_subjects_label[].option_id                    |    0.2%  | str             | 772143; 772146; 772159
+gift_subjects_label[].sort_order                   |    0.2%  | str             | 100
+gift_subjects_label[].url_path                     |    0.2%  | null            | 
+gift_type                                          |    0.1%  | list            | 
+gift_weight                                        |    0.1%  | str             | 55; 210; 230
+gift_weight_label                                  |    0.1%  | list            | 
+gift_weight_label[].attribute_label                |    0.1%  | str             | Вес
+gift_weight_label[].label                          |    0.1%  | str             | 55; 210; 230
+h1                                                 |  100.0%  | str             | Книга Моделювання інформаційних процесів; Книга Immersive 3D Design Visualization: With A...; Книга The Joy of Quantum Computing: A Concise I...
+id                                                 |  100.0%  | int             | 3394631; 3387355; 3387073
+image                                              |  100.0%  | str             | /1/3/13370.1800x1800w.png; /9/7/9781484265963_0.jpg; /9/7/9780691264486_0.jpg
+image_cover_effect                                 |    0.6%  | int             | 1; 0; 0
+is_certificate                                     |    0.0%  | bool            | True; True; True
+is_exclusive                                       |    0.0%  | bool            | True
+is_top_sale                                        |   34.1%  | bool            | False; False; True
+is_top_sale_count                                  |    1.1%  | int             | 13; 66; 42
+keywords                                           |   70.1%  | str             | Інформаційні системи, навчальний посібник; Visualization;Design;3D;Autodesk Maya;Texturing...; Qubit; Quantum; Gate; Measurement; Basis; Resul...
+marketplace_id                                     |   22.5%  | str             | yakaboo
+media_gallery                                      |   99.5%  | list            | 
+media_gallery[].image                              |  139.5%  | str             | /1/3/13370.1800x1800w.png; /9/7/9781484265963_0.jpg; /9/7/9780691264486_0.jpg
+media_gallery[].lab                                |  139.5%  | str             | ; photo; 1
+media_gallery[].pos                                |  139.5%  | int             | 1; 0; 0
+media_gallery[].typ                                |  139.5%  | str             | image
+media_gallery_pdf                                  |    0.5%  | str             | /v/a/vakansiya_liudyna_extract.pdf; /3/3/336379_77711874.pdf; /o/d/odissea_extract.pdf
+mediagallery_image                                 |   12.4%  | list            | 
+mediagallery_image[].entity_id                     |  111.1%  | str             | 3394631; 3353361; 2616627
+mediagallery_image[].file                          |  111.1%  | str             | /1/3/13370-01_c95asqod9i.jpg; /1/3/13370-02_64fzcxarol.jpg; /1/3/13370-03_kynloff0jr.jpg
+mediagallery_image[].image_url                     |  111.1%  | str             | https://static.yakaboo.ua/media/mediagallery/im...; https://static.yakaboo.ua/media/mediagallery/im...; https://static.yakaboo.ua/media/mediagallery/im...
+mediagallery_image[].sort_order                    |  111.1%  | str             | 0; 1; 2
+mediagallery_video                                 |    0.1%  | list            | 
+mediagallery_video[].entity_id                     |    0.1%  | str             | 2293146; 2201306; 1760632
+mediagallery_video[].image_url                     |    0.1%  | str             | https://static.yakaboo.ua/media/mediagallery/im...; https://static.yakaboo.ua/media/mediagallery/im...; https://static.yakaboo.ua/media/mediagallery/im...
+mediagallery_video[].mp4_url                       |    0.1%  | str             | https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...
+mediagallery_video[].ogv_url                       |    0.0%  | str             | https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...
+mediagallery_video[].origin_video_url              |    0.1%  | str             | https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...
+mediagallery_video[].sort_order                    |    0.1%  | str             | 0; 1; 2
+mediagallery_video[].thumbnail                     |    0.1%  | str             | /f/6/f6630768d7_1.jpg; /5/9/59fe0efe44_1.jpg; /a/e/aea92dde44_1.jpg
+mediagallery_video[].webm_url                      |    0.0%  | str             | https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...; https://static.yakaboo.ua/media/mediagallery/vi...
+meta_description                                   |   98.6%  | str             | ᐉ Купить книгу «Моделювання інформаційних проце...; ᐉ Купить книгу «Immersive 3D Design Visualizati...; ᐉ Купить книгу «The Joy of Quantum Computing: A...
+meta_keyword                                       |    2.5%  | str             | {{product.name}}, купить книгу, Украина, Киев; Джералдова гра; Брехливе життя дорослих
+meta_title                                         |   98.6%  | str             | Книга «Моделювання інформаційних процесів» – В....; Книга «Immersive 3D Design Visualization: With ...; Книга «The Joy of Quantum Computing: A Concise ...
+mobile_subscribe                                   |   98.8%  | int             | 0; 0; 0
+name                                               |  100.0%  | str             | Моделювання інформаційних процесів; Immersive 3D Design Visualization: With Autodes...; The Joy of Quantum Computing: A Concise Introdu...
+notebook_format                                    |    0.1%  | list            | 
+notebook_format_label                              |    0.1%  | list            | 
+notebook_format_label[].attribute_id               |    0.1%  | str             | 4104
+notebook_format_label[].attribute_label            |    0.1%  | str             | Формат
+notebook_format_label[].label                      |    0.1%  | str             | А5; А4; А6
+notebook_format_label[].option_code                |    0.1%  | str             | A5; A4; A6_105h150_mm_
+notebook_format_label[].option_id                  |    0.1%  | str             | 772059; 772060; 772081
+notebook_format_label[].sort_order                 |    0.1%  | str             | 100
+notebook_format_label[].url_path                   |    0.1%  | null            | 
+notebook_sheets                                    |    0.2%  | list            | 
+notebook_sheets_label                              |    0.2%  | list            | 
+notebook_sheets_label[].attribute_id               |    0.2%  | str             | 4105
+notebook_sheets_label[].attribute_label            |    0.2%  | str             | Листы
+notebook_sheets_label[].label                      |    0.2%  | str             | Чистые; Цветные; Клетка
+notebook_sheets_label[].option_code                |    0.2%  | str             | Chistye; Cvetnye; Kletka
+notebook_sheets_label[].option_id                  |    0.2%  | str             | 772065; 772115; 772063
+notebook_sheets_label[].sort_order                 |    0.2%  | str             | 100
+notebook_sheets_label[].url_path                   |    0.2%  | null            | 
+notebook_size                                      |    0.2%  | list            | 
+notebook_size_label                                |    0.2%  | list            | 
+notebook_size_label[].attribute_id                 |    0.2%  | str             | 4103
+notebook_size_label[].attribute_label              |    0.2%  | str             | Размер
+notebook_size_label[].label                        |    0.2%  | str             | Средний; Большой; Карманный
+notebook_size_label[].option_code                  |    0.2%  | str             | Srednij; Bol_shoj; Karmannyj
+notebook_size_label[].option_id                    |    0.2%  | str             | 772057; 772058; 772056
+notebook_size_label[].sort_order                   |    0.2%  | str             | 100
+notebook_size_label[].url_path                     |    0.2%  | null            | 
+notebooks_cover                                    |    0.2%  | list            | 
+notebooks_cover_label                              |    0.2%  | list            | 
+notebooks_cover_label[].attribute_id               |    0.2%  | str             | 4102
+notebooks_cover_label[].attribute_label            |    0.2%  | str             | Обложка
+notebooks_cover_label[].label                      |    0.2%  | str             | Твердая; На кольцах; Гибкая
+notebooks_cover_label[].option_code                |    0.2%  | str             | Tverdaja; Na_kol_cah_Na_spirali; Gibkaja
+notebooks_cover_label[].option_id                  |    0.2%  | str             | 772049; 772051; 772050
+notebooks_cover_label[].sort_order                 |    0.2%  | str             | 100
+notebooks_cover_label[].url_path                   |    0.2%  | null            | 
+only_mobile                                        |    1.6%  | int             | 0; 0; 0
+original_final_price                               |   99.6%  | int             | 303; 4158; 1891
+original_price                                     |  100.0%  | int, null       | 303; 4158; 1891
+original_price_incl_tax                            |  100.0%  | int, null       | 303; 4158; 1891
+original_price_tax                                 |  100.0%  | int, null       | 0; 0; 0
+original_special_price                             |    1.6%  | int             | 446; 765; 551
+payment_methods                                    |  100.0%  | list            | 
+payment_methods[].code                             |  695.3%  | str             | liqpaysecond; liqpay; liqpaythird
+payment_methods[].title                            |  695.3%  | str             | Оплата картою Зимова єПідтримка/Національний ке...; Оплата карткою On-line або карткою "Пакунок шко...; Оплата карткою "ДІЯ єКнига (виплата на 18-ліття...
+pen_housing                                        |    0.1%  | list            | 
+pen_housing_label                                  |    0.1%  | list            | 
+pen_housing_label[].attribute_id                   |    0.1%  | str             | 4109
+pen_housing_label[].attribute_label                |    0.1%  | str             | Материал корпуса
+pen_housing_label[].label                          |    0.1%  | str             | Алюминий; Сталь; Пластик
+pen_housing_label[].option_code                    |    0.1%  | str             | Aljuminij; Stal_; Plastik
+pen_housing_label[].option_id                      |    0.1%  | str             | 772254; 772259; 772257
+pen_housing_label[].sort_order                     |    0.1%  | str             | 100
+pen_housing_label[].url_path                       |    0.1%  | null            | 
+pen_ink                                            |    0.1%  | list            | 
+pen_ink_label                                      |    0.1%  | list            | 
+pen_ink_label[].attribute_id                       |    0.1%  | str             | 4111
+pen_ink_label[].attribute_label                    |    0.1%  | str             | Цвет чернил
+pen_ink_label[].label                              |    0.1%  | str             | Синий; Черный
+pen_ink_label[].option_code                        |    0.1%  | str             | Sinij; Chernyj
+pen_ink_label[].option_id                          |    0.1%  | str             | 772264; 772265
+pen_ink_label[].sort_order                         |    0.1%  | str             | 2; 1
+pen_ink_label[].url_path                           |    0.1%  | null            | 
+pen_thickness                                      |    0.0%  | list            | 
+pen_thickness_label                                |    0.0%  | list            | 
+pen_thickness_label[].attribute_id                 |    0.0%  | str             | 4110
+pen_thickness_label[].attribute_label              |    0.0%  | str             | Толщина письма
+pen_thickness_label[].label                        |    0.0%  | str             | 0,5 мм; 1,0 мм; 0,7 мм
+pen_thickness_label[].option_code                  |    0.0%  | str             | 0_5_mm; 1_0_mm; 0_7_mm
+pen_thickness_label[].option_id                    |    0.0%  | str             | 772293; 772295; 772294
+pen_thickness_label[].sort_order                   |    0.0%  | str             | 100
+pen_thickness_label[].url_path                     |    0.0%  | null            | 
+pen_type                                           |    0.1%  | list            | 
+pen_type_label                                     |    0.1%  | list            | 
+pen_type_label[].attribute_id                      |    0.1%  | str             | 4108
+pen_type_label[].attribute_label                   |    0.1%  | str             | Тип
+pen_type_label[].label                             |    0.1%  | str             | Карандаш; Набор; Чернила, стержни
+pen_type_label[].option_code                       |    0.1%  | str             | Karandash; Nabor; Chernila_sterzhni
+pen_type_label[].option_id                         |    0.1%  | str             | 772086; 772087; 772088
+pen_type_label[].sort_order                        |    0.1%  | str             | 100
+pen_type_label[].url_path                          |    0.1%  | null            | 
+price                                              |  100.0%  | int, null       | 303; 4158; 1891
+price_incl_tax                                     |  100.0%  | int, null       | 303; 4158; 1891
+price_tax                                          |  100.0%  | int             | 0; 0; 0
+product_links                                      |  100.0%  | list            | 
+product_links[].link_type                          |    0.0%  | str             | related
+product_links[].linked_product_sku                 |    0.0%  | str             | 1422246; 1121624
+product_links[].linked_product_type                |    0.0%  | str             | downloadable; simple
+product_links[].position                           |    0.0%  | int             | 1; 1
+product_links[].sku                                |    0.0%  | str             | 1422316; 1426101
+promotion_ids                                      |  100.0%  | list            | 
+promotion_ids_visible                              |  100.0%  | list            | 
+promotion_promo_type                               |    5.7%  | str             | 4; 1; 2
+promotions                                         |    5.7%  | list            | 
+promotions[].background                            |   15.4%  | null            | 
+promotions[].color                                 |   15.4%  | null            | 
+promotions[].name                                  |   15.4%  | null            | 
+promotions[].sort                                  |   15.4%  | int             | 0; 0; 0
+promotions[].url_key                               |   15.4%  | str             | zamovlennja-eknigi-na-yakaboo-z-bezplatnoju-dos...; do-65-na-knizhkovi-podarunki-do-svjat.html; zamovlennja-eknigi-na-yakaboo-z-bezplatnoju-dos...
+published_at                                       |   55.8%  | str             | 2025-10-16 00:00:00; 2025-09-24 00:00:00; 2025-09-19 00:00:00
+quote                                              |   12.7%  | str             | {{DELIMETER}}; Phaidon seems to have pulled off the rare trick...; Hugely absorbing. . . the best Strike novel yet...
+regular_price                                      |  100.0%  | int             | 303; 4158; 1891
+reviews                                            |    2.6%  | dict            | 
+reviews.rating_summary                             |    2.6%  | str             | 0; 60; 100
+reviews.reviews_count                              |    2.6%  | str             | 0; 1; 2
+reward_bonus                                       |  100.0%  | list, dict      | 
+reward_bonus.0                                     |    5.7%  | dict            | 
+reward_bonus.0.customer_group_id                   |    5.7%  | int             | 0; 0; 0
+reward_bonus.0.is_extra_bonus                      |    5.7%  | int             | 0; 0; 0
+reward_bonus.0.percent                             |    5.7%  | int             | 50; 50; 50
+reward_bonus.1                                     |    5.7%  | dict            | 
+reward_bonus.1.customer_group_id                   |    5.7%  | int             | 1; 1; 1
+reward_bonus.1.is_extra_bonus                      |    5.7%  | int             | 0; 0; 0
+reward_bonus.1.percent                             |    5.7%  | int             | 50; 50; 50
+reward_bonus.102                                   |    0.0%  | dict            | 
+reward_bonus.102.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.102.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.102.sector_id                         |    0.0%  | int             | 102; 102; 102
+reward_bonus.103                                   |    0.0%  | dict            | 
+reward_bonus.103.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.103.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.103.sector_id                         |    0.0%  | int             | 103; 103; 103
+reward_bonus.113                                   |    0.2%  | dict            | 
+reward_bonus.113.is_extra_bonus                    |    0.2%  | int             | 0; 0; 0
+reward_bonus.113.percent                           |    0.2%  | int             | 100; 100; 100
+reward_bonus.113.sector_id                         |    0.2%  | int             | 113; 113; 113
+reward_bonus.114                                   |    0.2%  | dict            | 
+reward_bonus.114.is_extra_bonus                    |    0.2%  | int             | 0; 0; 0
+reward_bonus.114.percent                           |    0.2%  | int             | 100; 100; 100
+reward_bonus.114.sector_id                         |    0.2%  | int             | 114; 114; 114
+reward_bonus.115                                   |    2.3%  | dict            | 
+reward_bonus.115.is_extra_bonus                    |    2.3%  | int             | 0; 0; 0
+reward_bonus.115.percent                           |    2.3%  | int             | 100; 100; 100
+reward_bonus.115.sector_id                         |    2.3%  | int             | 115; 115; 115
+reward_bonus.116                                   |    2.3%  | dict            | 
+reward_bonus.116.is_extra_bonus                    |    2.3%  | int             | 0; 0; 0
+reward_bonus.116.percent                           |    2.3%  | int             | 100; 100; 100
+reward_bonus.116.sector_id                         |    2.3%  | int             | 116; 116; 116
+reward_bonus.117                                   |    0.0%  | dict            | 
+reward_bonus.117.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.117.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.117.sector_id                         |    0.0%  | int             | 117; 117; 117
+reward_bonus.118                                   |    0.0%  | dict            | 
+reward_bonus.118.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.118.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.118.sector_id                         |    0.0%  | int             | 118; 118; 118
+reward_bonus.119                                   |    0.0%  | dict            | 
+reward_bonus.119.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.119.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.119.sector_id                         |    0.0%  | int             | 119; 119; 119
+reward_bonus.120                                   |    0.0%  | dict            | 
+reward_bonus.120.is_extra_bonus                    |    0.0%  | int             | 0; 0; 0
+reward_bonus.120.percent                           |    0.0%  | int             | 100; 100; 100
+reward_bonus.120.sector_id                         |    0.0%  | int             | 120; 120; 120
+reward_bonus.121                                   |    0.1%  | dict            | 
+reward_bonus.121.is_extra_bonus                    |    0.1%  | int             | 0; 0; 0
+reward_bonus.121.percent                           |    0.1%  | int             | 100; 100; 100
+reward_bonus.121.sector_id                         |    0.1%  | int             | 121; 121; 121
+reward_bonus.19                                    |    0.1%  | dict            | 
+reward_bonus.19.is_extra_bonus                     |    0.1%  | int             | 0; 0; 0
+reward_bonus.19.percent                            |    0.1%  | int             | 100; 100; 100
+reward_bonus.19.sector_id                          |    0.1%  | int             | 19; 19; 19
+reward_bonus.2                                     |    0.0%  | dict            | 
+reward_bonus.2.is_extra_bonus                      |    0.0%  | int             | 0; 0; 0
+reward_bonus.2.percent                             |    0.0%  | int             | 100; 100; 100
+reward_bonus.2.sector_id                           |    0.0%  | int             | 2; 2; 2
+reward_bonus.25                                    |    0.0%  | dict            | 
+reward_bonus.25.is_extra_bonus                     |    0.0%  | int             | 0; 0; 0
+reward_bonus.25.percent                            |    0.0%  | int             | 100; 100; 100
+reward_bonus.25.sector_id                          |    0.0%  | int             | 25; 25; 25
+reward_bonus.38                                    |    0.1%  | dict            | 
+reward_bonus.38.is_extra_bonus                     |    0.1%  | int             | 0; 0; 0
+reward_bonus.38.percent                            |    0.1%  | int             | 100; 100; 100
+reward_bonus.38.sector_id                          |    0.1%  | int             | 38; 38; 38
+reward_bonus.40                                    |    0.0%  | dict            | 
+reward_bonus.40.is_extra_bonus                     |    0.0%  | int             | 0; 0; 0
+reward_bonus.40.percent                            |    0.0%  | int             | 100; 100; 100
+reward_bonus.40.sector_id                          |    0.0%  | int             | 40; 40; 40
+reward_bonus.41                                    |    0.0%  | dict            | 
+reward_bonus.41.is_extra_bonus                     |    0.0%  | int             | 0; 0; 0
+reward_bonus.41.percent                            |    0.0%  | int             | 100; 100; 100
+reward_bonus.41.sector_id                          |    0.0%  | int             | 41; 41; 41
+reward_bonus.42                                    |    0.0%  | dict            | 
+reward_bonus.42.is_extra_bonus                     |    0.0%  | int             | 0; 0; 0
+reward_bonus.42.percent                            |    0.0%  | int             | 100; 100; 100
+reward_bonus.42.sector_id                          |    0.0%  | int             | 42; 42; 42
+reward_bonus.44                                    |    0.0%  | dict            | 
+reward_bonus.44.is_extra_bonus                     |    0.0%  | int             | 0; 0; 0
+reward_bonus.44.percent                            |    0.0%  | int             | 100; 100; 100
+reward_bonus.44.sector_id                          |    0.0%  | int             | 44; 44; 44
+reward_bonus.62                                    |    0.7%  | dict            | 
+reward_bonus.62.is_extra_bonus                     |    0.7%  | int             | 0; 0; 0
+reward_bonus.62.percent                            |    0.7%  | int             | 100; 100; 100
+reward_bonus.62.sector_id                          |    0.7%  | int             | 62; 62; 62
+reward_bonus[].customer_group_id                   |  187.0%  | int             | 0; 1; 0
+reward_bonus[].is_extra_bonus                      |  187.0%  | int             | 0; 0; 0
+reward_bonus[].percent                             |  187.0%  | int             | 50; 50; 50
+reward_bonus[].sector_id                           |    0.1%  | int             | 2; 2; 2
+short_description                                  |   66.3%  | str             | <p>This textbook provides a self-contained basi...; This Element develops a theory of institutional...; <p><em>Unifying the Field of Digital Twins for ...
+sku                                                |  100.0%  | str             | 1506669; 20882943; 20882661
+small_image                                        |  100.0%  | str             | /1/3/13370.1800x1800w.png; /9/7/9781484265963_0.jpg; /9/7/9780691264486_0.jpg
+special_from_date                                  |   12.0%  | str             | 2025-05-06 00:00:00; 2024-02-07 00:00:00; 2024-02-01 00:00:00
+special_price                                      |  100.0%  | int             | 0; 0; 0
+special_price_incl_tax                             |  100.0%  | int             | 0; 0; 0
+special_price_tax                                  |  100.0%  | int             | 0; 0; 0
+statistics_visits                                  |   22.9%  | int             | 2; 2; 1
+status                                             |  100.0%  | int             | 1; 1; 1
+stock                                              |  100.0%  | list            | 
+stock[].is_europe                                  |   87.1%  | bool            | False; False; True
+stock[].is_in_stock                                |  115.9%  | bool            | True; True; True
+stock[].product_id                                 |  115.9%  | int             | 3394631; 3394631; 3387355
+stock[].qty                                        |  115.9%  | int             | 4; 0; 1
+stock[].shipping_date                              |   79.0%  | str             | 2026-01-17; 2025-12-30; 2026-01-20
+stock[].source_code                                |  115.9%  | str             | default_yakaboo; yakaboo_kyiv; supplier
+stock[].stock_status                               |  115.9%  | int             | 1; 1; 1
+tea_sort                                           |    0.2%  | list            | 
+tea_sort_label                                     |    0.2%  | list            | 
+tea_sort_label[].attribute_id                      |    0.2%  | str             | 4067
+tea_sort_label[].attribute_label                   |    0.2%  | str             | Тип
+tea_sort_label[].label                             |    0.2%  | str             | Открытки; Постеры; Скретч карты
+tea_sort_label[].option_code                       |    0.2%  | str             | Otkrytki; Postery; Skretch_postery
+tea_sort_label[].option_id                         |    0.2%  | str             | 772163; 772164; 777617
+tea_sort_label[].sort_order                        |    0.2%  | str             | 100
+tea_sort_label[].url_path                          |    0.2%  | null            | 
+thumbnail                                          |  100.0%  | str             | /1/3/13370.1800x1800w.png; /9/7/9781484265963_0.jpg; /9/7/9780691264486_0.jpg
+total_sales                                        |    1.1%  | int             | 10; 15; 13
+tourism_stuffbags                                  |    0.0%  | list            | 
+tourism_stuffbags_label                            |    0.0%  | list            | 
+tourism_stuffbags_label[].attribute_id             |    0.0%  | str             | 3847
+tourism_stuffbags_label[].attribute_label          |    0.0%  | str             | Тематика
+tourism_stuffbags_label[].label                    |    0.0%  | str             | Другое
+tourism_stuffbags_label[].option_code              |    0.0%  | str             | Drugoe
+tourism_stuffbags_label[].option_id                |    0.0%  | str             | 724840
+tourism_stuffbags_label[].sort_order               |    0.0%  | str             | 100
+tourism_stuffbags_label[].url_path                 |    0.0%  | null            | 
+tourism_typemats                                   |    0.0%  | list            | 
+tourism_typemats_label                             |    0.0%  | list            | 
+tourism_typemats_label[].attribute_id              |    0.0%  | str             | 3796
+tourism_typemats_label[].attribute_label           |    0.0%  | str             | Тип
+tourism_typemats_label[].label                     |    0.0%  | str             | Классическая; С креплением; Ручная работа
+tourism_typemats_label[].option_code               |    0.0%  | str             | Klassicheskaja_zakladka_dlja_knig; S_krepleniem; Ruchnaja_rabota
+tourism_typemats_label[].option_id                 |    0.0%  | str             | 772996; 772193; 772189
+tourism_typemats_label[].sort_order                |    0.0%  | str             | 100
+tourism_typemats_label[].url_path                  |    0.0%  | null            | 
+tourism_usefulthingstype                           |    0.0%  | list            | 
+tourism_usefulthingstype_label                     |    0.0%  | list            | 
+tourism_usefulthingstype_label[].attribute_id      |    0.0%  | str             | 3880
+tourism_usefulthingstype_label[].attribute_label   |    0.0%  | str             | Тип
+tourism_usefulthingstype_label[].label             |    0.0%  | str             | Коробки; Подарочные сертификаты; Пакеты
+tourism_usefulthingstype_label[].option_code       |    0.0%  | str             | Korobki; Podarochnye_sertifikaty; Pakety
+tourism_usefulthingstype_label[].option_id         |    0.0%  | str             | 772206; 772208; 772207
+tourism_usefulthingstype_label[].sort_order        |    0.0%  | str             | 100
+tourism_usefulthingstype_label[].url_path          |    0.0%  | null            | 
+tourism_wear                                       |    0.2%  | list            | 
+tourism_wear_label                                 |    0.2%  | list            | 
+tourism_wear_label[].attribute_id                  |    0.2%  | str             | 3967
+tourism_wear_label[].attribute_label               |    0.2%  | str             | Уровень сложности
+tourism_wear_label[].label                         |    0.2%  | str             | 5; 3; 2
+tourism_wear_label[].option_code                   |    0.2%  | str             | 5_uroven_; 3_uroven_; 2_uroven_
+tourism_wear_label[].option_id                     |    0.2%  | str             | 888709; 888707; 888706
+tourism_wear_label[].sort_order                    |    0.2%  | str             | 100
+tourism_wear_label[].url_path                      |    0.2%  | null            | 
+tsk                                                |  100.0%  | int             | 1765583657; 1765583657; 1765583657
+type_id                                            |  100.0%  | str             | simple; downloadable; virtual
+updated_at                                         |  100.0%  | str             | 2025-10-16 10:39:04; 2025-09-24 12:47:09; 2025-09-24 12:37:07
+url_key                                            |   99.9%  | str             | modeljuvannja-informacijnih-procesiv; immersive-3d-design-visualization-with-autodesk...; the-joy-of-quantum-computing-a-concise-introduc...
+url_path                                           |  100.0%  | str             | modeljuvannja-informacijnih-procesiv.html; immersive-3d-design-visualization-with-autodesk...; the-joy-of-quantum-computing-a-concise-introduc...
+url_path_1                                         |  100.0%  | str             | modeljuvannja-informacijnih-procesiv.html; immersive-3d-design-visualization-with-autodesk...; the-joy-of-quantum-computing-a-concise-introduc...
+url_path_2                                         |  100.0%  | str             | modeljuvannja-informacijnih-procesiv.html; immersive-3d-design-visualization-with-autodesk...; the-joy-of-quantum-computing-a-concise-introduc...
+url_path_3                                         |  100.0%  | str             | modeljuvannja-informacijnih-procesiv.html; immersive-3d-design-visualization-with-autodesk...; the-joy-of-quantum-computing-a-concise-introduc...
+validity_rights_date                               |    0.0%  | str             | 1970-01-01 00:00:00; 2026-08-29 00:00:00; 3000-12-31 00:00:00
+visibility                                         |  100.0%  | int             | 4; 4; 4
+weight                                             |    7.5%  | int             | 400; 220; 300

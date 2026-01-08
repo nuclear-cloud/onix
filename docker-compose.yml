@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. Головна база даних
+  db:
+    image: postgres:16-alpine  # Використовуємо легку Alpine версію
+    container_name: onix_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}      # Бере з .env або дефолт
+      POSTGRES_PASSWORD: ${DB_PASS:-secret} # Бере з .env або дефолт
+      POSTGRES_DB: onix_db
+    ports:
+      - "5432:5432"  # Відкриваємо порт назовні (щоб підключатися з Python/DBeaver)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # 🔥 КРИТИЧНО: Зберігає дані при рестарті
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d onix_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Зручна адмінка (Опційно, якщо не любиш DBeaver/PgAdmin)
+  pgweb:
+    image: sosedoff/pgweb
+    container_name: onix_pgweb
+    restart: always
+    environment:
+      PGWEB_DATABASE_URL: postgres://admin:secret@db:5432/onix_db?sslmode=disable
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:  # Оголошуємо волюм для збереження даних

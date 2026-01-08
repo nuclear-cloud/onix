@@ -1,70 +1,129 @@
-# ONIX Book Metadata System
+# ONIX Aggregator (V2 Architecture)
 
-## Introduction
-This project is an **AI-First, high-performance backend** for managing book metadata using the **ONIX for Books 3.1** standard. It bridges the gap between structured legacy XML and modern semantic search capabilities.
+**Centralized Book Catalog & Price Aggregator for Ukraine**
 
-For a deep dive into the vision, see the [Program Concept](CONCEPT.md).
+This project implements a high-performance system for aggregating book metadata and prices from multiple retailers, strictly adhering to the **ONIX for Books 3.0** standard.
 
-## Features
-- **ONIX 3.1 Compliance**: Automatic validation and high-speed XML generation.
-- **AI-Powered Discovery**: Hybrid search combining SQL filters with vector similarity scoring.
-- **Web Scraping & Monitoring**: Autonomous change detection and data extraction from Ukrainian bookstores (Vivat).
-- **Modern Stack**: Built with FastAPI, SQLAlchemy (Async), PostgreSQL/pgvector, and Next.js data extraction.
+## 🏗 Architecture
 
-## Setup Instructions
+The system uses a **Hybrid Database Architecture** split into two domains:
+
+### 1. Catalog (Static Data)
+Stores the "Golden Record" for each book. Optimized for complex search and filtering.
+*   **Source of Truth**: ONIX 3.0 Standard.
+*   **Storage**: Normalized SQL tables (`catalog_products`, `catalog_contributors`...) + JSONB backup.
+*   **Models**: `app/models/catalog.py`
+
+### 2. Market (Dynamic Data)
+Stores high-frequency price and availability updates.
+*   **Focus**: Speed and freshness.
+*   **Storage**: Hot table (`offers`) for current state + Cold table (`price_history`) for logs.
+*   **Models**: `app/models/market.py`
+
+## 🛠 Tech Stack
+*   **Language**: Python 3.10+
+*   **Database**: PostgreSQL (Async/Await)
+*   **ORM**: SQLAlchemy 2.0 (Async) + **Prisma** (Type-safe queries)
+*   **Validation**: Pydantic v2
+*   **Testing**: Pytest + Asyncio
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.10+
-- PostgreSQL with `pgvector` extension installed.
+*   PostgreSQL 14+
+*   Python 3.10+
 
-### Installation
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Set up environment variables in `.env`:
-   ```
-   DATABASE_URL=postgresql+asyncpg://user:pass@localhost/dbname
-   ```
+### Setup
 
-### Running the Application
-#### 1. API Server
+1.  **Environment**:
+    Copy `.env.example` to `.env` (if available) or create one:
+    ```bash
+    DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/db_name
+    PRISMA_DATABASE_URL=postgresql://user:pass@localhost:5432/db_name
+    ```
+
+2.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    prisma generate  # Generate Prisma client
+    ```
+
+3.  **Initialize Database**:
+    ⚠️ **Warning**: This destroys existing data.
+    ```bash
+    python scripts/init_final_db.py --force
+    ```
+
+## 🧪 Testing
+
+Run the integration tests to verify DB models and relations:
+
 ```bash
-python main.py
+# Ensure PYTHONPATH includes the root directory
+PYTHONPATH=. pytest tests/test_db_models.py -v
 ```
-#### 2. Background Scraper Worker
-The worker continuously monitors sitemaps and ingests new books into the database.
+
+## 🔍 Prisma Integration
+
+The project supports **dual ORMs** - both SQLAlchemy and Prisma. Prisma provides type-safe, modern database queries:
+
 ```bash
-python app/worker.py
+# Quick test
+python test_prisma.py
+
+# Run examples
+python examples/prisma_simple.py
+python examples/prisma_advanced.py
 ```
 
-### Management Scripts
-- `scripts/test_scrape.py`: Test scraping of a single URL with full JSON dump.
-- `scripts/save_scrape.py`: Scrape and save a product to the database (including authors and embeddings).
+**Documentation:**
+- [Prisma Complete Guide](./docs/PRISMA_GUIDE.md) - Full documentation
+- [Prisma Quick Reference](./docs/PRISMA_QUICKREF.md) - Syntax cheat sheet
+- [Integration Summary](./PRISMA_INTEGRATION_COMPLETE.md) - What was done
 
-### Running Tests
-```bash
-pytest
+**Quick Example:**
+```python
+from prisma import Prisma
+
+async def query():
+    db = Prisma()
+    await db.connect()
+    
+    # Type-safe queries with auto-completion
+    books = await db.catalogproduct.find_many(
+        where={'isbn13': {'not': None}},
+        include={'publisher': True, 'titles': True},
+        take=10
+    )
+    
+    await db.disconnect()
 ```
 
-## Project Structure
-See [ARCHITECTURE.md](ARCHITECTURE.md) for a detailed breakdown of the system components.
+## 📂 Project Structure
 
 ```
-/
+onix_project/
 ├── app/
-│   ├── api/            # Route handlers
-│   ├── core/           # Config and DB setup
-│   ├── models/         # SQLAlchemy models
-│   ├── scraper/        # [NEW] Web scraping & monitoring
-│   ├── schemas/        # Pydantic payloads
-│   └── services/       # Business logic (ONIX, Validation, Embeddings)
-├── data/               # Data storage / exports
-├── scripts/            # Management scripts
-└── tests/              # Test suite
+│   ├── models/          # SQLAlchemy Database Models
+│   │   ├── catalog.py   # Static Book Data (ONIX)
+│   │   ├── market.py    # Dynamic Prices (Offers)
+│   │   └── codes.py     # ONIX Enum Definitions
+│   ├── core/            # Config & DB Connection
+│   └── scraper/         # Data Transformers
+├── scripts/             # DevOps scripts (init_db, etc.)
+├── tests/               # Integration & Unit tests
+├── data/                # Local data files
+└── archive/             # Legacy code (V1)
 ```
+
+## 📚 Key Database Tables
+
+| Domain | Table Name | Description |
+| :--- | :--- | :--- |
+| **Catalog** | `catalog_products` | Main book registry. Includes `onix_full` (JSONB). |
+| | `catalog_titles` | All title variations (Original, Translated). |
+| | `catalog_product_contributors` | Authors, Translators, Illustrators. |
+| | `catalog_publishers` | Publisher registry. |
+| **Market** | `offers` | Current price & stock status per store. |
+| | `price_history` | Historical log of price changes. |
+| | `suppliers` | Retailer registry (Yakaboo, Knygarnya Ye). |
