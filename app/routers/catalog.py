@@ -1,14 +1,20 @@
 """
 Catalog API Router - Prisma-only (direct Prisma client queries).
 
-Endpoints: /products, /products/{isbn13}, /search, /recent, /publisher/{publisher_name}, /stats
+Endpoints: /products, /products/{isbn13}, /search, /recent, /publisher/{publisher_name}, /stats, /health
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from datetime import datetime, timedelta
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from prisma import Prisma
 from app.core.prisma_db import get_db
+from app.core.config import settings
 
-router = APIRouter(prefix="/catalog", tags=["catalog"]) 
+router = APIRouter(prefix="/catalog", tags=["catalog"])
+
+# ===== Stats Cache =====
+_stats_cache: dict = {"data": None, "expires": None} 
 
 
 @router.get(
@@ -177,7 +183,7 @@ async def recent_books(
     description="Get books from a specific publisher name.",
 )
 async def books_by_publisher(
-    publisher_name: str,
+    publisher_name: str = Path(..., min_length=1, max_length=200, description="Publisher name"),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     db: Prisma = Depends(get_db),
@@ -200,19 +206,62 @@ async def books_by_publisher(
 @router.get(
     "/stats",
     summary="Catalog statistics",
-    description="Get catalog statistics and metrics.",
+    description="Get catalog statistics and metrics. Cached for 5 minutes.",
 )
 async def catalog_stats(
     db: Prisma = Depends(get_db),
 ) -> dict:
+    """Get catalog statistics with caching."""
+    global _stats_cache
+    now = datetime.now()
+    
+    # Return cached data if valid
+    if _stats_cache["data"] and _stats_cache["expires"] and _stats_cache["expires"] > now:
+        return {**_stats_cache["data"], "cached": True}
+    
+    # Fresh query
     total = await db.catalogproduct.count()
     with_isbn = await db.catalogproduct.count(where={"isbn13": {"not": None}})
     with_publisher = await db.catalogproduct.count(where={"publisher_name": {"not": None}})
     ukr = await db.catalogproduct.count(where={"language_code": "ukr"})
-    return {
+    
+    stats = {
         "total_books": total,
         "with_isbn": with_isbn,
         "with_publisher": with_publisher,
         "ukrainian_books": ukr,
         "coverage_isbn": f"{(with_isbn/total*100):.1f}%" if total else "0%",
+        "cached": False,
     }
+    
+    # Cache for configured TTL
+    _stats_cache["data"] = stats
+    _stats_cache["expires"] = now + timedelta(seconds=settings.STATS_CACHE_TTL)
+    
+    return stats
+
+
+@router.get(
+    "/health",
+    summary="Health check",
+    description="Check API and database health.",
+)
+async def health_check(
+    db: Prisma = Depends(get_db),
+) -> dict:
+    """Health check endpoint for monitoring."""
+    try:
+        # Quick DB check
+        count = await db.catalogproduct.count(take=1)
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "timestamp": datetime.now().isoformat(),
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "database": "error",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }
