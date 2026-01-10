@@ -4,9 +4,9 @@ Prisma-based Repository Layer.
 Direct Prisma client queries with type safety.
 """
 
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from prisma import Prisma
-from prisma.models import CatalogProduct, CatalogTitle
+from prisma.models import CatalogProduct
 
 
 class PrismaProductRepository:
@@ -19,29 +19,29 @@ class PrismaProductRepository:
         self,
         limit: int = 20,
         offset: int = 0,
-    ) -> tuple[List[CatalogProduct], int]:
+    ) -> Tuple[List[CatalogProduct], int]:
         """
         Get all active products with pagination.
         
         Returns:
             (list of products, total count)
         """
-        # Total count
-        total = await self.db.catalogproduct.count()
+        total = await self.db.catalogproduct.count(
+            where={'deleted_at': None}
+        )
         
-        # Paginated list with relations
         products = await self.db.catalogproduct.find_many(
             take=limit,
             skip=offset,
+            where={'deleted_at': None},
             include={
-                'titles': True,
-                'subjects': True,
-                'publisher': True,
-                'extents': True,
-                'measures': True,
-                'languages': True,
+                'contributors': {'include': {'contributor': True}},
+                'subjects': {'include': {'subject': True}},
+                'text_content': True,
+                'media_files': True,
+                'prices': True,
             },
-            order={'createdAt': 'desc'}
+            order={'created_at': 'desc'}
         )
         
         return (products, total)
@@ -51,25 +51,21 @@ class PrismaProductRepository:
         return await self.db.catalogproduct.find_unique(
             where={'isbn13': isbn13},
             include={
-                'titles': True,
-                'subjects': True,
-                'publisher': True,
-                'extents': True,
-                'measures': True,
-                'languages': True,
-                'contributors': True,
-                'texts': True,
+                'contributors': {'include': {'contributor': True}},
+                'subjects': {'include': {'subject': True}},
+                'text_content': True,
+                'media_files': True,
+                'prices': True,
             }
         )
     
     async def get_by_sku(self, sku: str) -> Optional[CatalogProduct]:
-        """Get product by SKU."""
+        """Get product by proprietary ID."""
         return await self.db.catalogproduct.find_first(
-            where={'sku': sku},
+            where={'proprietary_id': sku},
             include={
-                'titles': True,
-                'subjects': True,
-                'publisher': True,
+                'contributors': {'include': {'contributor': True}},
+                'subjects': {'include': {'subject': True}},
             }
         )
     
@@ -80,25 +76,27 @@ class PrismaProductRepository:
         offset: int = 0,
     ) -> List[CatalogProduct]:
         """
-        Full-text search across titles.
+        Full-text search across title and subtitle.
         
         Args:
             query: Search term
             limit: Max results
             offset: Pagination offset
         """
-        # Search in titles
         products = await self.db.catalogproduct.find_many(
             where={
-                'titles': {
-                    'some': {
-                        'titleText': {'contains': query}
-                    }
-                }
+                'deleted_at': None,
+                'OR': [
+                    {'title': {'contains': query, 'mode': 'insensitive'}},
+                    {'subtitle': {'contains': query, 'mode': 'insensitive'}},
+                ]
             },
             take=limit,
             skip=offset,
-            include={'titles': True, 'publisher': True}
+            include={
+                'contributors': {'include': {'contributor': True}},
+            },
+            order={'created_at': 'desc'}
         )
         return products
     
@@ -106,39 +104,46 @@ class PrismaProductRepository:
         self,
         limit: int = 20,
         offset: int = 0,
-    ) -> tuple[List[CatalogProduct], int]:
+    ) -> Tuple[List[CatalogProduct], int]:
         """Get only Ukrainian books."""
-        total = await self.db.catalogproduct.count(
-            where={'isUkrainian': True}
-        )
+        where = {
+            'language_code': 'ukr',
+            'deleted_at': None,
+        }
+        
+        total = await self.db.catalogproduct.count(where=where)
         
         books = await self.db.catalogproduct.find_many(
-            where={'isUkrainian': True},
+            where=where,
             take=limit,
             skip=offset,
-            include={'titles': True, 'publisher': True},
-            order={'createdAt': 'desc'}
+            include={
+                'contributors': {'include': {'contributor': True}},
+            },
+            order={'created_at': 'desc'}
         )
         
         return (books, total)
     
     async def get_by_publisher(
         self,
-        publisher_id: str,
+        publisher_name: str,
         limit: int = 20,
         offset: int = 0,
-    ) -> tuple[List[CatalogProduct], int]:
+    ) -> Tuple[List[CatalogProduct], int]:
         """Get all books by a publisher."""
-        total = await self.db.catalogproduct.count(
-            where={'publisherId': publisher_id}
-        )
+        where = {
+            'publisher_name': {'contains': publisher_name, 'mode': 'insensitive'},
+            'deleted_at': None,
+        }
+        
+        total = await self.db.catalogproduct.count(where=where)
         
         books = await self.db.catalogproduct.find_many(
-            where={'publisherId': publisher_id},
+            where=where,
             take=limit,
             skip=offset,
-            include={'titles': True, 'publisher': True},
-            order={'createdAt': 'desc'}
+            order={'created_at': 'desc'}
         )
         
         return (books, total)
@@ -149,30 +154,47 @@ class PrismaProductRepository:
     ) -> List[CatalogProduct]:
         """Get recently added books."""
         return await self.db.catalogproduct.find_many(
+            where={'deleted_at': None},
             take=limit,
-            order={'createdAt': 'desc'},
-            include={'titles': True, 'publisher': True}
+            order={'created_at': 'desc'},
+            include={
+                'contributors': {'include': {'contributor': True}},
+            }
         )
     
     async def count_by_form(self) -> dict:
-        """Count books by product form (HARDBACK, PAPERBACK, etc)."""
-        # Group by productForm using aggregation
+        """Count books by product form (BB=Hardback, BC=Paperback, etc)."""
         counts = {}
         
         # Get unique forms
-        products = await self.db.catalogproduct.find_many(
-            select={'productForm': True},
-            distinct=['productForm']
+        forms = await self.db.catalogproduct.find_many(
+            select={'product_form_code': True},
+            distinct=['product_form_code'],
+            where={'deleted_at': None}
         )
         
-        for product in products:
-            form = product.productForm
+        for product in forms:
+            form = product.product_form_code
             count = await self.db.catalogproduct.count(
-                where={'productForm': form}
+                where={'product_form_code': form, 'deleted_at': None}
             )
             counts[form] = count
         
         return counts
+    
+    async def get_statistics(self) -> dict:
+        """Get catalog statistics."""
+        total_products = await self.db.catalogproduct.count(
+            where={'deleted_at': None}
+        )
+        total_contributors = await self.db.contributor.count()
+        total_subjects = await self.db.subject.count()
+        
+        return {
+            'total_products': total_products,
+            'total_contributors': total_contributors,
+            'total_subjects': total_subjects,
+        }
     
     async def create(self, data: dict) -> CatalogProduct:
         """Create new product."""
@@ -194,40 +216,39 @@ class PrismaProductRepository:
 
 
 class PrismaPublisherRepository:
-    """Publisher repository using Prisma."""
+    """Publisher stats using Prisma (no separate Publisher table)."""
     
     def __init__(self, db: Prisma):
         self.db = db
     
-    async def get_all(
-        self,
-        limit: int = 50,
-        offset: int = 0,
-    ) -> tuple[List, int]:
-        """Get all publishers."""
-        total = await self.db.publisher.count()
-        
-        publishers = await self.db.publisher.find_many(
-            take=limit,
-            skip=offset,
-            include={'products': True},
-            order={'name': 'asc'}
+    async def get_top_publishers(self, limit: int = 20) -> List[dict]:
+        """Get top publishers by book count."""
+        # Use raw query for aggregation
+        result = await self.db.query_raw(
+            """
+            SELECT publisher_name, COUNT(*) as book_count
+            FROM catalog_products
+            WHERE publisher_name IS NOT NULL AND deleted_at IS NULL
+            GROUP BY publisher_name
+            ORDER BY book_count DESC
+            LIMIT $1
+            """,
+            limit
         )
-        
-        return (publishers, total)
+        return result
     
-    async def get_by_id(self, publisher_id: str):
-        """Get publisher by ID."""
-        return await self.db.publisher.find_unique(
-            where={'id': publisher_id},
-            include={'products': True}
-        )
-    
-    async def search(self, query: str, limit: int = 20) -> List:
+    async def search(self, query: str, limit: int = 20) -> List[dict]:
         """Search publishers by name."""
-        return await self.db.publisher.find_many(
-            where={'name': {'contains': query}},
-            take=limit,
-            include={'products': True},
-            order={'name': 'asc'}
+        result = await self.db.query_raw(
+            """
+            SELECT DISTINCT publisher_name, COUNT(*) as book_count
+            FROM catalog_products
+            WHERE publisher_name ILIKE $1 AND deleted_at IS NULL
+            GROUP BY publisher_name
+            ORDER BY book_count DESC
+            LIMIT $2
+            """,
+            f'%{query}%',
+            limit
         )
+        return result

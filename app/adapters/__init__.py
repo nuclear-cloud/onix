@@ -1,5 +1,4 @@
 # Adapters for different data sources
-from .base import BaseAdapter
-from .yakaboo import YakabooAdapter
+from .data_adapter import BaseDataAdapter, YakabooDataAdapter
 
-__all__ = ['BaseAdapter', 'YakabooAdapter']
+__all__ = ['BaseDataAdapter', 'YakabooDataAdapter']

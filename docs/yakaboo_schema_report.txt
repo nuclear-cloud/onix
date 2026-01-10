@@ -1,0 +1,3118 @@
+====================================================================================================
+YAKABOO JSON SCHEMA ANALYSIS
+====================================================================================================
+Total records analyzed: 2,000
+Unique paths found: 604
+Maximum nesting depth: 3
+
+LEGEND:
+  ⭐ Mandatory (present in 95%+ of records)
+  🔶 Common (present in 50-95% of records)
+  🔹 Optional (present in <50% of records)
+
+FIELD TREE:
+----------------------------------------------------------------------------------------------------
+├── ⭐ root                                     [object              ] (100.0% / 2,000)
+├── ⭐ _category_id                             [number              ] (100.0% / 2,000)
+├── ⭐ _scraped_at                              [string              ] (100.0% / 2,000)
+├── ⭐ age                                      [array               ] ( 99.6% / 69)
+├── ⭐ age_label                                [array               ] ( 99.6% / 69)
+├── ⭐ attribute_id                             [string              ] ( 99.6% / 69)
+├── ⭐ attribute_label                          [string              ] ( 99.6% / 69)
+├── ⭐ label                                    [string              ] ( 99.6% / 69)
+├── ⭐ option_code                              [string              ] ( 99.6% / 69)
+├── ⭐ option_id                                [string              ] ( 99.6% / 69)
+├── ⭐ sort_order                               [string              ] ( 99.6% / 69)
+├── ⭐ url_path                                 [string              ] ( 99.6% / 69)
+├── ⭐ attribute_id                             [string              ] ( 95.6% / 1)
+├── ⭐ attribute_label                          [string              ] ( 95.6% / 1)
+├── ⭐ label                                    [string              ] ( 95.6% / 1)
+├── ⭐ option_code                              [string              ] ( 95.6% / 1)
+├── ⭐ option_id                                [string              ] ( 95.6% / 1)
+├── ⭐ sort_order                               [string              ] ( 95.6% / 1)
+├── ⭐ url_path                                 [string              ] ( 95.6% / 1)
+├── ⭐ another_formats                          [array               ] ( 99.3% / 8)
+├── ⭐ entity_id                                [string              ] ( 99.3% / 6)
+├── ⭐ final_price                              [number              ] ( 99.3% / 6)
+├── ⭐ regular_price                            [number              ] ( 99.3% / 6)
+├── ⭐ type                                     [string              ] ( 99.3% / 6)
+├── ⭐ url                                      [string              ] ( 99.3% / 6)
+├── ⭐ entity_id                                [string              ] ( 95.8% / 2)
+├── ⭐ final_price                              [number              ] ( 95.8% / 2)
+├── ⭐ regular_price                            [number              ] ( 95.8% / 2)
+├── ⭐ type                                     [string              ] ( 95.8% / 2)
+├── ⭐ url                                      [string              ] ( 95.8% / 2)
+├── ⭐ another_link                             [array               ] ( 99.9% / 638)
+├── ⭐ attribute_set_id                         [number              ] (100.0% / 2,000)
+├── ⭐ author                                   [array               ] (100.0% / 1,214)
+├── ⭐ author_label                             [array               ] (100.0% / 1,214)
+├── ⭐ attribute_id                             [string              ] (100.0% / 1,214)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,214)
+├── ⭐ label                                    [string              ] (100.0% / 1,214)
+├── ⭐ option_code                              [string              ] (100.0% / 1,214)
+├── ⭐ option_id                                [string              ] (100.0% / 1,214)
+├── ⭐ sort_order                               [string              ] (100.0% / 1,214)
+├── ⭐ url_path                                 [string              ] (100.0% / 1,214)
+├── ⭐ attribute_id                             [string              ] (100.0% / 670)
+├── ⭐ attribute_label                          [string              ] (100.0% / 670)
+├── ⭐ label                                    [string              ] (100.0% / 670)
+├── ⭐ option_code                              [string              ] (100.0% / 670)
+├── ⭐ option_id                                [string              ] (100.0% / 670)
+├── ⭐ sort_order                               [string              ] (100.0% / 670)
+├── ⭐ url_path                                 [string              ] (100.0% / 670)
+├── ⭐ attribute_id                             [string              ] (100.0% / 220)
+├── ⭐ attribute_label                          [string              ] (100.0% / 220)
+├── ⭐ label                                    [string              ] (100.0% / 220)
+├── ⭐ option_code                              [string              ] (100.0% / 220)
+├── ⭐ option_id                                [string              ] (100.0% / 220)
+├── ⭐ sort_order                               [string              ] (100.0% / 220)
+├── ⭐ url_path                                 [string              ] (100.0% / 220)
+├── ⭐ attribute_id                             [string              ] ( 98.2% / 69)
+├── ⭐ attribute_label                          [string              ] ( 98.2% / 69)
+├── ⭐ label                                    [string              ] ( 98.2% / 69)
+├── ⭐ option_code                              [string              ] ( 98.2% / 69)
+├── ⭐ option_id                                [string              ] ( 98.2% / 69)
+├── ⭐ sort_order                               [string              ] ( 98.2% / 69)
+├── ⭐ url_path                                 [string              ] ( 98.2% / 69)
+├── 🔶 attribute_id                             [string              ] ( 82.0% / 22)
+├── 🔶 attribute_label                          [string              ] ( 82.0% / 22)
+├── 🔶 label                                    [string              ] ( 82.0% / 22)
+├── 🔶 option_code                              [string              ] ( 82.0% / 22)
+├── 🔶 option_id                                [string              ] ( 82.0% / 22)
+├── 🔶 sort_order                               [string              ] ( 82.0% / 22)
+├── 🔶 url_path                                 [string              ] ( 82.0% / 22)
+├── ⭐ barcode                                  [string              ] (100.0% / 1,982)
+├── ⭐ book_binding                             [string              ] (100.0% / 1,858)
+├── ⭐ book_binding_label                       [array               ] (100.0% / 1,858)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,858)
+├── ⭐ label                                    [string              ] (100.0% / 1,858)
+├── ⭐ book_binding_type                        [array               ] (100.0% / 2,000)
+├── ⭐ book_binding_type_label                  [array               ] (100.0% / 2,000)
+├── ⭐ attribute_id                             [string              ] (100.0% / 2,000)
+├── ⭐ attribute_label                          [string              ] (100.0% / 2,000)
+├── ⭐ label                                    [string              ] (100.0% / 2,000)
+├── ⭐ option_code                              [string              ] (100.0% / 2,000)
+├── ⭐ option_id                                [string              ] (100.0% / 2,000)
+├── ⭐ sort_order                               [string              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [null                ] (100.0% / 2,000)
+├── 🔹 attribute_id                             [string              ] ( 38.9% / 2)
+├── 🔹 attribute_label                          [string              ] ( 38.9% / 2)
+├── 🔹 label                                    [string              ] ( 38.9% / 2)
+├── 🔹 option_code                              [string              ] ( 38.9% / 2)
+├── 🔹 option_id                                [string              ] ( 38.9% / 2)
+├── 🔹 sort_order                               [string              ] ( 38.9% / 2)
+├── 🔹 url_path                                 [null                ] ( 38.9% / 2)
+├── 🔹 book_box_binding                         [string              ] ( 31.2% / 1)
+├── 🔹 book_box_binding_label                   [array               ] ( 31.2% / 1)
+├── 🔹 attribute_label                          [string              ] ( 31.2% / 1)
+├── 🔹 label                                    [string              ] ( 31.2% / 1)
+├── 🔶 book_circulation                         [string              ] ( 94.8% / 2)
+├── 🔶 book_circulation_label                   [array               ] ( 94.8% / 2)
+├── 🔶 attribute_label                          [string              ] ( 94.8% / 2)
+├── 🔶 label                                    [string              ] ( 94.8% / 2)
+├── 🔹 book_country                             [array               ] ( 40.4% / 1)
+├── 🔹 book_edition                             [string              ] ( 39.6% / 2)
+├── 🔹 book_edition_label                       [array               ] ( 39.6% / 2)
+├── 🔹 attribute_label                          [string              ] ( 39.6% / 2)
+├── 🔹 label                                    [string              ] ( 39.6% / 2)
+├── 🔹 book_editor                              [array               ] ( 48.5% / 8)
+├── 🔹 book_editor_label                        [array               ] ( 48.5% / 8)
+├── 🔹 attribute_id                             [string              ] ( 48.5% / 8)
+├── 🔹 attribute_label                          [string              ] ( 48.5% / 8)
+├── 🔹 label                                    [string              ] ( 48.5% / 8)
+├── 🔹 option_code                              [string              ] ( 48.5% / 8)
+├── 🔹 option_id                                [string              ] ( 48.5% / 8)
+├── 🔹 sort_order                               [string              ] ( 48.5% / 8)
+├── 🔹 url_path                                 [null                ] ( 48.5% / 8)
+├── 🔹 attribute_id                             [string              ] ( 48.5% / 2)
+├── 🔹 attribute_label                          [string              ] ( 48.5% / 2)
+├── 🔹 label                                    [string              ] ( 48.5% / 2)
+├── 🔹 option_code                              [string              ] ( 48.5% / 2)
+├── 🔹 option_id                                [string              ] ( 48.5% / 2)
+├── 🔹 sort_order                               [string              ] ( 48.5% / 2)
+├── 🔹 url_path                                 [null                ] ( 48.5% / 2)
+├── 🔹 attribute_id                             [string              ] ( 48.5% / 2)
+├── 🔹 attribute_label                          [string              ] ( 48.5% / 2)
+├── 🔹 label                                    [string              ] ( 48.5% / 2)
+├── 🔹 option_code                              [string              ] ( 48.5% / 2)
+├── 🔹 option_id                                [string              ] ( 48.5% / 2)
+├── 🔹 sort_order                               [string              ] ( 48.5% / 2)
+├── 🔹 url_path                                 [null                ] ( 48.5% / 2)
+├── ⭐ book_first_year                          [number              ] ( 95.8% / 6)
+├── ⭐ book_first_year_label                    [array               ] ( 95.8% / 6)
+├── ⭐ attribute_label                          [string              ] ( 95.8% / 6)
+├── ⭐ label                                    [number              ] ( 95.8% / 6)
+├── 🔶 book_font                                [string              ] ( 94.7% / 1)
+├── 🔶 book_font_label                          [array               ] ( 94.7% / 1)
+├── 🔶 attribute_label                          [string              ] ( 94.7% / 1)
+├── 🔶 label                                    [string              ] ( 94.7% / 1)
+├── 🔹 book_gift                                [array               ] ( 39.0% / 4)
+├── 🔹 book_gift_label                          [array               ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── ⭐ book_illustration                        [array               ] (100.0% / 1,892)
+├── ⭐ book_illustration_label                  [array               ] (100.0% / 1,892)
+├── ⭐ attribute_id                             [string              ] (100.0% / 1,892)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,892)
+├── ⭐ label                                    [string              ] (100.0% / 1,892)
+├── ⭐ option_code                              [string              ] (100.0% / 1,892)
+├── ⭐ option_id                                [string              ] (100.0% / 1,892)
+├── ⭐ sort_order                               [string              ] (100.0% / 1,892)
+├── ⭐ url_path                                 [string              ] (100.0% / 1,892)
+├── 🔹 attribute_id                             [string              ] ( 48.9% / 6)
+├── 🔹 attribute_label                          [string              ] ( 48.9% / 6)
+├── 🔹 label                                    [string              ] ( 48.9% / 6)
+├── 🔹 option_code                              [string              ] ( 48.9% / 6)
+├── 🔹 option_id                                [string              ] ( 48.9% / 6)
+├── 🔹 sort_order                               [string              ] ( 48.9% / 6)
+├── 🔹 url_path                                 [string              ] ( 48.9% / 6)
+├── ⭐ book_isbn                                [string              ] (100.0% / 1,929)
+├── ⭐ book_isbn_label                          [array               ] (100.0% / 1,929)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,929)
+├── ⭐ label                                    [string              ] (100.0% / 1,929)
+├── ⭐ book_lang                                [array               ] (100.0% / 1,986)
+├── ⭐ book_lang_label                          [array               ] (100.0% / 1,986)
+├── ⭐ attribute_id                             [string              ] (100.0% / 1,986)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,986)
+├── ⭐ label                                    [string              ] (100.0% / 1,986)
+├── ⭐ option_code                              [string              ] (100.0% / 1,986)
+├── ⭐ option_id                                [string              ] (100.0% / 1,986)
+├── ⭐ sort_order                               [string              ] (100.0% / 1,986)
+├── ⭐ url_path                                 [null                ] (100.0% / 1,986)
+├── 🔹 attribute_id                             [string              ] ( 30.9% / 6)
+├── 🔹 attribute_label                          [string              ] ( 30.9% / 6)
+├── 🔹 label                                    [string              ] ( 30.9% / 6)
+├── 🔹 option_code                              [string              ] ( 30.9% / 6)
+├── 🔹 option_id                                [string              ] ( 30.9% / 6)
+├── 🔹 sort_order                               [string              ] ( 30.9% / 6)
+├── 🔹 url_path                                 [null                ] ( 30.9% / 6)
+├── 🔹 attribute_id                             [string              ] ( 30.9% / 1)
+├── 🔹 attribute_label                          [string              ] ( 30.9% / 1)
+├── 🔹 label                                    [string              ] ( 30.9% / 1)
+├── 🔹 option_code                              [string              ] ( 30.9% / 1)
+├── 🔹 option_id                                [string              ] ( 30.9% / 1)
+├── 🔹 sort_order                               [string              ] ( 30.9% / 1)
+├── 🔹 url_path                                 [null                ] ( 30.9% / 1)
+├── 🔹 book_occasion                            [array               ] ( 39.0% / 4)
+├── 🔹 book_occasion_label                      [array               ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 38.9% / 2)
+├── 🔹 attribute_label                          [string              ] ( 38.9% / 2)
+├── 🔹 label                                    [string              ] ( 38.9% / 2)
+├── 🔹 option_code                              [string              ] ( 38.9% / 2)
+├── 🔹 option_id                                [string              ] ( 38.9% / 2)
+├── 🔹 sort_order                               [string              ] ( 38.9% / 2)
+├── 🔹 url_path                                 [null                ] ( 38.9% / 2)
+├── 🔹 attribute_id                             [string              ] ( 31.2% / 1)
+├── 🔹 attribute_label                          [string              ] ( 31.2% / 1)
+├── 🔹 label                                    [string              ] ( 31.2% / 1)
+├── 🔹 option_code                              [string              ] ( 31.2% / 1)
+├── 🔹 option_id                                [string              ] ( 31.2% / 1)
+├── 🔹 sort_order                               [string              ] ( 31.2% / 1)
+├── 🔹 url_path                                 [null                ] ( 31.2% / 1)
+├── ⭐ book_page_count                          [string              ] (100.0% / 1,890)
+├── ⭐ book_page_count_label                    [array               ] (100.0% / 1,890)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,890)
+├── ⭐ label                                    [string              ] (100.0% / 1,890)
+├── 🔹 book_painter                             [array               ] ( 48.2% / 1)
+├── 🔹 book_painter_label                       [array               ] ( 48.2% / 1)
+├── 🔹 attribute_id                             [string              ] ( 48.2% / 1)
+├── 🔹 attribute_label                          [string              ] ( 48.2% / 1)
+├── 🔹 label                                    [string              ] ( 48.2% / 1)
+├── 🔹 option_code                              [string              ] ( 48.2% / 1)
+├── 🔹 option_id                                [string              ] ( 48.2% / 1)
+├── 🔹 sort_order                               [string              ] ( 48.2% / 1)
+├── 🔹 url_path                                 [string              ] ( 48.2% / 1)
+├── 🔶 book_paper                               [string              ] ( 94.7% / 1)
+├── 🔶 book_paper_label                         [array               ] ( 94.7% / 1)
+├── 🔶 attribute_label                          [string              ] ( 94.7% / 1)
+├── 🔶 label                                    [string              ] ( 94.7% / 1)
+├── 🔹 book_period                              [array               ] ( 40.4% / 1)
+├── 🔹 book_period_label                        [array               ] ( 40.4% / 1)
+├── 🔹 attribute_id                             [string              ] ( 40.4% / 1)
+├── 🔹 attribute_label                          [string              ] ( 40.4% / 1)
+├── 🔹 label                                    [string              ] ( 40.4% / 1)
+├── 🔹 option_code                              [string              ] ( 40.4% / 1)
+├── 🔹 option_id                                [string              ] ( 40.4% / 1)
+├── 🔹 sort_order                               [string              ] ( 40.4% / 1)
+├── 🔹 url_path                                 [string              ] ( 40.4% / 1)
+├── ⭐ book_print                               [array               ] ( 99.3% / 27)
+├── ⭐ book_print_label                         [array               ] ( 99.3% / 27)
+├── ⭐ attribute_id                             [string              ] ( 99.3% / 27)
+├── ⭐ attribute_label                          [string              ] ( 99.3% / 27)
+├── ⭐ label                                    [string              ] ( 99.3% / 27)
+├── ⭐ option_code                              [string              ] ( 99.3% / 27)
+├── ⭐ option_id                                [string              ] ( 99.3% / 27)
+├── ⭐ sort_order                               [string              ] ( 99.3% / 27)
+├── ⭐ url_path                                 [null                ] ( 99.3% / 27)
+├── ⭐ book_publication                         [array               ] (100.0% / 1,954)
+├── ⭐ book_publication_label                   [array               ] (100.0% / 1,954)
+├── ⭐ attribute_id                             [string              ] (100.0% / 1,954)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,954)
+├── ⭐ label                                    [string              ] (100.0% / 1,954)
+├── ⭐ option_code                              [string              ] (100.0% / 1,954)
+├── ⭐ option_id                                [string              ] (100.0% / 1,954)
+├── ⭐ sort_order                               [string              ] (100.0% / 1,954)
+├── ⭐ url_path                                 [null                ] (100.0% / 1,954)
+├── ⭐ book_publisher                           [array               ] (100.0% / 1,962)
+├── ⭐ book_publisher_label                     [array               ] (100.0% / 1,962)
+├── ⭐ attribute_id                             [string              ] (100.0% / 1,962)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,962)
+├── ⭐ label                                    [string              ] (100.0% / 1,962)
+├── ⭐ option_code                              [string              ] (100.0% / 1,962)
+├── ⭐ option_id                                [string              ] (100.0% / 1,962)
+├── ⭐ sort_order                               [string              ] (100.0% / 1,962)
+├── ⭐ url_path                                 [string              ] (100.0% / 1,962)
+├── 🔹 attribute_id                             [string              ] ( 31.2% / 1)
+├── 🔹 attribute_label                          [string              ] ( 31.2% / 1)
+├── 🔹 label                                    [string              ] ( 31.2% / 1)
+├── 🔹 option_code                              [string              ] ( 31.2% / 1)
+├── 🔹 option_id                                [string              ] ( 31.2% / 1)
+├── 🔹 sort_order                               [string              ] ( 31.2% / 1)
+├── 🔹 url_path                                 [string              ] ( 31.2% / 1)
+├── ⭐ book_series                              [array               ] ( 99.6% / 655)
+├── ⭐ book_series_label                        [array               ] ( 99.6% / 655)
+├── ⭐ attribute_id                             [string              ] ( 99.6% / 655)
+├── ⭐ attribute_label                          [string              ] ( 99.6% / 655)
+├── ⭐ label                                    [string              ] ( 99.6% / 655)
+├── ⭐ option_code                              [string              ] ( 99.6% / 655)
+├── ⭐ option_id                                [string              ] ( 99.6% / 655)
+├── ⭐ sort_order                               [string              ] ( 99.6% / 655)
+├── ⭐ url_path                                 [string              ] ( 99.6% / 655)
+├── 🔹 book_style                               [array               ] ( 39.0% / 3)
+├── 🔹 book_style_label                         [array               ] ( 39.0% / 3)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 3)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 3)
+├── 🔹 label                                    [string              ] ( 39.0% / 3)
+├── 🔹 option_code                              [string              ] ( 39.0% / 3)
+├── 🔹 option_id                                [string              ] ( 39.0% / 3)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 3)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 3)
+├── 🔹 attribute_id                             [string              ] ( 31.2% / 2)
+├── 🔹 attribute_label                          [string              ] ( 31.2% / 2)
+├── 🔹 label                                    [string              ] ( 31.2% / 2)
+├── 🔹 option_code                              [string              ] ( 31.2% / 2)
+├── 🔹 option_id                                [string              ] ( 31.2% / 2)
+├── 🔹 sort_order                               [string              ] ( 31.2% / 2)
+├── 🔹 url_path                                 [null                ] ( 31.2% / 2)
+├── 🔹 attribute_id                             [string              ] ( 30.6% / 1)
+├── 🔹 attribute_label                          [string              ] ( 30.6% / 1)
+├── 🔹 label                                    [string              ] ( 30.6% / 1)
+├── 🔹 option_code                              [string              ] ( 30.6% / 1)
+├── 🔹 option_id                                [string              ] ( 30.6% / 1)
+├── 🔹 sort_order                               [string              ] ( 30.6% / 1)
+├── 🔹 url_path                                 [null                ] ( 30.6% / 1)
+├── ⭐ book_translator                          [array               ] ( 99.3% / 11)
+├── ⭐ book_translator_label                    [array               ] ( 99.3% / 11)
+├── ⭐ attribute_id                             [string              ] ( 99.3% / 11)
+├── ⭐ attribute_label                          [string              ] ( 99.3% / 11)
+├── ⭐ label                                    [string              ] ( 99.3% / 11)
+├── ⭐ option_code                              [string              ] ( 99.3% / 11)
+├── ⭐ option_id                                [string              ] ( 99.3% / 11)
+├── ⭐ sort_order                               [string              ] ( 99.3% / 11)
+├── ⭐ url_path                                 [string              ] ( 99.3% / 11)
+├── ⭐ attribute_id                             [string              ] ( 95.8% / 1)
+├── ⭐ attribute_label                          [string              ] ( 95.8% / 1)
+├── ⭐ label                                    [string              ] ( 95.8% / 1)
+├── ⭐ option_code                              [string              ] ( 95.8% / 1)
+├── ⭐ option_id                                [string              ] ( 95.8% / 1)
+├── ⭐ sort_order                               [string              ] ( 95.8% / 1)
+├── ⭐ url_path                                 [string              ] ( 95.8% / 1)
+├── ⭐ book_weight                              [number              ] ( 99.8% / 1,693)
+├── ⭐ book_weight_label                        [array               ] ( 99.8% / 1,693)
+├── ⭐ attribute_label                          [string              ] ( 99.8% / 1,693)
+├── ⭐ label                                    [number              ] ( 99.8% / 1,693)
+├── 🔹 book_whom                                [array               ] ( 39.0% / 4)
+├── 🔹 book_whom_label                          [array               ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 39.0% / 4)
+├── 🔹 attribute_label                          [string              ] ( 39.0% / 4)
+├── 🔹 label                                    [string              ] ( 39.0% / 4)
+├── 🔹 option_code                              [string              ] ( 39.0% / 4)
+├── 🔹 option_id                                [string              ] ( 39.0% / 4)
+├── 🔹 sort_order                               [string              ] ( 39.0% / 4)
+├── 🔹 url_path                                 [null                ] ( 39.0% / 4)
+├── 🔹 attribute_id                             [string              ] ( 38.9% / 3)
+├── 🔹 attribute_label                          [string              ] ( 38.9% / 3)
+├── 🔹 label                                    [string              ] ( 38.9% / 3)
+├── 🔹 option_code                              [string              ] ( 38.9% / 3)
+├── 🔹 option_id                                [string              ] ( 38.9% / 3)
+├── 🔹 sort_order                               [string              ] ( 38.9% / 3)
+├── 🔹 url_path                                 [null                ] ( 38.9% / 3)
+├── 🔹 attribute_id                             [string              ] ( 38.9% / 2)
+├── 🔹 attribute_label                          [string              ] ( 38.9% / 2)
+├── 🔹 label                                    [string              ] ( 38.9% / 2)
+├── 🔹 option_code                              [string              ] ( 38.9% / 2)
+├── 🔹 option_id                                [string              ] ( 38.9% / 2)
+├── 🔹 sort_order                               [string              ] ( 38.9% / 2)
+├── 🔹 url_path                                 [null                ] ( 38.9% / 2)
+├── ⭐ book_year                                [number              ] (100.0% / 1,929)
+├── ⭐ book_year_label                          [array               ] (100.0% / 1,929)
+├── ⭐ attribute_label                          [string              ] (100.0% / 1,929)
+├── ⭐ label                                    [number              ] (100.0% / 1,929)
+├── ⭐ category                                 [array               ] (100.0% / 2,000)
+├── ⭐ breadcrumb                               [number              ] (100.0% / 2,000)
+├── ⭐ category_id                              [number              ] (100.0% / 2,000)
+├── ⭐ level                                    [string              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ parent_id                                [string              ] (100.0% / 2,000)
+├── ⭐ position                                 [number              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ breadcrumb                               [number              ] (100.0% / 2,000)
+├── ⭐ category_id                              [number              ] (100.0% / 2,000)
+├── ⭐ level                                    [string              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ parent_id                                [string              ] (100.0% / 2,000)
+├── ⭐ position                                 [number              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ breadcrumb                               [number              ] (100.0% / 2,000)
+├── ⭐ category_id                              [number              ] (100.0% / 2,000)
+├── ⭐ level                                    [string              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ parent_id                                [string              ] (100.0% / 2,000)
+├── ⭐ position                                 [number              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ breadcrumb                               [number              ] (100.0% / 2,000)
+├── ⭐ category_id                              [number              ] (100.0% / 2,000)
+├── ⭐ level                                    [string              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ parent_id                                [string              ] (100.0% / 2,000)
+├── ⭐ position                                 [number              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ breadcrumb                               [number              ] (100.0% / 2,000)
+├── ⭐ category_id                              [number              ] (100.0% / 2,000)
+├── ⭐ level                                    [string              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ parent_id                                [string              ] (100.0% / 2,000)
+├── ⭐ position                                 [number              ] (100.0% / 2,000)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ category_ids                             [array               ] (100.0% / 2,000)
+├── 🔹 colored                                  [number              ] ( 49.1% / 1)
+├── ⭐ created_at                               [string              ] (100.0% / 2,000)
+├── ⭐ default_category                         [array               ] (100.0% / 2,000)
+├── ⭐ description                              [string              ] (100.0% / 1,858)
+├── ⭐ discount_percent                         [number              ] (100.0% / 2,000)
+├── ⭐ film_name_en                             [string              ] ( 99.3% / 22)
+├── ⭐ film_name_en_label                       [array               ] ( 99.3% / 22)
+├── ⭐ attribute_label                          [string              ] ( 99.3% / 22)
+├── ⭐ label                                    [string              ] ( 99.3% / 22)
+├── ⭐ filterable_category_ids                  [array               ] (100.0% / 2,000)
+├── ⭐ final_price                              [number              ] (100.0% / 2,000)
+├── ⭐ final_price_incl_tax                     [number              ] (100.0% / 1,990)
+├── ⭐ final_price_tax                          [number              ] (100.0% / 1,990)
+├── ⭐ for_filter_is_in_stock                   [array               ] (100.0% / 405)
+├── ⭐ free_shipping                            [number              ] (100.0% / 2,000)
+├── ⭐ h1                                       [string              ] (100.0% / 2,000)
+├── ⭐ id                                       [number              ] (100.0% / 2,000)
+├── ⭐ image                                    [string              ] (100.0% / 2,000)
+├── ⭐ image_cover_effect                       [number              ] (100.0% / 5)
+├── ⭐ is_top_sale                              [boolean             ] (100.0% / 271)
+├── ⭐ is_top_sale_count                        [number              ] ( 99.3% / 1)
+├── ⭐ keywords                                 [string              ] (100.0% / 1,683)
+├── ⭐ marketplace_id                           [string              ] ( 95.8% / 149)
+├── ⭐ media_gallery                            [array               ] (100.0% / 1,999)
+├── ⭐ image                                    [string              ] (100.0% / 1,999)
+├── ⭐ lab                                      [string              ] (100.0% / 1,999)
+├── ⭐ pos                                      [number              ] (100.0% / 1,999)
+├── ⭐ typ                                      [string              ] (100.0% / 1,999)
+├── ⭐ image                                    [string              ] ( 99.3% / 79)
+├── ⭐ lab                                      [string              ] ( 99.3% / 79)
+├── ⭐ pos                                      [number              ] ( 99.3% / 79)
+├── ⭐ typ                                      [string              ] ( 99.3% / 79)
+├── ⭐ image                                    [string              ] ( 99.3% / 39)
+├── ⭐ lab                                      [string              ] ( 99.3% / 39)
+├── ⭐ pos                                      [number              ] ( 99.3% / 39)
+├── ⭐ typ                                      [string              ] ( 99.3% / 39)
+├── ⭐ image                                    [string              ] ( 99.3% / 34)
+├── ⭐ lab                                      [string              ] ( 99.3% / 34)
+├── ⭐ pos                                      [number              ] ( 99.3% / 34)
+├── ⭐ typ                                      [string              ] ( 99.3% / 34)
+├── ⭐ image                                    [string              ] ( 99.3% / 27)
+├── ⭐ lab                                      [string              ] ( 99.3% / 27)
+├── ⭐ pos                                      [number              ] ( 99.3% / 27)
+├── ⭐ typ                                      [string              ] ( 99.3% / 27)
+├── ⭐ media_gallery_pdf                        [string              ] ( 95.0% / 1)
+├── ⭐ mediagallery_image                       [array               ] (100.0% / 56)
+├── ⭐ entity_id                                [string              ] (100.0% / 56)
+├── ⭐ file                                     [string              ] (100.0% / 56)
+├── ⭐ image_url                                [string              ] (100.0% / 56)
+├── ⭐ sort_order                               [string              ] (100.0% / 56)
+├── ⭐ entity_id                                [string              ] (100.0% / 55)
+├── ⭐ file                                     [string              ] (100.0% / 55)
+├── ⭐ image_url                                [string              ] (100.0% / 55)
+├── ⭐ sort_order                               [string              ] (100.0% / 55)
+├── ⭐ entity_id                                [string              ] (100.0% / 54)
+├── ⭐ file                                     [string              ] (100.0% / 54)
+├── ⭐ image_url                                [string              ] (100.0% / 54)
+├── ⭐ sort_order                               [string              ] (100.0% / 54)
+├── ⭐ entity_id                                [string              ] (100.0% / 53)
+├── ⭐ file                                     [string              ] (100.0% / 53)
+├── ⭐ image_url                                [string              ] (100.0% / 53)
+├── ⭐ sort_order                               [string              ] (100.0% / 53)
+├── ⭐ entity_id                                [string              ] (100.0% / 47)
+├── ⭐ file                                     [string              ] (100.0% / 47)
+├── ⭐ image_url                                [string              ] (100.0% / 47)
+├── ⭐ sort_order                               [string              ] (100.0% / 47)
+├── ⭐ meta_description                         [string              ] (100.0% / 1,954)
+├── 🔶 meta_keyword                             [string              ] ( 94.8% / 4)
+├── ⭐ meta_title                               [string              ] (100.0% / 1,954)
+├── ⭐ mobile_subscribe                         [number              ] (100.0% / 2,000)
+├── ⭐ name                                     [string              ] (100.0% / 2,000)
+├── ⭐ original_final_price                     [number              ] (100.0% / 1,990)
+├── ⭐ original_price                           [null, number        ] (100.0% / 2,000)
+├── ⭐ original_price_incl_tax                  [null, number        ] (100.0% / 2,000)
+├── ⭐ original_price_tax                       [null, number        ] (100.0% / 2,000)
+├── ⭐ original_special_price                   [number              ] ( 99.3% / 2)
+├── ⭐ payment_methods                          [array               ] (100.0% / 2,000)
+├── ⭐ code                                     [string              ] (100.0% / 2,000)
+├── ⭐ title                                    [string              ] (100.0% / 2,000)
+├── ⭐ code                                     [string              ] (100.0% / 2,000)
+├── ⭐ title                                    [string              ] (100.0% / 2,000)
+├── ⭐ code                                     [string              ] (100.0% / 2,000)
+├── ⭐ title                                    [string              ] (100.0% / 2,000)
+├── ⭐ code                                     [string              ] (100.0% / 2,000)
+├── ⭐ title                                    [string              ] (100.0% / 2,000)
+├── ⭐ code                                     [string              ] (100.0% / 2,000)
+├── ⭐ title                                    [string              ] (100.0% / 2,000)
+├── ⭐ price                                    [null, number        ] (100.0% / 2,000)
+├── ⭐ price_incl_tax                           [null, number        ] (100.0% / 2,000)
+├── ⭐ price_tax                                [number              ] (100.0% / 2,000)
+├── ⭐ product_links                            [array               ] (100.0% / 2,000)
+├── ⭐ promotion_ids                            [array               ] (100.0% / 2,000)
+├── ⭐ promotion_ids_visible                    [array               ] (100.0% / 2,000)
+├── ⭐ promotion_promo_type                     [string              ] (100.0% / 18)
+├── ⭐ promotions                               [array               ] (100.0% / 18)
+├── ⭐ background                               [null                ] (100.0% / 18)
+├── ⭐ color                                    [null                ] (100.0% / 18)
+├── ⭐ name                                     [null                ] (100.0% / 18)
+├── ⭐ sort                                     [number              ] (100.0% / 18)
+├── ⭐ url_key                                  [string              ] (100.0% / 18)
+├── ⭐ background                               [null                ] ( 99.3% / 12)
+├── ⭐ color                                    [null                ] ( 99.3% / 12)
+├── ⭐ name                                     [null                ] ( 99.3% / 12)
+├── ⭐ sort                                     [number              ] ( 99.3% / 12)
+├── ⭐ url_key                                  [string              ] ( 99.3% / 12)
+├── ⭐ background                               [null                ] ( 96.4% / 8)
+├── ⭐ color                                    [null                ] ( 96.4% / 8)
+├── ⭐ name                                     [null                ] ( 96.4% / 8)
+├── ⭐ sort                                     [number              ] ( 96.4% / 8)
+├── ⭐ url_key                                  [string              ] ( 96.4% / 8)
+├── ⭐ background                               [null                ] ( 96.4% / 4)
+├── ⭐ color                                    [null                ] ( 96.4% / 4)
+├── ⭐ name                                     [null                ] ( 96.4% / 4)
+├── ⭐ sort                                     [number              ] ( 96.4% / 4)
+├── ⭐ url_key                                  [string              ] ( 96.4% / 4)
+├── ⭐ background                               [null                ] ( 96.4% / 1)
+├── ⭐ color                                    [null                ] ( 96.4% / 1)
+├── ⭐ name                                     [null                ] ( 96.4% / 1)
+├── ⭐ sort                                     [number              ] ( 96.4% / 1)
+├── ⭐ url_key                                  [string              ] ( 96.4% / 1)
+├── ⭐ published_at                             [string              ] (100.0% / 486)
+├── ⭐ quote                                    [string              ] ( 95.8% / 62)
+├── ⭐ regular_price                            [number              ] (100.0% / 2,000)
+├── ⭐ reviews                                  [object              ] ( 95.9% / 8)
+├── ⭐ rating_summary                           [string              ] ( 95.9% / 8)
+├── ⭐ reviews_count                            [string              ] ( 95.9% / 8)
+├── ⭐ reward_bonus                             [array, object       ] (100.0% / 2,000)
+├── ⭐ 0                                        [object              ] ( 96.1% / 6)
+├── ⭐ customer_group_id                        [number              ] ( 96.1% / 6)
+├── ⭐ is_extra_bonus                           [number              ] ( 96.1% / 6)
+├── ⭐ percent                                  [number              ] ( 96.1% / 6)
+├── ⭐ 1                                        [object              ] ( 96.1% / 6)
+├── ⭐ customer_group_id                        [number              ] ( 96.1% / 6)
+├── ⭐ is_extra_bonus                           [number              ] ( 96.1% / 6)
+├── ⭐ percent                                  [number              ] ( 96.1% / 6)
+├── ⭐ 115                                      [object              ] ( 96.1% / 3)
+├── ⭐ is_extra_bonus                           [number              ] ( 96.1% / 3)
+├── ⭐ percent                                  [number              ] ( 96.1% / 3)
+├── ⭐ sector_id                                [number              ] ( 96.1% / 3)
+├── 🔶 117                                      [object              ] ( 94.8% / 2)
+├── 🔶 is_extra_bonus                           [number              ] ( 94.8% / 2)
+├── 🔶 percent                                  [number              ] ( 94.8% / 2)
+├── 🔶 sector_id                                [number              ] ( 94.8% / 2)
+├── 🔶 19                                       [object              ] ( 94.8% / 1)
+├── 🔶 is_extra_bonus                           [number              ] ( 94.8% / 1)
+├── 🔶 percent                                  [number              ] ( 94.8% / 1)
+├── 🔶 sector_id                                [number              ] ( 94.8% / 1)
+├── ⭐ 41                                       [object              ] ( 95.8% / 1)
+├── ⭐ is_extra_bonus                           [number              ] ( 95.8% / 1)
+├── ⭐ percent                                  [number              ] ( 95.8% / 1)
+├── ⭐ sector_id                                [number              ] ( 95.8% / 1)
+├── ⭐ customer_group_id                        [number              ] (100.0% / 1,994)
+├── ⭐ is_extra_bonus                           [number              ] (100.0% / 1,994)
+├── ⭐ percent                                  [number              ] (100.0% / 1,994)
+├── ⭐ customer_group_id                        [number              ] (100.0% / 1,994)
+├── ⭐ is_extra_bonus                           [number              ] (100.0% / 1,994)
+├── ⭐ percent                                  [number              ] (100.0% / 1,994)
+├── ⭐ short_description                        [string              ] ( 99.8% / 1,419)
+├── ⭐ sku                                      [string              ] (100.0% / 2,000)
+├── ⭐ small_image                              [string              ] (100.0% / 2,000)
+├── ⭐ special_from_date                        [string              ] ( 99.3% / 58)
+├── ⭐ special_price                            [number              ] (100.0% / 2,000)
+├── ⭐ special_price_incl_tax                   [number              ] (100.0% / 2,000)
+├── ⭐ special_price_tax                        [number              ] (100.0% / 2,000)
+├── ⭐ statistics_visits                        [number              ] (100.0% / 338)
+├── ⭐ status                                   [number              ] (100.0% / 2,000)
+├── ⭐ stock                                    [array               ] (100.0% / 2,000)
+├── ⭐ is_europe                                [boolean             ] (100.0% / 1,070)
+├── ⭐ is_in_stock                              [boolean             ] (100.0% / 2,000)
+├── ⭐ product_id                               [number              ] (100.0% / 2,000)
+├── ⭐ qty                                      [number              ] (100.0% / 2,000)
+├── ⭐ shipping_date                            [string              ] (100.0% / 1,789)
+├── ⭐ source_code                              [string              ] (100.0% / 2,000)
+├── ⭐ stock_status                             [number              ] (100.0% / 2,000)
+├── ⭐ is_europe                                [boolean             ] (100.0% / 191)
+├── ⭐ is_in_stock                              [boolean             ] (100.0% / 200)
+├── ⭐ product_id                               [number              ] (100.0% / 200)
+├── ⭐ qty                                      [number              ] (100.0% / 200)
+├── ⭐ source_code                              [string              ] (100.0% / 200)
+├── ⭐ stock_status                             [number              ] (100.0% / 200)
+├── ⭐ thumbnail                                [string              ] (100.0% / 2,000)
+├── ⭐ tsk                                      [number              ] (100.0% / 2,000)
+├── ⭐ type_id                                  [string              ] (100.0% / 2,000)
+├── ⭐ updated_at                               [string              ] (100.0% / 2,000)
+├── ⭐ url_key                                  [string              ] (100.0% / 1,997)
+├── ⭐ url_path                                 [string              ] (100.0% / 2,000)
+├── ⭐ url_path_1                               [string              ] (100.0% / 2,000)
+├── ⭐ url_path_2                               [string              ] (100.0% / 2,000)
+├── ⭐ url_path_3                               [string              ] (100.0% / 2,000)
+├── ⭐ visibility                               [number              ] (100.0% / 2,000)
+└── ⭐ weight                                   [number              ] ( 95.5% / 23)
+
+====================================================================================================
+DETAILED FIELD ANALYSIS
+====================================================================================================
+
+Path: root
+  Types: object
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root._category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root._scraped_at
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.age
+  Types: array
+  Occurrences: 69 / 2,000 (99.6%)
+  Array item types: number
+
+Path: root.age_label
+  Types: array
+  Occurrences: 69 / 2,000 (99.6%)
+  Array item types: object
+
+Path: root.age_label[0].attribute_id
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].attribute_label
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].label
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].option_code
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].option_id
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].sort_order
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[0].url_path
+  Types: string
+  Occurrences: 69 / 2,000 (99.6%)
+
+Path: root.age_label[1].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].label
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.age_label[1].url_path
+  Types: string
+  Occurrences: 1 / 2,000 (95.6%)
+
+Path: root.another_formats
+  Types: array
+  Occurrences: 8 / 2,000 (99.3%)
+  Array item types: object
+
+Path: root.another_formats[0].entity_id
+  Types: string
+  Occurrences: 6 / 2,000 (99.3%)
+
+Path: root.another_formats[0].final_price
+  Types: number
+  Occurrences: 6 / 2,000 (99.3%)
+
+Path: root.another_formats[0].regular_price
+  Types: number
+  Occurrences: 6 / 2,000 (99.3%)
+
+Path: root.another_formats[0].type
+  Types: string
+  Occurrences: 6 / 2,000 (99.3%)
+
+Path: root.another_formats[0].url
+  Types: string
+  Occurrences: 6 / 2,000 (99.3%)
+
+Path: root.another_formats[1].entity_id
+  Types: string
+  Occurrences: 2 / 2,000 (95.8%)
+
+Path: root.another_formats[1].final_price
+  Types: number
+  Occurrences: 2 / 2,000 (95.8%)
+
+Path: root.another_formats[1].regular_price
+  Types: number
+  Occurrences: 2 / 2,000 (95.8%)
+
+Path: root.another_formats[1].type
+  Types: string
+  Occurrences: 2 / 2,000 (95.8%)
+
+Path: root.another_formats[1].url
+  Types: string
+  Occurrences: 2 / 2,000 (95.8%)
+
+Path: root.another_link
+  Types: array
+  Occurrences: 638 / 2,000 (99.9%)
+  Array item types: string
+
+Path: root.attribute_set_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.author
+  Types: array
+  Occurrences: 1,214 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.author_label
+  Types: array
+  Occurrences: 1,214 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.author_label[0].attribute_id
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].attribute_label
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].label
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].option_code
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].option_id
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].sort_order
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[0].url_path
+  Types: string
+  Occurrences: 1,214 / 2,000 (100.0%)
+
+Path: root.author_label[1].attribute_id
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].attribute_label
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].label
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].option_code
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].option_id
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].sort_order
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[1].url_path
+  Types: string
+  Occurrences: 670 / 2,000 (100.0%)
+
+Path: root.author_label[2].attribute_id
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].attribute_label
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].label
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].option_code
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].option_id
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].sort_order
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[2].url_path
+  Types: string
+  Occurrences: 220 / 2,000 (100.0%)
+
+Path: root.author_label[3].attribute_id
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].attribute_label
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].label
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].option_code
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].option_id
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].sort_order
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[3].url_path
+  Types: string
+  Occurrences: 69 / 2,000 (98.2%)
+
+Path: root.author_label[4].attribute_id
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].attribute_label
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].label
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].option_code
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].option_id
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].sort_order
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.author_label[4].url_path
+  Types: string
+  Occurrences: 22 / 2,000 (82.0%)
+
+Path: root.barcode
+  Types: string
+  Occurrences: 1,982 / 2,000 (100.0%)
+
+Path: root.book_binding
+  Types: string
+  Occurrences: 1,858 / 2,000 (100.0%)
+
+Path: root.book_binding_label
+  Types: array
+  Occurrences: 1,858 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_binding_label[0].attribute_label
+  Types: string
+  Occurrences: 1,858 / 2,000 (100.0%)
+
+Path: root.book_binding_label[0].label
+  Types: string
+  Occurrences: 1,858 / 2,000 (100.0%)
+
+Path: root.book_binding_type
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.book_binding_type_label
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_binding_type_label[0].attribute_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].attribute_label
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].label
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].option_code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].option_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].sort_order
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[0].url_path
+  Types: null
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.book_binding_type_label[1].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_binding_type_label[1].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_box_binding
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_box_binding_label
+  Types: array
+  Occurrences: 1 / 2,000 (31.2%)
+  Array item types: object
+
+Path: root.book_box_binding_label[0].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_box_binding_label[0].label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_circulation
+  Types: string
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.book_circulation_label
+  Types: array
+  Occurrences: 2 / 2,000 (94.8%)
+  Array item types: object
+
+Path: root.book_circulation_label[0].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.book_circulation_label[0].label
+  Types: string
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.book_country
+  Types: array
+  Occurrences: 1 / 2,000 (40.4%)
+  Array item types: number
+
+Path: root.book_edition
+  Types: string
+  Occurrences: 2 / 2,000 (39.6%)
+
+Path: root.book_edition_label
+  Types: array
+  Occurrences: 2 / 2,000 (39.6%)
+  Array item types: object
+
+Path: root.book_edition_label[0].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (39.6%)
+
+Path: root.book_edition_label[0].label
+  Types: string
+  Occurrences: 2 / 2,000 (39.6%)
+
+Path: root.book_editor
+  Types: array
+  Occurrences: 8 / 2,000 (48.5%)
+  Array item types: number
+
+Path: root.book_editor_label
+  Types: array
+  Occurrences: 8 / 2,000 (48.5%)
+  Array item types: object
+
+Path: root.book_editor_label[0].attribute_id
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].attribute_label
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].label
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].option_code
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].option_id
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].sort_order
+  Types: string
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[0].url_path
+  Types: null
+  Occurrences: 8 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].label
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[1].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].label
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_editor_label[2].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (48.5%)
+
+Path: root.book_first_year
+  Types: number
+  Occurrences: 6 / 2,000 (95.8%)
+
+Path: root.book_first_year_label
+  Types: array
+  Occurrences: 6 / 2,000 (95.8%)
+  Array item types: object
+
+Path: root.book_first_year_label[0].attribute_label
+  Types: string
+  Occurrences: 6 / 2,000 (95.8%)
+
+Path: root.book_first_year_label[0].label
+  Types: number
+  Occurrences: 6 / 2,000 (95.8%)
+
+Path: root.book_font
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_font_label
+  Types: array
+  Occurrences: 1 / 2,000 (94.7%)
+  Array item types: object
+
+Path: root.book_font_label[0].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_font_label[0].label
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_gift
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: number
+
+Path: root.book_gift_label
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: object
+
+Path: root.book_gift_label[0].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_gift_label[0].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_illustration
+  Types: array
+  Occurrences: 1,892 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.book_illustration_label
+  Types: array
+  Occurrences: 1,892 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_illustration_label[0].attribute_id
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].attribute_label
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].label
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].option_code
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].option_id
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].sort_order
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[0].url_path
+  Types: string
+  Occurrences: 1,892 / 2,000 (100.0%)
+
+Path: root.book_illustration_label[1].attribute_id
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].attribute_label
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].label
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].option_code
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].option_id
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].sort_order
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_illustration_label[1].url_path
+  Types: string
+  Occurrences: 6 / 2,000 (48.9%)
+
+Path: root.book_isbn
+  Types: string
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.book_isbn_label
+  Types: array
+  Occurrences: 1,929 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_isbn_label[0].attribute_label
+  Types: string
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.book_isbn_label[0].label
+  Types: string
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.book_lang
+  Types: array
+  Occurrences: 1,986 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.book_lang_label
+  Types: array
+  Occurrences: 1,986 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_lang_label[0].attribute_id
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].attribute_label
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].label
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].option_code
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].option_id
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].sort_order
+  Types: string
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[0].url_path
+  Types: null
+  Occurrences: 1,986 / 2,000 (100.0%)
+
+Path: root.book_lang_label[1].attribute_id
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].attribute_label
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].label
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].option_code
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].option_id
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].sort_order
+  Types: string
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[1].url_path
+  Types: null
+  Occurrences: 6 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].label
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_lang_label[2].url_path
+  Types: null
+  Occurrences: 1 / 2,000 (30.9%)
+
+Path: root.book_occasion
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: number
+
+Path: root.book_occasion_label
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: object
+
+Path: root.book_occasion_label[0].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[0].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[1].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[2].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_occasion_label[3].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[3].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_occasion_label[4].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_occasion_label[4].url_path
+  Types: null
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_page_count
+  Types: string
+  Occurrences: 1,890 / 2,000 (100.0%)
+
+Path: root.book_page_count_label
+  Types: array
+  Occurrences: 1,890 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_page_count_label[0].attribute_label
+  Types: string
+  Occurrences: 1,890 / 2,000 (100.0%)
+
+Path: root.book_page_count_label[0].label
+  Types: string
+  Occurrences: 1,890 / 2,000 (100.0%)
+
+Path: root.book_painter
+  Types: array
+  Occurrences: 1 / 2,000 (48.2%)
+  Array item types: number
+
+Path: root.book_painter_label
+  Types: array
+  Occurrences: 1 / 2,000 (48.2%)
+  Array item types: object
+
+Path: root.book_painter_label[0].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].label
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_painter_label[0].url_path
+  Types: string
+  Occurrences: 1 / 2,000 (48.2%)
+
+Path: root.book_paper
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_paper_label
+  Types: array
+  Occurrences: 1 / 2,000 (94.7%)
+  Array item types: object
+
+Path: root.book_paper_label[0].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_paper_label[0].label
+  Types: string
+  Occurrences: 1 / 2,000 (94.7%)
+
+Path: root.book_period
+  Types: array
+  Occurrences: 1 / 2,000 (40.4%)
+  Array item types: number
+
+Path: root.book_period_label
+  Types: array
+  Occurrences: 1 / 2,000 (40.4%)
+  Array item types: object
+
+Path: root.book_period_label[0].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].label
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_period_label[0].url_path
+  Types: string
+  Occurrences: 1 / 2,000 (40.4%)
+
+Path: root.book_print
+  Types: array
+  Occurrences: 27 / 2,000 (99.3%)
+  Array item types: number
+
+Path: root.book_print_label
+  Types: array
+  Occurrences: 27 / 2,000 (99.3%)
+  Array item types: object
+
+Path: root.book_print_label[0].attribute_id
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].attribute_label
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].label
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].option_code
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].option_id
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].sort_order
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_print_label[0].url_path
+  Types: null
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.book_publication
+  Types: array
+  Occurrences: 1,954 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.book_publication_label
+  Types: array
+  Occurrences: 1,954 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_publication_label[0].attribute_id
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].attribute_label
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].label
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].option_code
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].option_id
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].sort_order
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publication_label[0].url_path
+  Types: null
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.book_publisher
+  Types: array
+  Occurrences: 1,962 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.book_publisher_label
+  Types: array
+  Occurrences: 1,962 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_publisher_label[0].attribute_id
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].attribute_label
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].label
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].option_code
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].option_id
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].sort_order
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[0].url_path
+  Types: string
+  Occurrences: 1,962 / 2,000 (100.0%)
+
+Path: root.book_publisher_label[1].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].label
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_publisher_label[1].url_path
+  Types: string
+  Occurrences: 1 / 2,000 (31.2%)
+
+Path: root.book_series
+  Types: array
+  Occurrences: 655 / 2,000 (99.6%)
+  Array item types: number
+
+Path: root.book_series_label
+  Types: array
+  Occurrences: 655 / 2,000 (99.6%)
+  Array item types: object
+
+Path: root.book_series_label[0].attribute_id
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].attribute_label
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].label
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].option_code
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].option_id
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].sort_order
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_series_label[0].url_path
+  Types: string
+  Occurrences: 655 / 2,000 (99.6%)
+
+Path: root.book_style
+  Types: array
+  Occurrences: 3 / 2,000 (39.0%)
+  Array item types: number
+
+Path: root.book_style_label
+  Types: array
+  Occurrences: 3 / 2,000 (39.0%)
+  Array item types: object
+
+Path: root.book_style_label[0].attribute_id
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].attribute_label
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].label
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].option_code
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].option_id
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].sort_order
+  Types: string
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[0].url_path
+  Types: null
+  Occurrences: 3 / 2,000 (39.0%)
+
+Path: root.book_style_label[1].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].label
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[1].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (31.2%)
+
+Path: root.book_style_label[2].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].label
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_style_label[2].url_path
+  Types: null
+  Occurrences: 1 / 2,000 (30.6%)
+
+Path: root.book_translator
+  Types: array
+  Occurrences: 11 / 2,000 (99.3%)
+  Array item types: number
+
+Path: root.book_translator_label
+  Types: array
+  Occurrences: 11 / 2,000 (99.3%)
+  Array item types: object
+
+Path: root.book_translator_label[0].attribute_id
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].attribute_label
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].label
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].option_code
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].option_id
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].sort_order
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[0].url_path
+  Types: string
+  Occurrences: 11 / 2,000 (99.3%)
+
+Path: root.book_translator_label[1].attribute_id
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].attribute_label
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].label
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].option_code
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].option_id
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].sort_order
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_translator_label[1].url_path
+  Types: string
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.book_weight
+  Types: number
+  Occurrences: 1,693 / 2,000 (99.8%)
+
+Path: root.book_weight_label
+  Types: array
+  Occurrences: 1,693 / 2,000 (99.8%)
+  Array item types: object
+
+Path: root.book_weight_label[0].attribute_label
+  Types: string
+  Occurrences: 1,693 / 2,000 (99.8%)
+
+Path: root.book_weight_label[0].label
+  Types: number
+  Occurrences: 1,693 / 2,000 (99.8%)
+
+Path: root.book_whom
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: number
+
+Path: root.book_whom_label
+  Types: array
+  Occurrences: 4 / 2,000 (39.0%)
+  Array item types: object
+
+Path: root.book_whom_label[0].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[0].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[1].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].attribute_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].attribute_label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].label
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].option_code
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].option_id
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].sort_order
+  Types: string
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[2].url_path
+  Types: null
+  Occurrences: 4 / 2,000 (39.0%)
+
+Path: root.book_whom_label[3].attribute_id
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].attribute_label
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].label
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].option_code
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].option_id
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].sort_order
+  Types: string
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[3].url_path
+  Types: null
+  Occurrences: 3 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].attribute_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].attribute_label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].label
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].option_code
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].option_id
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].sort_order
+  Types: string
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_whom_label[4].url_path
+  Types: null
+  Occurrences: 2 / 2,000 (38.9%)
+
+Path: root.book_year
+  Types: number
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.book_year_label
+  Types: array
+  Occurrences: 1,929 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.book_year_label[0].attribute_label
+  Types: string
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.book_year_label[0].label
+  Types: number
+  Occurrences: 1,929 / 2,000 (100.0%)
+
+Path: root.category
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.category[0].breadcrumb
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].level
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].parent_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].position
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[0].url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].breadcrumb
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].level
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].parent_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].position
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[1].url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].breadcrumb
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].level
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].parent_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].position
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[2].url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].breadcrumb
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].level
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].parent_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].position
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[3].url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].breadcrumb
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].category_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].level
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].parent_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].position
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category[4].url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.category_ids
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.colored
+  Types: number
+  Occurrences: 1 / 2,000 (49.1%)
+
+Path: root.created_at
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.default_category
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: string
+
+Path: root.description
+  Types: string
+  Occurrences: 1,858 / 2,000 (100.0%)
+
+Path: root.discount_percent
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.film_name_en
+  Types: string
+  Occurrences: 22 / 2,000 (99.3%)
+
+Path: root.film_name_en_label
+  Types: array
+  Occurrences: 22 / 2,000 (99.3%)
+  Array item types: object
+
+Path: root.film_name_en_label[0].attribute_label
+  Types: string
+  Occurrences: 22 / 2,000 (99.3%)
+
+Path: root.film_name_en_label[0].label
+  Types: string
+  Occurrences: 22 / 2,000 (99.3%)
+
+Path: root.filterable_category_ids
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.final_price
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.final_price_incl_tax
+  Types: number
+  Occurrences: 1,990 / 2,000 (100.0%)
+
+Path: root.final_price_tax
+  Types: number
+  Occurrences: 1,990 / 2,000 (100.0%)
+
+Path: root.for_filter_is_in_stock
+  Types: array
+  Occurrences: 405 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.free_shipping
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.h1
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.image
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.image_cover_effect
+  Types: number
+  Occurrences: 5 / 2,000 (100.0%)
+
+Path: root.is_top_sale
+  Types: boolean
+  Occurrences: 271 / 2,000 (100.0%)
+
+Path: root.is_top_sale_count
+  Types: number
+  Occurrences: 1 / 2,000 (99.3%)
+
+Path: root.keywords
+  Types: string
+  Occurrences: 1,683 / 2,000 (100.0%)
+
+Path: root.marketplace_id
+  Types: string
+  Occurrences: 149 / 2,000 (95.8%)
+
+Path: root.media_gallery
+  Types: array
+  Occurrences: 1,999 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.media_gallery[0].image
+  Types: string
+  Occurrences: 1,999 / 2,000 (100.0%)
+
+Path: root.media_gallery[0].lab
+  Types: string
+  Occurrences: 1,999 / 2,000 (100.0%)
+
+Path: root.media_gallery[0].pos
+  Types: number
+  Occurrences: 1,999 / 2,000 (100.0%)
+
+Path: root.media_gallery[0].typ
+  Types: string
+  Occurrences: 1,999 / 2,000 (100.0%)
+
+Path: root.media_gallery[1].image
+  Types: string
+  Occurrences: 79 / 2,000 (99.3%)
+
+Path: root.media_gallery[1].lab
+  Types: string
+  Occurrences: 79 / 2,000 (99.3%)
+
+Path: root.media_gallery[1].pos
+  Types: number
+  Occurrences: 79 / 2,000 (99.3%)
+
+Path: root.media_gallery[1].typ
+  Types: string
+  Occurrences: 79 / 2,000 (99.3%)
+
+Path: root.media_gallery[2].image
+  Types: string
+  Occurrences: 39 / 2,000 (99.3%)
+
+Path: root.media_gallery[2].lab
+  Types: string
+  Occurrences: 39 / 2,000 (99.3%)
+
+Path: root.media_gallery[2].pos
+  Types: number
+  Occurrences: 39 / 2,000 (99.3%)
+
+Path: root.media_gallery[2].typ
+  Types: string
+  Occurrences: 39 / 2,000 (99.3%)
+
+Path: root.media_gallery[3].image
+  Types: string
+  Occurrences: 34 / 2,000 (99.3%)
+
+Path: root.media_gallery[3].lab
+  Types: string
+  Occurrences: 34 / 2,000 (99.3%)
+
+Path: root.media_gallery[3].pos
+  Types: number
+  Occurrences: 34 / 2,000 (99.3%)
+
+Path: root.media_gallery[3].typ
+  Types: string
+  Occurrences: 34 / 2,000 (99.3%)
+
+Path: root.media_gallery[4].image
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.media_gallery[4].lab
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.media_gallery[4].pos
+  Types: number
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.media_gallery[4].typ
+  Types: string
+  Occurrences: 27 / 2,000 (99.3%)
+
+Path: root.media_gallery_pdf
+  Types: string
+  Occurrences: 1 / 2,000 (95.0%)
+
+Path: root.mediagallery_image
+  Types: array
+  Occurrences: 56 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.mediagallery_image[0].entity_id
+  Types: string
+  Occurrences: 56 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[0].file
+  Types: string
+  Occurrences: 56 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[0].image_url
+  Types: string
+  Occurrences: 56 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[0].sort_order
+  Types: string
+  Occurrences: 56 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[1].entity_id
+  Types: string
+  Occurrences: 55 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[1].file
+  Types: string
+  Occurrences: 55 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[1].image_url
+  Types: string
+  Occurrences: 55 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[1].sort_order
+  Types: string
+  Occurrences: 55 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[2].entity_id
+  Types: string
+  Occurrences: 54 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[2].file
+  Types: string
+  Occurrences: 54 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[2].image_url
+  Types: string
+  Occurrences: 54 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[2].sort_order
+  Types: string
+  Occurrences: 54 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[3].entity_id
+  Types: string
+  Occurrences: 53 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[3].file
+  Types: string
+  Occurrences: 53 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[3].image_url
+  Types: string
+  Occurrences: 53 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[3].sort_order
+  Types: string
+  Occurrences: 53 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[4].entity_id
+  Types: string
+  Occurrences: 47 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[4].file
+  Types: string
+  Occurrences: 47 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[4].image_url
+  Types: string
+  Occurrences: 47 / 2,000 (100.0%)
+
+Path: root.mediagallery_image[4].sort_order
+  Types: string
+  Occurrences: 47 / 2,000 (100.0%)
+
+Path: root.meta_description
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.meta_keyword
+  Types: string
+  Occurrences: 4 / 2,000 (94.8%)
+
+Path: root.meta_title
+  Types: string
+  Occurrences: 1,954 / 2,000 (100.0%)
+
+Path: root.mobile_subscribe
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.name
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.original_final_price
+  Types: number
+  Occurrences: 1,990 / 2,000 (100.0%)
+
+Path: root.original_price
+  Types: null, number
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - number: 1,990
+    - null: 10
+
+Path: root.original_price_incl_tax
+  Types: null, number
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - number: 1,990
+    - null: 10
+
+Path: root.original_price_tax
+  Types: null, number
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - number: 1,990
+    - null: 10
+
+Path: root.original_special_price
+  Types: number
+  Occurrences: 2 / 2,000 (99.3%)
+
+Path: root.payment_methods
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.payment_methods[0].code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[0].title
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[1].code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[1].title
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[2].code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[2].title
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[3].code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[3].title
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[4].code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.payment_methods[4].title
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.price
+  Types: null, number
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - number: 1,990
+    - null: 10
+
+Path: root.price_incl_tax
+  Types: null, number
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - number: 1,990
+    - null: 10
+
+Path: root.price_tax
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.product_links
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.promotion_ids
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.promotion_ids_visible
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: number
+
+Path: root.promotion_promo_type
+  Types: string
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions
+  Types: array
+  Occurrences: 18 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.promotions[0].background
+  Types: null
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions[0].color
+  Types: null
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions[0].name
+  Types: null
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions[0].sort
+  Types: number
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions[0].url_key
+  Types: string
+  Occurrences: 18 / 2,000 (100.0%)
+
+Path: root.promotions[1].background
+  Types: null
+  Occurrences: 12 / 2,000 (99.3%)
+
+Path: root.promotions[1].color
+  Types: null
+  Occurrences: 12 / 2,000 (99.3%)
+
+Path: root.promotions[1].name
+  Types: null
+  Occurrences: 12 / 2,000 (99.3%)
+
+Path: root.promotions[1].sort
+  Types: number
+  Occurrences: 12 / 2,000 (99.3%)
+
+Path: root.promotions[1].url_key
+  Types: string
+  Occurrences: 12 / 2,000 (99.3%)
+
+Path: root.promotions[2].background
+  Types: null
+  Occurrences: 8 / 2,000 (96.4%)
+
+Path: root.promotions[2].color
+  Types: null
+  Occurrences: 8 / 2,000 (96.4%)
+
+Path: root.promotions[2].name
+  Types: null
+  Occurrences: 8 / 2,000 (96.4%)
+
+Path: root.promotions[2].sort
+  Types: number
+  Occurrences: 8 / 2,000 (96.4%)
+
+Path: root.promotions[2].url_key
+  Types: string
+  Occurrences: 8 / 2,000 (96.4%)
+
+Path: root.promotions[3].background
+  Types: null
+  Occurrences: 4 / 2,000 (96.4%)
+
+Path: root.promotions[3].color
+  Types: null
+  Occurrences: 4 / 2,000 (96.4%)
+
+Path: root.promotions[3].name
+  Types: null
+  Occurrences: 4 / 2,000 (96.4%)
+
+Path: root.promotions[3].sort
+  Types: number
+  Occurrences: 4 / 2,000 (96.4%)
+
+Path: root.promotions[3].url_key
+  Types: string
+  Occurrences: 4 / 2,000 (96.4%)
+
+Path: root.promotions[4].background
+  Types: null
+  Occurrences: 1 / 2,000 (96.4%)
+
+Path: root.promotions[4].color
+  Types: null
+  Occurrences: 1 / 2,000 (96.4%)
+
+Path: root.promotions[4].name
+  Types: null
+  Occurrences: 1 / 2,000 (96.4%)
+
+Path: root.promotions[4].sort
+  Types: number
+  Occurrences: 1 / 2,000 (96.4%)
+
+Path: root.promotions[4].url_key
+  Types: string
+  Occurrences: 1 / 2,000 (96.4%)
+
+Path: root.published_at
+  Types: string
+  Occurrences: 486 / 2,000 (100.0%)
+
+Path: root.quote
+  Types: string
+  Occurrences: 62 / 2,000 (95.8%)
+
+Path: root.regular_price
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.reviews
+  Types: object
+  Occurrences: 8 / 2,000 (95.9%)
+
+Path: root.reviews.rating_summary
+  Types: string
+  Occurrences: 8 / 2,000 (95.9%)
+
+Path: root.reviews.reviews_count
+  Types: string
+  Occurrences: 8 / 2,000 (95.9%)
+
+Path: root.reward_bonus
+  Types: array, object
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Type distribution:
+    - array: 1,994
+    - object: 6
+  Array item types: object
+
+Path: root.reward_bonus.0
+  Types: object
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.0.customer_group_id
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.0.is_extra_bonus
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.0.percent
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.1
+  Types: object
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.1.customer_group_id
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.1.is_extra_bonus
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.1.percent
+  Types: number
+  Occurrences: 6 / 2,000 (96.1%)
+
+Path: root.reward_bonus.115
+  Types: object
+  Occurrences: 3 / 2,000 (96.1%)
+
+Path: root.reward_bonus.115.is_extra_bonus
+  Types: number
+  Occurrences: 3 / 2,000 (96.1%)
+
+Path: root.reward_bonus.115.percent
+  Types: number
+  Occurrences: 3 / 2,000 (96.1%)
+
+Path: root.reward_bonus.115.sector_id
+  Types: number
+  Occurrences: 3 / 2,000 (96.1%)
+
+Path: root.reward_bonus.117
+  Types: object
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.reward_bonus.117.is_extra_bonus
+  Types: number
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.reward_bonus.117.percent
+  Types: number
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.reward_bonus.117.sector_id
+  Types: number
+  Occurrences: 2 / 2,000 (94.8%)
+
+Path: root.reward_bonus.19
+  Types: object
+  Occurrences: 1 / 2,000 (94.8%)
+
+Path: root.reward_bonus.19.is_extra_bonus
+  Types: number
+  Occurrences: 1 / 2,000 (94.8%)
+
+Path: root.reward_bonus.19.percent
+  Types: number
+  Occurrences: 1 / 2,000 (94.8%)
+
+Path: root.reward_bonus.19.sector_id
+  Types: number
+  Occurrences: 1 / 2,000 (94.8%)
+
+Path: root.reward_bonus.41
+  Types: object
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.reward_bonus.41.is_extra_bonus
+  Types: number
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.reward_bonus.41.percent
+  Types: number
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.reward_bonus.41.sector_id
+  Types: number
+  Occurrences: 1 / 2,000 (95.8%)
+
+Path: root.reward_bonus[0].customer_group_id
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.reward_bonus[0].is_extra_bonus
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.reward_bonus[0].percent
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.reward_bonus[1].customer_group_id
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.reward_bonus[1].is_extra_bonus
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.reward_bonus[1].percent
+  Types: number
+  Occurrences: 1,994 / 2,000 (100.0%)
+
+Path: root.short_description
+  Types: string
+  Occurrences: 1,419 / 2,000 (99.8%)
+
+Path: root.sku
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.small_image
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.special_from_date
+  Types: string
+  Occurrences: 58 / 2,000 (99.3%)
+
+Path: root.special_price
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.special_price_incl_tax
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.special_price_tax
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.statistics_visits
+  Types: number
+  Occurrences: 338 / 2,000 (100.0%)
+
+Path: root.status
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock
+  Types: array
+  Occurrences: 2,000 / 2,000 (100.0%)
+  Array item types: object
+
+Path: root.stock[0].is_europe
+  Types: boolean
+  Occurrences: 1,070 / 2,000 (100.0%)
+
+Path: root.stock[0].is_in_stock
+  Types: boolean
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock[0].product_id
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock[0].qty
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock[0].shipping_date
+  Types: string
+  Occurrences: 1,789 / 2,000 (100.0%)
+
+Path: root.stock[0].source_code
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock[0].stock_status
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.stock[1].is_europe
+  Types: boolean
+  Occurrences: 191 / 2,000 (100.0%)
+
+Path: root.stock[1].is_in_stock
+  Types: boolean
+  Occurrences: 200 / 2,000 (100.0%)
+
+Path: root.stock[1].product_id
+  Types: number
+  Occurrences: 200 / 2,000 (100.0%)
+
+Path: root.stock[1].qty
+  Types: number
+  Occurrences: 200 / 2,000 (100.0%)
+
+Path: root.stock[1].source_code
+  Types: string
+  Occurrences: 200 / 2,000 (100.0%)
+
+Path: root.stock[1].stock_status
+  Types: number
+  Occurrences: 200 / 2,000 (100.0%)
+
+Path: root.thumbnail
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.tsk
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.type_id
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.updated_at
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.url_key
+  Types: string
+  Occurrences: 1,997 / 2,000 (100.0%)
+
+Path: root.url_path
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.url_path_1
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.url_path_2
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.url_path_3
+  Types: string
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.visibility
+  Types: number
+  Occurrences: 2,000 / 2,000 (100.0%)
+
+Path: root.weight
+  Types: number
+  Occurrences: 23 / 2,000 (95.5%)

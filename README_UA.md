@@ -1,91 +1,87 @@
-# ONIX Aggregator (Архітектура V2)
+# ONIX Aggregator
 
 **Централізований каталог книг та агрегатор цін для України**
 
-Цей проект реалізує високопродуктивну систему для агрегації метаданих книг та цін від декількох рітейлерів, суворо дотримуючись стандарту **ONIX for Books 3.0**.
+Система для агрегації метаданих книг та цін від рітейлерів, на основі стандарту **ONIX for Books 3.0**.
 
 ## 🏗 Архітектура
 
-Система використовує **Гібридну Архітектуру Бази Даних**, розділену на два домени:
+- **ORM**: Prisma (Python client v0.15.0)
+- **База даних**: PostgreSQL з двома схемами:
+  - `public` - основні дані (товари, автори, теми)
+  - `codelist` - довідники ONIX кодів
 
-### 1. Каталог (Статичні Дані)
-Зберігає "Золотий Запис" (Golden Record) для кожної книги. Оптимізовано для складного пошуку та фільтрації.
-*   **Джерело істини**: Стандарт ONIX 3.0.
-*   **Зберігання**: Нормалізовані SQL таблиці (`catalog_products`, `catalog_contributors`...) + JSONB бекап.
-*   **Моделі**: `app/models/catalog.py`
+## 📊 Статистика
 
-### 2. Ринок (Динамічні Дані)
-Зберігає часті оновлення цін та наявності.
-*   **Фокус**: Швидкість та актуальність.
-*   **Зберігання**: "Гаряча" таблиця (`offers`) для поточного стану + "Холодна" таблиця (`price_history`) для логів.
-*   **Моделі**: `app/models/market.py`
+| Таблиця | Записів |
+|---------|---------|
+| Товари | 69,375 |
+| Унікальні автори | 26,879 |
+| Унікальні теми | 54,129 |
+| Зв'язки товар-автор | 88,084 |
+| Зв'язки товар-тема | 604,207 |
 
-## 🛠 Технологічний Стек
-*   **Мова**: Python 3.10+
-*   **База Даних**: PostgreSQL (Async/Await)
-*   **ORM**: SQLAlchemy 2.0 (Async)
-*   **Валідація**: Pydantic v2
-*   **Тестування**: Pytest + Asyncio
+## 🛠 Технології
 
-## 🚀 Початок роботи
+- Python 3.12+
+- PostgreSQL 14+
+- Prisma ORM 0.15.0
+- FastAPI
+- Pydantic v2
 
-### Передумови
-*   PostgreSQL 14+
-*   Python 3.10+
+## 🚀 Швидкий старт
 
-### Налаштування
+```bash
+# 1. Налаштування
+cd onix_project && source .venv/bin/activate
 
-1.  **Середовище**:
-    Скопіюйте `.env.example` в `.env` (якщо є) або створіть його:
-    ```bash
-    DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/db_name
-    ```
+# 2. Середовище
+cat > .env << 'EOF'
+DATABASE_URL=postgresql://user:pass@localhost:5432/onix_db
+PRISMA_DATABASE_URL=postgresql://user:pass@localhost:5432/onix_db
+EOF
 
-2.  **Встановлення залежностей**:
-    ```bash
-    pip install -r requirements.txt
-    ```
+# 3. Генерація Prisma клієнта
+prisma generate
 
-3.  **Ініціалізація Бази Даних**:
-    ⚠️ **Попередження**: Це знищить існуючі дані.
-    ```bash
-    python scripts/init_final_db.py --force
-    ```
+# 4. Запуск API
+python main.py  # http://localhost:8000/docs
+```
 
 ## 🧪 Тестування
 
-Запустіть інтеграційні тести для перевірки моделей БД та зв'язків:
-
 ```bash
-# Переконайтеся, що PYTHONPATH включає кореневу директорію
-PYTHONPATH=. pytest tests/test_db_models.py -v
+pytest tests/ -v
 ```
 
-## 📂 Структура Проекту
+## 📂 Структура
 
 ```
 onix_project/
+├── main.py                     # FastAPI entry point
+├── prisma/schema.prisma        # Database schema
 ├── app/
-│   ├── models/          # Моделі бази даних SQLAlchemy
-│   │   ├── catalog.py   # Статичні дані книг (ONIX)
-│   │   ├── market.py    # Динамічні ціни (Offers)
-│   │   └── codes.py     # Визначення Enum з ONIX
-│   ├── core/            # Конфігурація та підключення до БД
-│   └── scraper/         # Трансформери даних
-├── scripts/             # DevOps скрипти (init_db, etc.)
-├── tests/               # Інтеграційні та модульні тести
-├── data/                # Локальні файли даних
-└── archive/             # Застарілий код (V1)
+│   ├── core/prisma_db.py       # Prisma client
+│   ├── models/                 # Enums, ONIX codes
+│   ├── repositories/           # Data access (Prisma)
+│   ├── services/               # Business logic
+│   ├── routers/                # API endpoints
+│   └── schemas/                # Pydantic DTOs
+├── scripts/                    # Import scripts
+└── tests/                      # Pytest tests
 ```
 
-## 📚 Основні Таблиці Бази Даних
+## 📡 API Endpoints
 
-| Домен | Назва Таблиці | Опис |
-| :--- | :--- | :--- |
-| **Каталог** | `catalog_products` | Головний реєстр книг. Включає `onix_full` (JSONB). |
-| | `catalog_titles` | Всі варіанти назв (Оригінал, Переклад). |
-| | `catalog_product_contributors` | Автори, Перекладачі, Ілюстратори. |
-| | `catalog_publishers` | Реєстр видавців. |
-| **Ринок** | `offers` | Поточна ціна та статус наявності в магазині. |
-| | `price_history` | Історія змін цін. |
-| | `suppliers` | Реєстр рітейлерів (Yakaboo, Книгарня "Є"). |
+| Endpoint | Опис |
+|----------|------|
+| `GET /catalog/products` | Список товарів |
+| `GET /catalog/products/{isbn13}` | Деталі за ISBN |
+| `GET /catalog/search?q=` | Пошук |
+| `GET /catalog/stats` | Статистика |
+
+## 📚 Документація
+
+- **API Docs**: http://localhost:8000/docs
+- **Prisma Studio**: `npx prisma studio`
+- **Mapping**: `docs/YAKABOO_SIMPLE_MAPPING.md`

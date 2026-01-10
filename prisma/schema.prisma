@@ -1,2123 +1,455 @@
-generator client {
-  provider                    = "prisma-client-py"
-  recursive_type_depth        = "5"
-  interface                   = "asyncio"
-  enable_experimental_decimal = true
-}
+// ================================================================
+// КНИЖКОВИЙ КАТАЛОГ НА ОСНОВІ ONIX 3.0 — Prisma Schema
+// Масштаб: 300k-1M книг, багато джерел цін, часті оновлення
+// ================================================================
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRISMA_DATABASE_URL")
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "codelist"]
 }
+
+generator client {
+  provider = "prisma-client-py"
+  enable_experimental_decimal = true
+  recursive_type_depth = -1
+  previewFeatures = ["multiSchema"]
+}
+
+// ================================================================
+// CORE: ПРОДУКТИ
+// ================================================================
 
 model CatalogProduct {
-  id                                String                              @id @default(uuid()) @db.Uuid
-  recordReference                   String                              @unique(map: "ix_catalog_products_record_reference") @map("record_reference") @db.VarChar(100)
-  notificationType                  list1?                              @map("notification_type")
-  isbn13                            String?                             @unique(map: "ix_catalog_products_isbn_13") @map("isbn_13") @db.VarChar(13)
-  ean                               String?                             @unique @db.VarChar(13)
-  sku                               String?                             @map("sku") @db.VarChar(50)
-  productForm                       list150                             @map("product_form")
-  productFormDetail                 list175?                            @map("product_form_detail")
-  editionNumber                     Int?                                @map("edition_number")
-  publishingStatus                  list64?                             @map("publishing_status")
-  isUkrainian                       Boolean?                            @map("is_ukrainian")
-  onixFull                          Json?                               @map("onix_full")
-  createdAt                         DateTime?                           @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt                         DateTime?                           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  publisherId                       String?                             @map("publisher_id") @db.Uuid
-  audienceRanges                    CatalogAudienceRange[]
-  citedContents                     CatalogCitedContent[]
-  extents                           CatalogExtent[]
-  languages                         CatalogLanguage[]
-  measures                          CatalogMeasure[]
-  prizes                            CatalogPrize[]
-  catalog_product_collections_link  catalog_product_collections_link[]
-  catalog_product_contributors_link catalog_product_contributors_link[]
-  publisher                         Publisher?                          @relation(fields: [publisherId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  publishingDates                   CatalogPublishingDate[]
-  relatedProducts                   CatalogRelatedProduct[]
-  subjects                          CatalogSubject[]
-  textContents                      CatalogTextContent[]
-  titles                            CatalogTitle[]
-  offers                            offers[]
+  id                      BigInt    @id @default(autoincrement())
 
-  @@index([isUkrainian], map: "ix_catalog_products_is_ukrainian")
-  @@index([productForm], map: "ix_catalog_products_product_form")
-  @@index([sku], map: "ix_catalog_products_sku")
+  // ІДЕНТИФІКАТОРИ (ONIX ProductIdentifier)
+  isbn13                  String?   @unique @db.VarChar(13)
+  isbn10                  String?   @db.VarChar(10)
+  gtin14                  String?   @db.VarChar(14)
+  proprietary_id          String?   @db.VarChar(100) // власний ID
+
+  // НАЗВА (ONIX TitleDetail)
+  title                   String    @db.VarChar(500)
+  subtitle                String?   @db.VarChar(500)
+
+  // СЕРІЯ (ONIX Collection)
+  collection_title        String?   @db.VarChar(300)
+  collection_issn         String?   @db.VarChar(20)
+  part_number             String?   @db.VarChar(50) // "Том 3", "Частина 2"
+
+  // ФОРМА ПРОДУКТУ (ONIX ProductForm)
+  product_form_code       String    @db.Char(2)
+  product_form_detail_code String?  @db.VarChar(10)
+
+  // ФІЗИЧНІ ХАРАКТЕРИСТИКИ (ONIX Measure, Extent)
+  page_count              Int?
+  width_mm                Decimal?  @db.Decimal(6, 2)
+  height_mm               Decimal?  @db.Decimal(6, 2)
+  thickness_mm            Decimal?  @db.Decimal(6, 2)
+  weight_g                Decimal?  @db.Decimal(8, 2)
+
+  // МОВА (ONIX Language)
+  language_code           String    @default("ukr") @db.Char(3)
+
+  // ВИДАВНИЦТВО (ONIX Publisher, Imprint)
+  publisher_name          String?   @db.VarChar(300)
+  publisher_id            String?   @db.VarChar(50)
+  imprint_name            String?   @db.VarChar(300)
+
+  // ПУБЛІКАЦІЯ (ONIX PublishingDetail)
+  publishing_status_code  String    @db.Char(2)
+  publication_date        DateTime? @db.Date
+  out_of_print_date       DateTime? @db.Date
+
+  // АУДИТОРІЯ (ONIX Audience)
+  audience_code           String?   @db.Char(2)
+  audience_range_qualifier String?  @db.VarChar(10)
+  audience_range_from     Int?
+  audience_range_to       Int?
+
+  // КЛАСИФІКАЦІЯ
+  primary_subject_scheme  String?   @db.VarChar(10)
+  primary_subject_code    String?   @db.VarChar(50)
+
+  // УКРАЇНСЬКИЙ КОНТЕКСТ
+  udc_code                String?   @db.VarChar(50)
+  bbk_code                String?   @db.VarChar(50)
+  dk_018_code             String?   @db.VarChar(20)
+
+  // EMBEDDING (для семантичного пошуку)
+  embedding               Unsupported("vector(1536)")?
+
+  // МЕТАДАТА
+  metadata                Json?
+
+  // СЛУЖБОВІ
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime  @updatedAt @db.Timestamptz(6)
+  deleted_at              DateTime? @db.Timestamptz(6)
+  is_active               Boolean   @default(true)
+
+  // RELATIONS
+  contributors            ProductContributor[]
+  subjects                ProductSubject[]
+  text_content            TextContent[]
+  media_files             MediaFile[]
+  prices                  Price[]
+  sales_rights            SalesRight[]
+  related_products_from   RelatedProduct[] @relation("ProductFrom")
+  related_products_to     RelatedProduct[] @relation("ProductTo")
+
+  @@index([isbn13])
+  @@index([publishing_status_code])
+  @@index([publisher_name])
+  @@index([product_form_code])
+  @@index([language_code])
+  @@index([publication_date])
+  @@index([deleted_at])
   @@map("catalog_products")
+  @@schema("public")
 }
 
-model Publisher {
-  id       String           @id @default(uuid()) @db.Uuid
-  name     String           @unique @db.VarChar(255)
-  gln      String?          @db.VarChar(13)
-  products CatalogProduct[]
+// ================================================================
+// CONTRIBUTORS: АВТОРИ, ПЕРЕКЛАДАЧІ, ІЛЮСТРАТОРИ (N:N)
+// ================================================================
 
-  @@map("catalog_publishers")
-}
-
+// Unique persons/organizations
 model Contributor {
-  id                                String                              @id @default(uuid()) @db.Uuid
-  name                              String                              @db.VarChar(255)
-  person_name_inverted              String?                             @db.VarChar(255)
-  biographical_note                 String?
-  catalog_product_contributors_link catalog_product_contributors_link[]
-
-  @@index([name], map: "ix_catalog_contributors_name")
-  @@map("catalog_contributors")
-}
+  id                      BigInt    @id @default(autoincrement())
 
-model CatalogTitle {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  type      list15
-  titleText String         @map("title_text")
-  subtitle  String?
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_titles")
-}
+  // ІМ'Я (ONIX PersonName, CorporateName)
+  contributor_type        String    @db.Char(1) // P=Person, C=Corporate
+  person_name             String?   @db.VarChar(300)
+  person_name_inverted    String?   @db.VarChar(300)
+  key_names               String?   @db.VarChar(200)
+  names_before_key        String?   @db.VarChar(200)
+  corporate_name          String?   @db.VarChar(300)
 
-model CatalogProductContributor {
-  id                   String          @id @default(uuid()) @db.Uuid
-  productId            String          @map("product_id") @db.Uuid
-  person_name          String?         @db.VarChar(255)
-  person_name_inverted String?         @db.VarChar(255)
-  corporate_name       String?         @db.VarChar(255)
-  biographical_note    String?
-  role                 contributorrole
-  sequenceNumber       Int?            @map("sequence_number")
-
-  @@map("catalog_product_contributors")
-}
+  // ДОДАТКОВО
+  biographical_note       String?
+  
+  // External IDs (for deduplication)
+  yakaboo_option_id       String?   @db.VarChar(50)
 
-model CatalogMeasure {
-  id          String         @id @default(uuid()) @db.Uuid
-  productId   String         @map("product_id") @db.Uuid
-  type        list48
-  measurement Decimal        @db.Decimal(10, 2)
-  unit_code   list50
-  product     CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_measures")
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime  @updatedAt @db.Timestamptz(6)
 
-model CatalogExtent {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  type      list23
-  value     Decimal        @db.Decimal(10, 2)
-  unit      String?        @db.VarChar(10)
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_extents")
-}
+  // N:N relation
+  products                ProductContributor[]
 
-model CatalogSubject {
-  id                   String         @id @default(uuid()) @db.Uuid
-  productId            String         @map("product_id") @db.Uuid
-  scheme_identifier    list27
-  subjectCode          String?        @map("subject_code") @db.VarChar(100)
-  subject_heading_text String?        @db.VarChar(500)
-  product              CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_subjects")
+  @@unique([contributor_type, person_name])
+  @@unique([contributor_type, corporate_name])
+  @@index([person_name])
+  @@index([corporate_name])
+  @@schema("public")
 }
 
-model CatalogAudienceRange {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  qualifier list30?
-  precision list31?
-  value     String         @db.VarChar(10)
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_audience_ranges")
-}
+// Junction table for N:N relationship
+model ProductContributor {
+  id                      BigInt    @id @default(autoincrement())
+  
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  
+  contributor_id          BigInt
+  contributor             Contributor @relation(fields: [contributor_id], references: [id], onDelete: Cascade)
 
-model CatalogLanguage {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  role      list22?
-  code      String         @db.VarChar(3)
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_languages")
-}
+  // Role in THIS book (same person can be author in one, translator in another)
+  role_code               String    @db.VarChar(3) // A01=Author, B06=Translator, etc
+  sequence_number         Int?
 
-model CatalogPrize {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  name      String         @db.VarChar(255)
-  year      String?        @db.VarChar(4)
-  country   list49?
-  code      String?        @db.VarChar(2)
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_prizes")
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-model CatalogTextContent {
-  id        String         @id @default(uuid()) @db.Uuid
-  productId String         @map("product_id") @db.Uuid
-  type      list153
-  text      String
-  author    String?        @db.VarChar(255)
-  product   CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_text_contents")
+  @@unique([product_id, contributor_id, role_code])
+  @@index([product_id])
+  @@index([contributor_id])
+  @@index([role_code])
+  @@schema("public")
 }
 
-model CatalogCitedContent {
-  id            String         @id @default(uuid()) @db.Uuid
-  productId     String         @map("product_id") @db.Uuid
-  type          String         @db.VarChar(2)
-  sourceTitle   String?        @map("source_title") @db.VarChar(255)
-  citation_note String?
-  link          String?        @db.VarChar(500)
-  product       CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_cited_contents")
-}
+// ================================================================
+// SUBJECTS: ВСІ КАТЕГОРІЇ, ТЕМИ, КЛЮЧОВІ СЛОВА (N:N)
+// ================================================================
 
-model CatalogRelatedProduct {
-  id                       String         @id @default(uuid()) @db.Uuid
-  productId                String         @map("product_id") @db.Uuid
-  relation_code            list51
-  related_product_id_type  String?        @db.VarChar(2)
-  related_product_id_value String         @db.VarChar(255)
-  product                  CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_related_products")
-}
+// Unique subjects (keywords, categories, THEMA codes)
+model Subject {
+  id                      BigInt    @id @default(autoincrement())
 
-model CatalogPublishingDate {
-  id          String         @id @default(uuid()) @db.Uuid
-  productId   String         @map("product_id") @db.Uuid
-  role        list163
-  date_value  String         @db.VarChar(8)
-  date_format String?        @db.VarChar(2)
-  product     CatalogProduct @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@map("catalog_publishing_dates")
-}
+  // ONIX Subject scheme identifier
+  scheme_code             String    @db.VarChar(10) // 20=Keywords, 24=Proprietary, 93=Thema
+  subject_code            String?   @db.VarChar(100)
+  subject_heading_text    String    @db.VarChar(500)
 
-model authors {
-  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  full_name       String            @db.VarChar(255)
-  biography       String?
-  product_authors product_authors[]
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-model catalog_collections {
-  id                               String                             @id @db.Uuid
-  title                            String                             @db.VarChar(1000)
-  type                             list148?
-  issn                             String?                            @db.VarChar(8)
-  catalog_product_collections_link catalog_product_collections_link[]
-
-  @@index([title], map: "ix_catalog_collections_title")
-}
+  // N:N relation
+  products                ProductSubject[]
 
-model catalog_prices {
-  id           String     @id @db.Uuid
-  product_id   String     @db.Uuid
-  price_type   pricetype?
-  price_amount Decimal    @db.Decimal(10, 2)
-  currency     String?    @db.VarChar(3)
+  @@unique([scheme_code, subject_code, subject_heading_text])
+  @@index([scheme_code])
+  @@index([subject_code])
+  @@index([subject_heading_text])
+  @@schema("public")
 }
 
-model catalog_product_collections_link {
-  product_id          String                  @db.Uuid
-  collection_id       String                  @db.Uuid
-  sequence_type       collectionsequencetype?
-  sequence_number     String?                 @db.VarChar(50)
-  catalog_collections catalog_collections     @relation(fields: [collection_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  catalog_products    CatalogProduct          @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([product_id, collection_id])
-}
+// Junction table for N:N relationship
+model ProductSubject {
+  id                      BigInt    @id @default(autoincrement())
 
-model catalog_product_contributors_link {
-  product_id           String         @db.Uuid
-  contributor_id       String         @db.Uuid
-  role                 list17
-  sequence_number      Int?
-  catalog_contributors Contributor    @relation(fields: [contributor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  catalog_products     CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([product_id, contributor_id, role])
-}
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
-model codelist_values {
-  id          Int        @id @default(autoincrement())
-  list_number Int?
-  code_value  String     @db.VarChar(50)
-  description String
-  notes       String?
-  is_active   Boolean?   @default(true)
-  created_at  DateTime?  @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime?  @default(now()) @db.Timestamptz(6)
-  codelists   codelists? @relation(fields: [list_number], references: [list_number], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([list_number, code_value], map: "idx_codelist_value_unique")
-}
+  subject_id              BigInt
+  subject                 Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
-model codelists {
-  list_number     Int               @id
-  list_name       String            @db.VarChar(255)
-  issue_number    Int?
-  is_active       Boolean?          @default(true)
-  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
-  codelist_values codelist_values[]
-}
+  // Priority in THIS book
+  is_primary              Boolean   @default(false)
+  sequence_number         Int?
 
-model collections {
-  id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title    String     @db.VarChar(255)
-  issn     String?    @db.VarChar(9)
-  products products[]
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-model offers {
-  id               String          @id @db.Uuid
-  book_id          String          @db.Uuid
-  supplier_id      String          @db.Uuid
-  sku              String?         @db.VarChar(100)
-  url              String?
-  price            Decimal         @db.Decimal(10, 2)
-  price_old        Decimal?        @db.Decimal(10, 2)
-  currency         String?         @db.VarChar(3)
-  availability     list65?
-  in_stock         Boolean?
-  last_updated     DateTime?       @default(now()) @db.Timestamptz(6)
-  catalog_products CatalogProduct  @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  suppliers        suppliers       @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  price_history    price_history[]
-
-  @@unique([book_id, supplier_id], map: "uq_offer_book_supplier")
-  @@index([book_id], map: "ix_offers_book_id")
-  @@index([last_updated], map: "ix_offers_last_updated")
+  @@unique([product_id, subject_id])
+  @@index([product_id])
+  @@index([subject_id])
+  @@schema("public")
 }
 
-/// This table is a partition table and requires additional setup for migrations. Visit https://pris.ly/d/partition-tables for more info.
-model price_history {
-  id           String   @db.Uuid
-  offer_id     String   @db.Uuid
-  price        Decimal  @db.Decimal(10, 2)
-  currency     String?  @db.VarChar(3)
-  availability list65?
-  recorded_at  DateTime @default(now()) @db.Timestamptz(6)
-  offers       offers   @relation(fields: [offer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([id, recorded_at])
-  @@index([offer_id], map: "ix_price_history_offer_id")
-  @@index([recorded_at], map: "ix_price_history_recorded_at")
-}
+// ================================================================
+// TEXT_CONTENT: ОПИСИ, АНОТАЦІЇ, УРИВКИ
+// ================================================================
 
-model product_authors {
-  product_id      String   @db.Uuid
-  author_id       String   @db.Uuid
-  role_code       String?  @default("A01") @db.VarChar(10)
-  sequence_number Int?     @default(1)
-  authors         authors  @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  products        products @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([product_id, author_id])
-}
+model TextContent {
+  id                      BigInt    @id @default(autoincrement())
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
-model product_links {
-  id              Int        @id @default(autoincrement())
-  product_isbn    String?    @db.VarChar
-  url             String     @unique(map: "ix_product_links_url") @db.VarChar
-  domain          String     @db.VarChar
-  last_checked_at DateTime?  @db.Timestamp(6)
-  status          linkstatus @default(discovered)
-  depth           Int        @default(0)
-  created_at      DateTime   @default(now()) @db.Timestamp(6)
-  error_message   String?    @db.VarChar
-  updated_at      DateTime?  @db.Timestamp(6)
-  products        products?  @relation(fields: [product_isbn], references: [isbn_13], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([domain], map: "ix_product_links_domain")
-  @@index([domain, product_isbn], map: "ix_product_links_domain_isbn")
-  @@index([domain, status], map: "ix_product_links_domain_status")
-  @@index([product_isbn], map: "ix_product_links_product_isbn")
-}
+  // ONIX TextType codes
+  text_type_code          String    @db.Char(2) // 01-99
+  content                 String
+  author                  String?   @db.VarChar(200)
+  source_title            String?   @db.VarChar(300)
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model product_sources {
-  id         Int       @id @default(autoincrement())
-  isbn13     String?   @db.VarChar
-  domain     String    @db.VarChar
-  raw_data   Json      @db.Json
-  updated_at DateTime  @db.Timestamp(6)
-  products   products? @relation(fields: [isbn13], references: [isbn_13], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([isbn13, domain], map: "uq_product_source_isbn_domain")
-  @@index([domain], map: "ix_product_sources_domain")
-  @@index([isbn13], map: "ix_product_sources_isbn13")
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-model products {
-  id              String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  isbn_13         String                 @unique @db.Char(13)
-  title           String                 @db.VarChar(500)
-  publisher_id    String?                @db.Uuid
-  collection_id   String?                @db.Uuid
-  product_form    String?                @db.VarChar(10)
-  language        String?                @default("ukr") @db.Char(3)
-  onix_json       Json?
-  embedding       Unsupported("vector")?
-  created_at      DateTime?              @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime?              @default(now()) @db.Timestamptz(6)
-  product_authors product_authors[]
-  product_links   product_links[]
-  product_sources product_sources[]
-  collections     collections?           @relation(fields: [collection_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  publishers      publishers?            @relation(fields: [publisher_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([embedding], map: "idx_products_embedding")
-  @@index([isbn_13], map: "idx_products_isbn")
-  @@index([onix_json], map: "idx_products_onix_json", type: Gin)
+  @@index([product_id])
+  @@index([text_type_code])
+  @@schema("public")
 }
 
-model publishers {
-  id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name     String     @db.VarChar(255)
-  gln      String?    @db.VarChar(13)
-  products products[]
-}
+// ================================================================
+// MEDIA: ОБКЛАДИНКИ, ВІДЕО, АУДІО
+// ================================================================
 
-model ref_onix_codelists {
-  list_number       Int
-  code              String  @db.VarChar(50)
-  description       String?
-  notes             String?
-  issue_number      String? @db.VarChar(10)
-  modified_number   String? @db.VarChar(10)
-  deprecated_number String? @db.VarChar(10)
-  is_active         Boolean @default(true)
-
-  @@id([list_number, code])
-  @@index([list_number], map: "ix_ref_onix_codelists_list_number")
-}
+model MediaFile {
+  id                      BigInt    @id @default(autoincrement())
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
-model ref_thema_subjects {
-  code                     String               @id @db.VarChar(20)
-  parent_code              String?              @db.VarChar(20)
-  label_en                 String               @db.VarChar(255)
-  label_uk                 String?              @db.VarChar(255)
-  description_en           String?
-  description_uk           String?
-  is_active                Boolean              @default(true)
-  ref_thema_subjects       ref_thema_subjects?  @relation("ref_thema_subjectsToref_thema_subjects", fields: [parent_code], references: [code], onDelete: NoAction, onUpdate: NoAction)
-  other_ref_thema_subjects ref_thema_subjects[] @relation("ref_thema_subjectsToref_thema_subjects")
-}
+  // ONIX SupportingResource
+  resource_content_type_code String  @db.Char(2) // 01-18
+  resource_mode_code      String    @db.Char(2) // 03=Image, 06=Video, 07=Audio
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model scraper_configs {
-  domain                 String    @id @db.VarChar
-  selectors              Json      @db.Json
-  strategy               String    @db.VarChar
-  is_dirty               Boolean
-  is_active              Boolean
-  is_crawling_active     Boolean   @default(false)
-  max_crawl_depth        Int       @default(3)
-  crawl_delay_seconds    Int       @default(2)
-  sitemap_urls           Json?     @default("[]")
-  allow_patterns         Json?     @default("[]")
-  deny_patterns          Json?     @default("[]")
-  crawl_interval_seconds Int       @default(86400)
-  last_crawled_at        DateTime? @db.Timestamp(6)
-  locked_by              String?   @db.VarChar
-  locked_at              DateTime? @db.Timestamp(6)
-  lock_expires_at        DateTime? @db.Timestamp(6)
-  next_run_at            DateTime? @db.Timestamp(6)
-  last_cycle_partial     Boolean?  @default(false)
-  last_stop_reason       String?   @db.VarChar
-  last_cycle_stats       Json?
-  max_pages_per_cycle    Int?      @default(5000)
-
-  @@index([is_active, locked_by, last_crawled_at], map: "idx_scraper_configs_lock_status")
-}
+  // ФАЙЛ
+  file_format_code        String?   @db.Char(2)
+  file_link_type          String?   @db.Char(2)
+  file_link               String
+  width_px                Int?
+  height_px               Int?
+  file_size_bytes         BigInt?
 
-model suppliers {
-  id        String   @id @db.Uuid
-  name      String   @unique @db.VarChar(255)
-  code      String   @unique @db.VarChar(50)
-  base_url  String?  @db.VarChar(500)
-  is_active Boolean?
-  offers    offers[]
-}
+  sequence_number         Int?
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-enum audiencerangeprecision {
-  EXACT
-  FROM
-  TO
+  @@index([product_id])
+  @@index([resource_content_type_code])
+  @@schema("public")
 }
 
-enum audiencerangequalifier {
-  AGE
-  GRADE
-  READING_LEVEL
-  INTEREST_AGE
-}
+// ================================================================
+// PRICE_SOURCES: ДЖЕРЕЛА ЦІН
+// ================================================================
 
-enum collectionsequencetype {
-  PROPRIETARY
-  ORDER_IN_SERIES
-  PUBLICATION_ORDER
-}
+model PriceSource {
+  id                      Int       @id @default(autoincrement())
+  source_code             String    @unique @db.VarChar(50)
+  source_name             String    @db.VarChar(200)
+  source_type             String    @db.VarChar(20) // retailer, wholesaler, internal
+  api_endpoint            String?   @db.VarChar(500)
+  is_active               Boolean   @default(true)
 
-enum collectiontype {
-  PUBLISHER_COLLECTION
-  MASTER_BRAND
-}
+  created_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-enum contributorrole {
-  AUTHOR
-  WITH
-  SCREENPLAY_AUTHOR
-  LIBRETTIST
-  LYRICS_BY
-  COMPOSER
-  ILLUSTRATOR
-  PHOTOGRAPHER
-  EDITOR
-  REVISED_BY
-  TRANSLATOR
-  ADAPTER
-  COMPILER
-  NARRATOR
-  INTRODUCER
-  FOREWORD_BY
-}
+  prices                  Price[]
 
-enum datetype {
-  PUBLICATION_DATE
-  SALES_EMBARGO_DATE
-  PUB_DATE_ANNOUNCED
-  OUT_OF_PRINT_DATE
-  LAST_REPRINT_DATE
-  FIRST_PUB_DATE_THIS_COUNTRY
+  @@index([is_active])
+  @@schema("public")
 }
 
-enum extenttype {
-  MAIN_PAGE_COUNT
-  PAGE_COUNT
-  DURATION
-  FILE_SIZE
-  WORD_COUNT
-}
+// ================================================================
+// PRICES: ЦІНИ З ІСТОРІЄЮ
+// ================================================================
 
-enum languagerole {
-  LANGUAGE_OF_TEXT
-  ORIGINAL_LANGUAGE
-  TRANSLATED_FROM
-}
+model Price {
+  id                      BigInt    @id @default(autoincrement())
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  source_id               Int
+  source                  PriceSource @relation(fields: [source_id], references: [id])
 
-enum linkstatus {
-  discovered
-  visited
-  scraped
-  error
-}
+  // ONIX Price fields
+  price_type_code         String    @db.Char(2) // 01=RRP, 02=Agency, 03=Wholesale, 41=Promo
+  price_amount            Decimal   @db.Decimal(12, 2)
+  currency_code           String    @default("UAH") @db.Char(3)
 
-enum list1 {
-  EARLY_NOTIFICATION
-  ADVANCE_NOTIFICATION_CONFIRMED
-  NOTIFICATION_CONFIRMED_ON_PUBLICATION
-  UPDATE_PARTIAL
-  DELETE
-  NOTICE_OF_SALE
-  NOTICE_OF_ACQUISITION
-  TEST_UPDATE_PARTIAL
-  TEST_RECORD
-}
+  // ПОДАТКИ
+  tax_type_code           String?   @db.Char(2)
+  tax_rate_percent        Decimal?  @db.Decimal(5, 2)
+  tax_amount              Decimal?  @db.Decimal(12, 2)
 
-enum list148 {
-  UNSPECIFIED_DEFAULT
-  PUBLISHER_COLLECTION
-  COLLECTION_DITORIALE
-  ASCRIBED_COLLECTION
-}
+  // ВАЛІДНІСТЬ
+  price_effective_from    DateTime? @db.Date
+  price_effective_until   DateTime? @db.Date
 
-enum list15 {
-  UNDEFINED
-  DISTINCTIVE_TITLE
-  ISSN_KEY_TITLE_OF_SERIAL
-  TITLE_IN_ORIGINAL_LANGUAGE
-  TITLE_ACRONYM_OR_INITIALISM
-  ABBREVIATED_TITLE
-  TITLE_IN_OTHER_LANGUAGE
-  THEMATIC_TITLE_OF_JOURNAL_ISSUE
-  FORMER_TITLE
-  DISTRIBUTOR_S_TITLE
-  ALTERNATIVE_TITLE_ON_COVER
-  ALTERNATIVE_TITLE_ON_BACK
-  EXPANDED_TITLE
-  ALTERNATIVE_TITLE
-  ALTERNATIVE_TITLE_ON_SPINE
-  TRANSLATED_FROM_TITLE
-}
+  // ЗНИЖКИ
+  discount_percent        Decimal?  @db.Decimal(5, 2)
 
-enum list150 {
-  UNDEFINED
-  AUDIO
-  AUDIO_CASSETTE
-  CD_AUDIO
-  DAT
-  AUDIO_DISC
-  AUDIO_TAPE
-  MINIDISC
-  CD_EXTRA
-  DVD_AUDIO
-  DOWNLOADABLE_AUDIO_FILE
-  PRE_RECORDED_DIGITAL_AUDIO_PLAYER
-  PRE_RECORDED_SD_CARD
-  LP
-  DOWNLOADABLE_AND_ONLINE_AUDIO_FILE
-  ONLINE_AUDIO_FILE
-  OTHER_AUDIO_FORMAT
-  BOOK
-  HARDBACK
-  PAPERBACK_SOFTBACK
-  LOOSE_LEAF
-  SPIRAL_BOUND
-  PAMPHLET
-  LEATHER_FINE_BINDING
-  BOARD_BOOK
-  RAG_BOOK
-  BATH_BOOK
-  NOVELTY_BOOK
-  SLIDE_BOUND
-  BIG_BOOK
-  PART_WORK_FASC_CULO
-  FOLD_OUT_BOOK_OR_CHART
-  FOAM_BOOK
-  OTHER_BOOK_FORMAT
-  SHEET_MAP
-  SHEET_MAP_FOLDED
-  SHEET_MAP_FLAT
-  SHEET_MAP_ROLLED
-  GLOBE
-  OTHER_CARTOGRAPHIC
-  DIGITAL_ON_PHYSICAL_CARRIER
-  CD_ROM
-  CD_I
-  GAME_CARTRIDGE
-  DISKETTE
-  DVD_ROM
-  SECURE_DIGITAL_SD_MEMORY_CARD
-  COMPACT_FLASH_MEMORY_CARD
-  MEMORY_STICK_MEMORY_CARD
-  USB_FLASH_DRIVE
-  DOUBLE_SIDED_CD_DVD
-  BR_ROM
-  OTHER_DIGITAL_CARRIER
-  DIGITAL_DELIVERED_ELECTRONICALLY
-  DIGITAL_DOWNLOAD_AND_ONLINE
-  DIGITAL_ONLINE
-  DIGITAL_DOWNLOAD
-  FILM_OR_TRANSPARENCY
-  SLIDES
-  OHP_TRANSPARENCIES
-  FILMSTRIP
-  FILM
-  OTHER_FILM_OR_TRANSPARENCY_FORMAT
-  DIGITAL_PRODUCT_LICENSE
-  DIGITAL_PRODUCT_LICENSE_KEY
-  DIGITAL_PRODUCT_LICENSE_CODE
-  MICROFORM
-  MICROFICHE
-  MICROFILM
-  OTHER_MICROFORM
-  MISCELLANEOUS_PRINT
-  ADDRESS_BOOK
-  CALENDAR
-  CARDS
-  COPYMASTERS
-  DIARY_OR_JOURNAL
-  FRIEZE
-  KIT
-  SHEET_MUSIC
-  POSTCARD_BOOK_OR_PACK
-  POSTER
-  RECORD_BOOK
-  WALLET_OR_FOLDER
-  PICTURES_OR_PHOTOGRAPHS
-  WALLCHART
-  STICKERS
-  PLATE_L_MINA
-  NOTEBOOK_BLANK_BOOK
-  ORGANIZER
-  BOOKMARK
-  LEAFLET
-  BOOK_PLATES
-  OTHER_PRINTED_ITEM
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_BOXED
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_SLIP_CASED
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_SHRINK_WRAPPED
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_LOOSE
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_PART_S_ENCLOSED
-  MULTIPLE_COMPONENT_RETAIL_PRODUCT_ENTIRELY_DIGITAL
-  VIDEO
-  VIDEODISC
-  DVD_VIDEO
-  VHS_VIDEO
-  BETAMAX_VIDEO
-  VCD
-  SVCD
-  HD_DVD
-  BLU_RAY
-  UMD_VIDEO
-  CBHD
-  OTHER_VIDEO_FORMAT
-  TRADE_ONLY_MATERIAL
-  DUMPBIN_EMPTY
-  DUMPBIN_FILLED
-  COUNTERPACK_EMPTY
-  COUNTERPACK_FILLED
-  POSTER_PROMOTIONAL
-  SHELF_STRIP
-  WINDOW_PIECE
-  STREAMER
-  SPINNER_EMPTY
-  LARGE_BOOK_DISPLAY
-  SHRINK_WRAPPED_PACK
-  BOXED_PACK
-  PACK_OUTER_PACKAGING_UNSPECIFIED
-  SPINNER_FILLED
-  OTHER_POINT_OF_SALE_INCLUDING_RETAIL_PRODUCT
-  OTHER_POINT_OF_SALE
-  GENERAL_MERCHANDISE
-  DOLL_OR_FIGURE
-  SOFT_TOY
-  TOY
-  GAME
-  T_SHIRT
-  E_BOOK_READER
-  TABLET_COMPUTER
-  AUDIOBOOK_PLAYER
-  JIGSAW
-  MUG
-  TOTE_BAG
-  TABLEWARE
-  UMBRELLA
-  PAINTS_CRAYONS_PENCILS
-  HANDICRAFT_KIT
-  OTHER_TOY_GAME_ACCESSORIES
-  OTHER_APPAREL
-  OTHER_MERCHANDISE
-}
+  // НАЯВНІСТЬ
+  stock_quantity          Int?
 
-enum list153 {
-  SENDER_DEFINED_TEXT
-  SHORT_DESCRIPTION_ANNOTATION
-  DESCRIPTION
-  TABLE_OF_CONTENTS
-  PRIMARY_COVER_COPY
-  REVIEW_QUOTE
-  REVIEW_QUOTE_PREVIOUS_EDITION
-  REVIEW_QUOTE_PREVIOUS_WORK
-  ENDORSEMENT
-  PROMOTIONAL_HEADLINE
-  FEATURE
-  BIOGRAPHICAL_NOTE
-  PUBLISHER_S_NOTICE
-  EXCERPT
-  INDEX
-  SHORT_DESCRIPTION_ANNOTATION_FOR_COLLECTION
-  DESCRIPTION_FOR_COLLECTION
-  NEW_FEATURE
-  VERSION_HISTORY
-  OPEN_ACCESS_STATEMENT
-  DIGITAL_EXCLUSIVITY_STATEMENT
-  OFFICIAL_RECOMMENDATION
-  JBPA_DESCRIPTION
-  SCHEMA_ORG_SNIPPET
-  ERRATA
-  INTRODUCTION
-  SECONDARY_COVER_COPY
-  FULL_CAST_AND_CREDIT_LIST
-  BIBLIOGRAPHY
-  ABSTRACT
-  RULES_OR_INSTRUCTIONS
-  LIST_OF_CONTENTS
-  SHORT_DESCRIPTION_ANNOTATION_FOR_IMPRINT
-  DESCRIPTION_FOR_IMPRINT
-  SHORT_DESCRIPTION_ANNOTATION_FOR_PUBLISHER
-  DESCRIPTION_FOR_PUBLISHER
-  COVER_LINE
-  SPECIAL_COVER_STATEMENT
-  LIST_OF_BONUS_CONTENTS
-}
+  recorded_at             DateTime  @default(now()) @db.Timestamptz(6)
 
-enum list163 {
-  PUBLICATION_DATE
-  SALES_EMBARGO_DATE
-  PUBLIC_ANNOUNCEMENT_DATE
-  TRADE_ANNOUNCEMENT_DATE
-  DATE_OF_FIRST_PUBLICATION
-  LATEST_REPRINT_DATE
-  OUT_OF_PRINT_PERMANENTLY_WITHDRAWN_DATE
-  LATEST_REISSUE_DATE
-  PUBLICATION_DATE_OF_PRINT_COUNTERPART
-  DATE_OF_FIRST_PUBLICATION_IN_ORIGINAL_LANGUAGE
-  FORTHCOMING_REISSUE_DATE
-  EXPECTED_AVAILABILITY_DATE_AFTER_TEMPORARY_WITHDRAWAL
-  REVIEW_EMBARGO_DATE
-  PUBLISHER_S_RESERVATION_ORDER_DEADLINE
-  FORTHCOMING_REPRINT_DATE
-  PREORDER_EMBARGO_DATE
-  TRANSFER_DATE
-  DATE_OF_PRODUCTION
-  STREAMING_EMBARGO_DATE
-  SUBSCRIPTION_EMBARGO_DATE
-  DOWNLOAD_EMBARGO_DATE
-  PURCHASE_EMBARGO_DATE
-  CIP_DATE
+  @@index([product_id, recorded_at(sort: Desc)])
+  @@index([source_id, recorded_at(sort: Desc)])
+  @@schema("public")
 }
 
-enum list17 {
-  BY_AUTHOR
-  WITH_CODE
-  SCREENPLAY_BY
-  LIBRETTO_BY
-  LYRICS_BY
-  BY_COMPOSER
-  BY_ARTIST
-  BY_PHOTOGRAPHER
-  CREATED_BY
-  FROM_AN_IDEA_BY
-  DESIGNED_BY
-  ILLUSTRATED_BY
-  PHOTOGRAPHS_BY
-  TEXT_BY
-  PREFACE_BY
-  PROLOGUE_BY
-  SUMMARY_BY
-  SUPPLEMENT_BY
-  AFTERWORD_BY
-  NOTES_BY
-  COMMENTARIES_BY
-  EPILOGUE_BY
-  FOREWORD_BY
-  INTRODUCTION_BY
-  FOOTNOTES_BY
-  MEMOIR_BY
-  EXPERIMENTS_BY
-  INTERPRETED_THROUGH
-  INTRODUCTION_AND_NOTES_BY
-  SOFTWARE_WRITTEN_BY
-  BOOK_AND_LYRICS_BY
-  CONTRIBUTIONS_BY
-  APPENDIX_BY
-  INDEX_BY
-  DRAWINGS_BY
-  COVER_DESIGN_OR_ARTWORK_BY
-  PRELIMINARY_WORK_BY
-  ORIGINAL_AUTHOR
-  MAPS_BY
-  INKED_OR_COLORED_BY
-  PAPER_ENGINEERING_BY
-  CONTINUED_BY
-  INTERVIEWER
-  INTERVIEWEE
-  COMIC_SCRIPT_BY
-  INKER
-  COLORIST
-  LETTERER
-  COVER_INKER
-  COVER_COLORIST
-  RESEARCH_BY
-  ORIGINAL_CHARACTER_DESIGN
-  OTHER_PRIMARY_CREATOR
-  EDITED_BY
-  REVISED_BY
-  RETOLD_BY
-  ABRIDGED_BY
-  ADAPTED_BY
-  TRANSLATED_BY
-  AS_TOLD_BY
-  TRANSLATED_WITH_COMMENTARY_BY
-  SERIES_EDITED_BY
-  EDITED_AND_TRANSLATED_BY
-  EDITOR_IN_CHIEF
-  GUEST_EDITOR
-  VOLUME_EDITOR
-  EDITORIAL_BOARD_MEMBER
-  EDITORIAL_COORDINATION_BY
-  MANAGING_EDITOR
-  FOUNDED_BY
-  PREPARED_FOR_PUBLICATION_BY
-  ASSOCIATE_EDITOR
-  CONSULTANT_EDITOR
-  GENERAL_EDITOR
-  DRAMATIZED_BY
-  GENERAL_RAPPORTEUR
-  LITERARY_EDITOR
-  ARRANGED_BY_MUSIC
-  TECHNICAL_EDITOR
-  THESIS_ADVISOR_OR_SUPERVISOR
-  THESIS_EXAMINER
-  SCIENTIFIC_EDITOR
-  HISTORICAL_ADVISOR
-  ORIGINAL_EDITOR
-  TRANSLATION_REVISED_BY
-  TRANSCRIBED_BY
-  SENSITIVITY_READER_EDITOR
-  IMAGE_DESCRIPTIONS_BY
-  TEXT_MODERNIZED_OR_UPDATED_BY
-  OTHER_ADAPTATION_BY
-  COMPILED_BY
-  SELECTED_BY
-  NON_TEXT_MATERIAL_SELECTED_BY
-  CURATED_BY
-  OTHER_COMPILATION_BY
-  PRODUCER
-  DIRECTOR
-  CONDUCTOR
-  CHOREOGRAPHER
-  OTHER_DIRECTION_BY
-  ACTOR
-  DANCER
-  NARRATOR
-  COMMENTATOR
-  VOCAL_SOLOIST
-  INSTRUMENTAL_SOLOIST
-  READ_BY
-  PERFORMED_BY_ORCHESTRA_BAND_ENSEMBLE
-  SPEAKER
-  PRESENTER
-  INTRODUCTION_READ_BY
-  PERFORMED_BY
-  FILMED_PHOTOGRAPHED_BY
-  EDITOR_FILM_OR_VIDEO
-  OTHER_RECORDING_BY
-  ASSISTED_BY
-  HONORED_DEDICATED_TO
-  ENACTING_JURISDICTION
-  PEER_REVIEWED
-  POSTHUMOUSLY_COMPLETED_BY
-  IN_ASSOCIATION_WITH
-  VARIOUS_ROLES
-  OTHER
-}
+// ================================================================
+// CURRENT_PRICES: МАТЕРІАЛІЗОВАНЕ VIEW
+// (генеруємо через SQL migration)
+// ================================================================
 
-enum list175 {
-  CD_STANDARD_AUDIO_FORMAT
-  SACD_SUPER_AUDIO_FORMAT
-  MP3_FORMAT
-  WAV_FORMAT
-  REAL_AUDIO_FORMAT
-  WMA
-  AAC
-  OGG_VORBIS
-  AUDIBLE
-  FLAC
-  AIFF
-  ALAC
-  W3C_AUDIOBOOK_FORMAT
-  DAISY_2_FULL_AUDIO_WITH_TITLE_ONLY_NO_NAVIGATION
-  DAISY_2_FULL_AUDIO_WITH_NAVIGATION_NO_TEXT
-  DAISY_2_FULL_AUDIO_WITH_NAVIGATION_AND_PARTIAL_TEXT
-  DAISY_2_FULL_AUDIO_WITH_NAVIGATION_AND_FULL_TEXT
-  DAISY_2_FULL_TEXT_WITH_NAVIGATION_AND_PARTIAL_AUDIO
-  DAISY_2_FULL_TEXT_WITH_NAVIGATION_AND_NO_AUDIO
-  DAISY_3_FULL_AUDIO_WITH_TITLE_ONLY_NO_NAVIGATION
-  DAISY_3_FULL_AUDIO_WITH_NAVIGATION_NO_TEXT
-  DAISY_3_FULL_AUDIO_WITH_NAVIGATION_AND_PARTIAL_TEXT
-  DAISY_3_FULL_AUDIO_WITH_NAVIGATION_AND_FULL_TEXT
-  DAISY_3_FULL_TEXT_WITH_NAVIGATION_AND_PARTIAL_AUDIO
-  DAISY_3_FULL_TEXT_WITH_NAVIGATION_AND_NO_AUDIO
-  STANDALONE_AUDIO
-  READALONG_AUDIO
-  PLAYALONG_AUDIO
-  SPEAKALONG_AUDIO
-  SYNCHRONIZED_AUDIO
-  SOUND_EFFECTS
-  BACKGROUND_MUSIC
-  WITHOUT_BACKGROUND_SOUNDS
-  CODE_64KBITS_S
-  CODE_128KBITS_S
-  CODE_192KBITS_S
-  CODE_256KBITS_S
-  CODE_320KBITS_S
-  MONO
-  STEREO
-  STEREO_2_1
-  SURROUND_4_1
-  SURROUND_5_1
-  DOLBY_ATMOS
-  MASS_MARKET_RACK_PAPERBACK
-  TRADE_PAPERBACK_US
-  DIGEST_FORMAT_PAPERBACK
-  A_FORMAT_PAPERBACK
-  B_FORMAT_PAPERBACK
-  TRADE_PAPERBACK_UK
-  TALL_RACK_PAPERBACK_US
-  A5_SIZE_TANKOBON
-  JIS_B5_SIZE_TANKOBON
-  JIS_B6_SIZE_TANKOBON
-  A6_SIZE_BUNKO
-  B40_DORI_SHINSHO
-  POCKET_SWEDEN_NORWAY_FRANCE
-  STORPOCKET_SWEDEN
-  KARTONNAGE_SWEDEN
-  FLEXBAND_SWEDEN
-  MOOK_BOOKAZINE
-  DWARSLIGGER
-  CODE_46_SIZE
-  CODE_46_HENKEI_SIZE
-  A4
-  A4_HENKEI_SIZE
-  A5_HENKEI_SIZE
-  B5_HENKEI_SIZE
-  B6_HENKEI_SIZE
-  AB_SIZE
-  JIS_B7_SIZE
-  KIKU_SIZE
-  KIKU_HENKEI_SIZE
-  JIS_B4_SIZE
-  PAPERBACK_DE
-  LIBRO_DE_BOLSILLO
-  POCKET_SIZED
-  A5
-  MASS_MARKET_MAX_PAPERBACK
-  COMIC_BOOK_SIZE_US
-  COMIC_ALBUM_SIZE_EURO
-  B4_HENKEI_SIZE
-  COLORING_JOIN_THE_DOT_BOOK
-  LIFT_THE_FLAP_BOOK
-  MINIATURE_BOOK
-  MOVING_PICTURE_FLICKER_BOOK
-  POP_UP_BOOK
-  SCENTED_SMELLY_BOOK
-  SOUND_STORY_NOISY_BOOK
-  STICKER_BOOK
-  TOUCH_AND_FEEL_BOOK
-  DIE_CUT_BOOK
-  BOOK_AS_TOY
-  SOFT_TO_TOUCH_BOOK
-  FUZZY_FELT_BOOK
-  PRESS_OUT_PIECES
-  PICTURE_BOOK
-  CAROUSEL_BOOK
-  PULL_THE_TAB_BOOK
-  WORDLESS_BOOK
-  CUT_OUT_PIECES
-  LOOSE_LEAF_OR_PARTWORK_SHEETS_PARTS_AND_BINDER_WALLET
-  LOOSE_LEAF_OR_PARTWORK_BINDER_WALLET_ONLY
-  LOOSE_LEAF_OR_PARTWORK_SHEETS_PARTS_ONLY
-  SEWN
-  UNSEWN_ADHESIVE_BOUND
-  LIBRARY_BINDING
-  REINFORCED_BINDING
-  HALF_BOUND
-  QUARTER_BOUND
-  SADDLE_SEWN
-  COMB_BOUND
-  WIRE_O
-  CONCEALED_WIRE
-  COILED_WIRE_BOUND
-  TRADE_BINDING
-  SWISS_BINDING
-  NOTCHED_BINDING
-  LAY_FLAT_BINDING
-  FLUSH_CUT_BINDING
-  ROUNDED_SPINE
-  SQUARE_SPINE
-  SELF_COVERED
-  CLOTH_OVER_BOARDS
-  PAPER_OVER_BOARDS
-  LEATHER_REAL
-  LEATHER_IMITATION
-  LEATHER_BONDED
-  VELLUM
-  HEAD_AND_TAIL_BANDS
-  DECORATED_PAGE_EDGES
-  DECORATED_ENDPAPERS
-  CLOTH
-  IMITATION_CLOTH
-  VELVET
-  FLEXIBLE_PLASTIC_VINYL_COVER
-  PLASTIC_COVERED
-  VINYL_COVERED
-  LAMINATED_COVER
-  CARD_COVER
-  DUPLEX_PRINTED_COVER
-  PAPER_COVER
-  DELICATE_COVER_JACKET_FINISH
-  EMBOSSED_COVER
-  FOIL_ON_COVER
-  FOIL_ON_JACKET
-  TEMPORARY_STICKERS_ON_COVER_OR_JACKET
-  PERMANENT_STICKERS_ON_COVER_OR_JACKET
-  SPINE_PANORAMA
-  WITH_DUST_JACKET
-  WITH_PRINTED_DUST_JACKET
-  WITH_TRANSLUCENT_DUST_COVER
-  WITH_FLAPS
-  WITH_THUMB_INDEX
-  WITH_RIBBON_MARKER_S
-  WITH_ZIP_FASTENER
-  WITH_BUTTON_SNAP_FASTENER
-  WITH_LEATHER_EDGE_LINING
-  ROUGH_FRONT
-  FOLDOUT
-  WIDE_MARGIN
-  WITH_FASTENING_STRAP
-  WITH_PERFORATED_PAGES
-  ACID_FREE_PAPER
-  ARCHIVAL_PAPER
-  WITH_ELASTICATED_STRAP
-  WITH_SERIALIZED_AUTHENTICITY_TOKEN
-  WITH_DUST_JACKET_POSTER
-  ROUNDED_CORNERS
-  SPLASHPROOF
-  MINERAL_PAPER
-  WITH_ACCESSIBILITY_CLAIM_TICKET
-  PLASTIC_PAPER
-  WITH_WRAPAROUND_FOREDGE_FLAP
-  TURN_AROUND_BOOK
-  UNFLIPPED_MANGA_FORMAT
-  BACK_TO_BACK_BOOK
-  FLIPPED_MANGA_FORMAT
-  VARIANT_TURN_AROUND_BOOK
-  PAGE_PROGRESSION_LTR
-  PAGE_PROGRESSION_RTL
-  PAGE_PROGRESSION_TTB
-  PAGE_PROGRESSION_OTHER
-  SYLLABIFICATION
-  UPPER_CASE_ONLY
-  UK_UNCONTRACTED_BRAILLE
-  UK_CONTRACTED_BRAILLE
-  US_BRAILLE
-  US_UNCONTRACTED_BRAILLE
-  US_CONTRACTED_BRAILLE
-  UNIFIED_ENGLISH_BRAILLE
-  MOON
-  UNIFIED_ENGLISH_UNCONTRACTED_BRAILLE
-  UNIFIED_ENGLISH_CONTRACTED_BRAILLE
-  TACTILE_IMAGES
-  LENTICULAR_IMAGES
-  ANAGLYPH_IMAGES
-  RAISED_3D_RELIEF
-  REAL_VIDEO_FORMAT
-  QUICKTIME_FORMAT
-  AVI_FORMAT
-  WINDOWS_MEDIA_VIDEO_FORMAT
-  MPEG_4
-  MS_DOS
-  WINDOWS
-  MACINTOSH
-  UNIX_LINUX
-  OTHER_OPERATING_SYSTEM_S
-  PALM_OS
-  WINDOWS_MOBILE
-  MICROSOFT_XBOX
-  NINTENDO_GAMEBOY_COLOR
-  NINTENDO_GAMEBOY_ADVANCED
-  NINTENDO_GAMEBOY
-  NINTENDO_GAMECUBE
-  NINTENDO_64
-  SEGA_DREAMCAST
-  SEGA_GENESIS_MEGADRIVE
-  SEGA_SATURN
-  SONY_PLAYSTATION_1
-  SONY_PLAYSTATION_2
-  NINTENDO_DUAL_SCREEN
-  SONY_PLAYSTATION_3
-  MICROSOFT_XBOX_360
-  NINTENDO_WII
-  SONY_PLAYSTATION_PORTABLE_PSP
-  SONY_PLAYSTATION_3_2
-  SONY_PLAYSTATION_4
-  SONY_PLAYSTATION_VITA
-  MICROSOFT_XBOX_ONE
-  NINTENDO_SWITCH
-  NINTENDO_WII_U
-  SONY_PLAYSTATION_5
-  MICROSOFT_XBOX_SERIES_X_S
-  OTHER
-  EPUB
-  OEB
-  DOC
-  DOCX
-  HTML
-  ODF
-  PDF
-  PDF_A
-  RTF
-  SGML
-  TCR
-  TXT
-  XHTML
-  ZTXT
-  XPS
-  AMAZON_KINDLE
-  BBEB
-  DXREADER
-  EBL
-  EBRARY
-  EREADER
-  EXEBOOK
-  FRANKLIN_EBOOKMAN
-  GEMSTAR_ROCKETBOOK
-  ISILO
-  MICROSOFT_READER
-  MOBIPOCKET
-  MYILIBRARY
-  NETLIBRARY
-  PLUCKER
-  VITALBOOK
-  VOOK
-  GOOGLE_EDITION
-  BOOK_APP_FOR_IOS
-  BOOK_APP_FOR_ANDROID
-  BOOK_APP_FOR_OTHER_OPERATING_SYSTEM
-  CEB
-  CEBX
-  IBOOK
-  EPIB
-  SCORM
-  EBP
-  PAGE_PERFECT
-  BRF
-  ERUDIT
-  AMAZON_KINDLE_PRINT_REPLICA
-  COMIC_BOOK_ARCHIVE
-  EPUB_A
-  EBRAILLE
-  REFLOWABLE
-  FIXED_FORMAT
-  READABLE_OFFLINE
-  REQUIRES_NETWORK_CONNECTION
-  CONTENT_REMOVED
-  VISIBLE_PAGE_NUMBERING
-  NO_PREFERRED_PAGE_PROGRESSION
-  LANDSCAPE
-  PORTRAIT
-  SQUARE
-  VERTICAL_SCROLLING
-  CODE_5_4
-  CODE_4_3
-  CODE_3_2
-  CODE_16_10
-  CODE_16_9
-  CODE_18_9
-  CODE_21_9
-  LAMINATED
-  CALENDAR_WITH_WRITE_IN_SPACE
-  CALENDAR_WITHOUT_WRITE_IN_SPACE
-  MULTIPLE_MONTHS_PER_PAGE
-  ONE_MONTH_PER_PAGE
-  ONE_WEEK_PER_PAGE
-  ONE_DAY_PER_PAGE
-  DESK_CALENDAR_OR_DIARY
-  MINI_CALENDAR_OR_POCKET_DIARY
-  ENGAGEMENT_CALENDAR_OR_APPOINTMENT_DIARY
-  DAY_BY_DAY_CALENDAR
-  POSTER_CALENDAR
-  WALL_CALENDAR
-  PERPETUAL_CALENDAR_OR_DIARY
-  ADVENT_CALENDAR
-  BOOKMARK_CALENDAR
-  STUDENT_OR_ACADEMIC_CALENDAR_OR_DIARY
-  PROJECT_CALENDAR
-  ALMANAC_CALENDAR
-  OTHER_CALENDAR_DIARY_OR_ORGANISER
-  OTHER_CALENDAR_OR_ORGANISER_PRODUCT
-  FAMILY_PLANNER
-  POSTCARD_CALENDAR
-  BLANK_CALENDAR
-  PANORAMIC_CALENDAR
-  COLUMNAR_CALENDAR
-  SQUARE_CALENDAR
-  PICTURE_STORY_CARDS
-  FLASH_CARDS
-  REFERENCE_CARDS
-  RECREATION_CARDS
-  POSTCARDS
-  GREETING_CARDS
-  GIFT_CARDS
-  CERTIFICATE_CARDS
-  HARDBACK_STATIONERY
-  PAPERBACK_SOFTBACK_STATIONERY
-  SPIRAL_BOUND_STATIONERY
-  LEATHER_FINE_BINDING_STATIONERY
-  WITH_HANGING_STRIPS
-  SINGLE_SIDED
-  DOUBLE_SIDED
-  PAL
-  NTSC
-  SECAM
-  HD
-  UHD
-  CODE_3D_VIDEO
-  CLOSED_CAPTIONS
-  OPEN_CAPTIONS
-  TRANSCRIPT
-  SIGN_LANGUAGE_INTERPRETATION
-  TEXTUAL_DESCRIPTION_OF_AUDIO
-  AUDIO_DESCRIPTION_OF_VIDEO
-  HOME_USE
-  CLASSROOM_USE
-  WOODEN
-  PLASTIC
-  BOARD
-  CODE_3D_PUZZLE
-  NOISY_KIT_PUZZLE_TOY
-  PUPPET
-  EXTRA_LARGE_PIECES
-}
+// Prisma doesn't support materialized views natively,
+// so we define this as a model but mark it as read-only via comments
+// In app code: use @db.Raw() for queries or create a separate view query
 
-enum list22 {
-  LANGUAGE_OF_TEXT
-  ORIGINAL_LANGUAGE_OF_A_TRANSLATED_TEXT
-  LANGUAGE_OF_ABSTRACTS
-  ORIGINAL_LANGUAGE_IN_A_MULTILINGUAL_EDITION
-  TRANSLATED_LANGUAGE_IN_A_MULTILINGUAL_EDITION
-  LANGUAGE_OF_AUDIO_TRACK
-  LANGUAGE_OF_SUBTITLES
-  LANGUAGE_OF_ORIGINAL_AUDIO_TRACK
-  ORIGINAL_LANGUAGE_AUDIO_TRACK_IN_A_MULTILINGUAL_PRODUCT
-  LANGUAGE_OF_NOTES
-  LANGUAGE_OF_INTRODUCTION_END_MATTER
-  TARGET_LANGUAGE_OF_TEACHING_LEARNING
-  ADDITIONAL_VOCABULARY_TEXT_IN_THIS_LANGUAGE
-}
+// ================================================================
+// SALES_RIGHTS: ПРАВА ПРОДАЖУ ПО ТЕРИТОРІЯХ
+// ================================================================
 
-enum list23 {
-  MAIN_CONTENT_PAGE_COUNT
-  TOTAL_TEXT_LENGTH
-  FRONT_MATTER_PAGE_COUNT
-  BACK_MATTER_PAGE_COUNT
-  TOTAL_NUMBERED_PAGES
-  PRODUCTION_PAGE_COUNT
-  ABSOLUTE_PAGE_COUNT
-  NUMBER_OF_PAGES_IN_PRINT_COUNTERPART
-  DURATION
-  NOTIONAL_NUMBER_OF_PAGES_IN_DIGITAL_PRODUCT
-  CONTENT_PAGE_COUNT
-  TOTAL_UNNUMBERED_INSERT_PAGE_COUNT
-  DURATION_OF_INTRODUCTORY_MATTER
-  DURATION_OF_MAIN_CONTENT
-  DURATION_OF_BACK_MATTER
-  PRODUCTION_DURATION
-  NUMBER_OF_CARDS
-  NUMBER_OF_WRITE_IN_PAGES
-  FILESIZE
-  STORAGE_FILESIZE
-}
+model SalesRight {
+  id                      BigInt    @id @default(autoincrement())
+  product_id              BigInt
+  product                 CatalogProduct @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
-enum list27 {
-  DEWEY
-  ABRIDGED_DEWEY
-  LC_CLASSIFICATION
-  LC_SUBJECT_HEADING
-  NLM_CLASSIFICATION
-  MESH_HEADING
-  NAL_SUBJECT_HEADING
-  AAT
-  UDC
-  BISAC_SUBJECT_HEADING
-  BISAC_REGIONAL_THEME
-  BIC_SUBJECT_CATEGORY
-  BIC_GEOGRAPHICAL_QUALIFIER
-  BIC_LANGUAGE_QUALIFIER_LANGUAGE_AS_SUBJECT
-  BIC_TIME_PERIOD_QUALIFIER
-  BIC_EDUCATIONAL_PURPOSE_QUALIFIER
-  BIC_READING_LEVEL_AND_SPECIAL_INTEREST_QUALIFIER
-  DDC_SACHGRUPPEN_DER_DEUTSCHEN_NATIONALBIBLIOGRAFIE
-  LC_FICTION_GENRE_HEADING
-  KEYWORDS
-  BIC_CHILDREN_S_BOOK_MARKETING_CATEGORY
-  BISAC_MERCHANDISING_THEME
-  PUBLISHER_S_OWN_CATEGORY_CODE
-  PROPRIETARY_SUBJECT_SCHEME
-  TABLA_DE_MATERIAS_ISBN
-  WARENGRUPPEN_SYSTEMATIK_DES_DEUTSCHEN_BUCHHANDELS
-  SWD
-  TH_MES_ELECTRE
-  CLIL_CLASSIFICATION_TH_MATIQUE
-  DNB_SACHGRUPPEN
-  NUGI
-  NUR
-  ECPA_CHRISTIAN_BOOK_CATEGORY
-  SISO
-  KOREAN_DECIMAL_CLASSIFICATION_KDC
-  DDC_DEUTSCH_22
-  BOKGRUPPER
-  VAREGRUPPER
-  L_REPLANER_KL06
-  NIPPON_DECIMAL_CLASSIFICATION
-  BSQ
-  ANELE_MATERIAS
-  UTDANNINGSPROGRAM
-  PROGRAMOMR_DE
-  UNDERVISNINGSMATERIELL
-  NORSK_DDK
-  VARUGRUPPER
-  SAB
-  L_ROMEDELSTYP
-  F_RHANDSBESKRIVNING
-  SPANISH_ISBN_UDC_SUBSET
-  ECI_SUBJECT_CATEGORIES
-  SOGGETTO_CCE
-  QUALIFICATORE_GEOGRAFICO_CCE
-  QUALIFICATORE_DI_LINGUA_CCE
-  QUALIFICATORE_DI_PERIODO_STORICO_CCE
-  QUALIFICATORE_DI_LIVELLO_SCOLASTICO_CCE
-  QUALIFICATORE_DI_ET_DI_LETTURA_CCE
-  VDS_BILDUNGSMEDIEN_F_CHER
-  FAGKODER
-  JEL_CLASSIFICATION
-  CSH
-  RVM
-  YSA
-  ALL_RS
-  YKL
-  MUSA
-  CILLA
-  KAUNOKKI
-  BELLA
-  YSO
-  PTO
-  SUOMALAINEN_KIRJA_ALAN_LUOKITUS
-  SEARS
-  BIC_E4L
-  CSR
-  SUOMALAINEN_OPPIAINELUOKITUS
-  JAPANESE_BOOK_TRADE_C_CODE
-  JAPANESE_BOOK_TRADE_GENRE_CODE
-  FIKTIIVISEN_AINEISTON_LIS_LUOKITUS
-  ARABIC_SUBJECT_HEADING_SCHEME
-  ARABIZED_BIC_SUBJECT_CATEGORY
-  ARABIZED_LC_SUBJECT_HEADINGS
-  BIBLIOTHECA_ALEXANDRINA_SUBJECT_HEADINGS
-  POSTAL_CODE
-  GEONAMES_ID
-  NEWBOOKS_SUBJECT_CLASSIFICATION
-  CHINESE_LIBRARY_CLASSIFICATION
-  NTCPDSAC_CLASSIFICATION
-  SEASON_AND_EVENT_INDICATOR
-  GND
-  BIC_UKSLC
-  THEMA_SUBJECT_CATEGORY
-  THEMA_PLACE_QUALIFIER
-  THEMA_LANGUAGE_QUALIFIER
-  THEMA_TIME_PERIOD_QUALIFIER
-  THEMA_EDUCATIONAL_PURPOSE_QUALIFIER
-  THEMA_INTEREST_AGE_SPECIAL_INTEREST_QUALIFIER
-  THEMA_STYLE_QUALIFIER
-  MNESORD
-  STATYSTYKA_KSI_EK_PAPIEROWYCH_M_WIONYCH_I_ELEKTRONICZNYCH
-  CCSS
-  RAMEAU
-  NOMENCLATURE_DISCIPLINE_SCOLAIRE
-  ISIC
-  LC_CHILDREN_S_SUBJECT_HEADINGS
-  NY_L_ROMEDEL
-  EUROVOC
-  BISG_EDUCATIONAL_TAXONOMY
-  KEYWORDS_NOT_FOR_DISPLAY
-  NOMENCLATURE_DIPL_ME
-  KEY_CHARACTER_NAMES
-  KEY_PLACE_NAMES
-  FAST
-  NGSS
-  MVB_LESEMOTIVE
-  LOPS21_SUBJECT_MODULE
-  L_REPLANER_LK20
-  KOMPETANSEM_L_LK20
-  KOMPETANSEM_LSETT_LK20
-  TVERRFAGLIGE_TEMAER_LK20
-  CLIL_TYPE_D_ARTICLE_SCOLAIRE
-  GAR_TYPE_P_DAGOGIQUE
-  ISCED_F
-  KLASSIFIKATIONEN_VON_SPIELEN_PUZZLES_UND_SPIELWAREN
-  NBVOK_NTSF
-  JPRO_GENRE
-  KAUNO
-  SLM
-  YSO_PLACES
-  NORSKE_EMNEORD
-  AUSTLANG
-  GERMAN_TROPES_LIST
-}
+  sales_rights_type_code  String    @db.Char(2)
+  territory_countries     String[]  @db.VarChar(10) // ['UA', 'PL', 'DE']
+  territory_regions       String[]  @db.VarChar(10)
 
-enum list30 {
-  US_SCHOOL_GRADE_RANGE
-  UK_SCHOOL_GRADE
-  READING_SPEED_WORDS_PER_MINUTE
-  INTEREST_AGE_MONTHS
-  INTEREST_AGE_YEARS
-  READING_AGE_YEARS
-  SPANISH_SCHOOL_GRADE
-  SKOLETRINN
-  NIV
-  ITALIAN_SCHOOL_GRADE
-  SCHULFORM
-  BUNDESLAND
-  AUSBILDUNGSBERUF
-  CANADIAN_SCHOOL_GRADE_RANGE
-  FINNISH_SCHOOL_GRADE_RANGE
-  FINNISH_UPPER_SECONDARY_SCHOOL_COURSE
-  CHINESE_SCHOOL_GRADE_RANGE
-  FRENCH_SCHOOL_CYCLES_CLASSES
-  BRAZIL_EDUCATION_LEVEL
-  FRENCH_EDUCATIONAL_LEVELS
-  FINNISH_UPPER_SECONDARY_SCHOOL_COURSE_2021
-  DETAILED_FRENCH_EDUCATIONAL_LEVELS
-}
+  start_date              DateTime? @db.Date
+  end_date                DateTime? @db.Date
 
-enum list31 {
-  EXACT
-  FROM_CODE
-  TO
+  @@index([product_id])
+  @@schema("public")
 }
 
-enum list48 {
-  HEIGHT
-  WIDTH
-  THICKNESS
-  PAGE_TRIM_HEIGHT
-  PAGE_TRIM_WIDTH
-  UNIT_VOLUME
-  UNIT_CAPACITY
-  UNIT_WEIGHT
-  DIAMETER_SPHERE
-  UNFOLDED_UNROLLED_SHEET_HEIGHT
-  UNFOLDED_UNROLLED_SHEET_WIDTH
-  DIAMETER_TUBE_OR_CYLINDER
-  ROLLED_SHEET_PACKAGE_SIDE_MEASURE
-  UNPACKAGED_HEIGHT
-  UNPACKAGED_WIDTH
-  UNPACKAGED_THICKNESS
-  TOTAL_BATTERY_WEIGHT
-  TOTAL_WEIGHT_OF_LITHIUM
-  ASSEMBLED_LENGTH
-  ASSEMBLED_WIDTH
-  ASSEMBLED_HEIGHT
-  UNPACKAGED_UNIT_WEIGHT
-  CARTON_LENGTH
-  CARTON_WIDTH
-  CARTON_HEIGHT
-  CARTON_WEIGHT
-  PALLET_LENGTH
-  PALLET_WIDTH
-  PALLET_HEIGHT
-  PALLET_WEIGHT
-}
+// ================================================================
+// RELATED_PRODUCTS: ПОВ'ЯЗАНІ ТОВАРИ
+// ================================================================
 
-enum list49 {
-  AUSTRALIAN_CAPITAL_TERRITORY
-  NEW_SOUTH_WALES
-  NORTHERN_TERRITORY
-  QUEENSLAND
-  SOUTH_AUSTRALIA
-  TASMANIA
-  VICTORIA
-  WESTERN_AUSTRALIA
-  BRUSSELS_CAPITAL_REGION
-  FLEMISH_REGION
-  WALLOON_REGION
-  ALBERTA
-  BRITISH_COLUMBIA
-  MANITOBA
-  NEW_BRUNSWICK
-  NEWFOUNDLAND_AND_LABRADOR
-  NOVA_SCOTIA
-  NORTHWEST_TERRITORIES
-  NUNAVUT
-  ONTARIO
-  PRINCE_EDWARD_ISLAND
-  QUEBEC
-  SASKATCHEWAN
-  YUKON_TERRITORY
-  BEIJING_MUNICIPALITY
-  TIANJIN_MUNICIPALITY
-  HEBEI_PROVINCE
-  SHANXI_PROVINCE
-  NEI_MONGOL_AUTONOMOUS_REGION
-  LIAONING_PROVINCE
-  JILIN_PROVINCE
-  HEILONGJIANG_PROVINCE
-  SHANGHAI_MUNICIPALITY
-  JIANGSU_PROVINCE
-  ZHEJIANG_PROVINCE
-  ANHUI_PROVINCE
-  FUJIAN_PROVINCE
-  JIANGXI_PROVINCE
-  SHANDONG_PROVINCE
-  HENAN_PROVINCE
-  HUBEI_PROVINCE
-  HUNAN_PROVINCE
-  GUANGDONG_PROVINCE
-  GUANGXI_ZHUANGZU_AUTONOMOUS_REGION
-  HAINAN_PROVINCE
-  CHONGQING_MUNICIPALITY
-  SICHUAN_PROVINCE
-  GUIZHOU_PROVINCE
-  YUNNAN_PROVINCE
-  TIBET_AUTONOMOUS_REGION
-  SHAANXI_PROVINCE
-  GANSU_PROVINCE
-  QINGHAI_PROVINCE
-  NINGXIA_HUIZU_AUTONOMOUS_REGION
-  XINJIANG_UYGUR_AUTONOMOUS_REGION
-  TAIWAN_PROVINCE
-  HONG_KONG_SPECIAL_ADMINISTRATIVE_REGION
-  MACAU_SPECIAL_ADMINISTRATIVE_REGION
-  BEIJING_MUNICIPALITY_2
-  TIANJIN_MUNICIPALITY_2
-  HEBEI_PROVINCE_2
-  SHANXI_PROVINCE_2
-  INNER_MONGOLIA_AUTONOMOUS_REGION
-  LIAONING_PROVINCE_2
-  JILIN_PROVINCE_2
-  HEILONGJIANG_PROVINCE_2
-  SHANGHAI_MUNICIPALITY_2
-  JIANGSU_PROVINCE_2
-  ZHEJIANG_PROVINCE_2
-  ANHUI_PROVINCE_2
-  FUJIAN_PROVINCE_2
-  JIANGXI_PROVINCE_2
-  SHANDONG_PROVINCE_2
-  HENAN_PROVINCE_2
-  HUBEI_PROVINCE_2
-  HUNAN_PROVINCE_2
-  GUANGDONG_PROVINCE_2
-  GUANGXI_ZHUANG_AUTONOMOUS_REGION
-  HAINAN_PROVINCE_2
-  CHONGQING_MUNICIPALITY_2
-  SICHUAN_PROVINCE_2
-  GUIZHOU_PROVINCE_2
-  YUNNAN_PROVINCE_2
-  TIBET_AUTONOMOUS_REGION_2
-  SHAANXI_PROVINCE_2
-  GANSU_PROVINCE_2
-  QINGHAI_PROVINCE_2
-  NINGXIA_HUI_AUTONOMOUS_REGION
-  XINJIANG_UYGHUR_AUTONOMOUS_REGION
-  TAIWAN_PROVINCE_2
-  HONG_KONG_SPECIAL_ADMINISTRATIVE_REGION_2
-  MACAU_SPECIAL_ADMINISTRATIVE_REGION_2
-  CANARY_ISLANDS
-  CORSICA
-  UK_AIRSIDE
-  UK_AIRPORTS
-  CHANNEL_ISLANDS
-  ENGLAND
-  ENGLAND_WALES_SCOTLAND
-  ISLE_OF_MAN
-  NORTHERN_IRELAND
-  SCOTLAND
-  WALES
-  IRELAND_AIRSIDE
-  AGRIGENTO
-  ALESSANDRIA
-  ANCONA
-  AOSTA
-  AREZZO
-  ASCOLI_PICENO
-  ASTI
-  AVELLINO
-  BARI
-  BARLETTA_ANDRIA_TRANI
-  BELLUNO
-  BENEVENTO
-  BERGAMO
-  BIELLA
-  BOLOGNA
-  BOLZANO
-  BRESCIA
-  BRINDISI
-  CAGLIARI
-  CALTANISSETTA
-  CAMPOBASSO
-  CARBONIA_IGLESIAS
-  CASERTA
-  CATANIA
-  CATANZARO
-  CHIETI
-  COMO
-  COSENZA
-  CREMONA
-  CROTONE
-  CUNEO
-  ENNA
-  FERMO
-  FERRARA
-  FIRENZE
-  FOGGIA
-  FORL_CESENA
-  FROSINONE
-  GENOVA
-  GORIZIA
-  GROSSETO
-  IMPERIA
-  ISERNIA
-  LA_SPEZIA
-  L_AQUILA
-  LATINA
-  LECCE
-  LECCO
-  LIVORNO
-  LODI
-  LUCCA
-  MACERATA
-  MANTOVA
-  MASSA_CARRARA
-  MATERA
-  MEDIO_CAMPIDANO
-  MESSINA
-  MILANO
-  MODENA
-  MONZA_E_BRIANZA
-  NAPOLI
-  NOVARA
-  NUORO
-  OGLIASTRA
-  OLBIA_TEMPIO
-  ORISTANO
-  PADOVA
-  PALERMO
-  PARMA
-  PAVIA
-  PERUGIA
-  PESARO_E_URBINO
-  PESCARA
-  PIACENZA
-  PISA
-  PISTOIA
-  PORDENONE
-  POTENZA
-  PRATO
-  RAGUSA
-  RAVENNA
-  REGGIO_CALABRIA
-  REGGIO_EMILIA
-  RIETI
-  RIMINI
-  ROMA
-  ROVIGO
-  SALERNO
-  SASSARI
-  SAVONA
-  SIENA
-  SIRACUSA
-  SONDRIO
-  TARANTO
-  TERAMO
-  TERNI
-  TORINO
-  TRAPANI
-  TRENTO
-  TREVISO
-  TRIESTE
-  UDINE
-  VARESE
-  VENEZIA
-  VERBANO_CUSIO_OSSOLA
-  VERCELLI
-  VERONA
-  VIBO_VALENTIA
-  VICENZA
-  VITERBO
-  KOSOVO_METOHIJA
-  VOJVODINA
-  REPUBLIC_OF_ADYGEYA
-  REPUBLIC_OF_ALTAY
-  REPUBLIC_OF_BASHKORTOSTAN
-  REPUBLIC_OF_BURYATIYA
-  CHECHENSKAYA_REPUBLIC
-  CHUVASHSKAYA_REPUBLIC
-  REPUBLIC_OF_DAGESTAN
-  REPUBLIC_OF_INGUSHETIYA
-  KABARDINO_BALKARSKAYA_REPUBLIC
-  REPUBLIC_OF_KALMYKIYA
-  KARACHAYEVO_CHERKESSKAYA_REPUBLIC
-  REPUBLIC_OF_KARELIYA
-  REPUBLIC_OF_KHAKASIYA
-  REPUBLIC_OF_KOMI
-  REPUBLIC_OF_MARIY_EL
-  REPUBLIC_OF_MORDOVIYA
-  REPUBLIC_OF_SAKHA_YAKUTIYA
-  REPUBLIC_OF_SEVERNAYA_OSETIYA_ALANIYA
-  REPUBLIC_OF_TATARSTAN
-  REPUBLIC_OF_TYVA_TUVA
-  UDMURTSKAYA_REPUBLIC
-  ALTAYSKIY_ADMINISTRATIVE_TERRITORY
-  KAMCHATSKIY_ADMINISTRATIVE_TERRITORY
-  KHABAROVSKIY_ADMINISTRATIVE_TERRITORY
-  KRASNODARSKIY_ADMINISTRATIVE_TERRITORY
-  KRASNOYARSKIY_ADMINISTRATIVE_TERRITORY
-  PERMSKIY_ADMINISTRATIVE_TERRITORY
-  PRIMORSKIY_ADMINISTRATIVE_TERRITORY
-  STAVROPOL_SKIY_ADMINISTRATIVE_TERRITORY
-  ZABAYKAL_SKIY_ADMINISTRATIVE_TERRITORY
-  AMURSKAYA_ADMINISTRATIVE_REGION
-  ARKHANGEL_SKAYA_ADMINISTRATIVE_REGION
-  ASTRAKHANSKAYA_ADMINISTRATIVE_REGION
-  BELGORODSKAYA_ADMINISTRATIVE_REGION
-  BRYANSKAYA_ADMINISTRATIVE_REGION
-  CHELYABINSKAYA_ADMINISTRATIVE_REGION
-  IRKUTSKAYA_ADMINISTRATIVE_REGION
-  IVANOVSKAYA_ADMINISTRATIVE_REGION
-  KALININGRADSKAYA_ADMINISTRATIVE_REGION
-  KALUZHSKAYA_ADMINISTRATIVE_REGION
-  KEMEROVSKAYA_ADMINISTRATIVE_REGION
-  KIROVSKAYA_ADMINISTRATIVE_REGION
-  KOSTROMSKAYA_ADMINISTRATIVE_REGION
-  KURGANSKAYA_ADMINISTRATIVE_REGION
-  KURSKAYA_ADMINISTRATIVE_REGION
-  LENINGRADSKAYA_ADMINISTRATIVE_REGION
-  LIPETSKAYA_ADMINISTRATIVE_REGION
-  MAGADANSKAYA_ADMINISTRATIVE_REGION
-  MOSKOVSKAYA_ADMINISTRATIVE_REGION
-  MURMANSKAYA_ADMINISTRATIVE_REGION
-  NIZHEGORODSKAYA_ADMINISTRATIVE_REGION
-  NOVGORODSKAYA_ADMINISTRATIVE_REGION
-  NOVOSIBIRSKAYA_ADMINISTRATIVE_REGION
-  OMSKAYA_ADMINISTRATIVE_REGION
-  ORENBURGSKAYA_ADMINISTRATIVE_REGION
-  ORLOVSKAYA_ADMINISTRATIVE_REGION
-  PENZENSKAYA_ADMINISTRATIVE_REGION
-  PSKOVSKAYA_ADMINISTRATIVE_REGION
-  ROSTOVSKAYA_ADMINISTRATIVE_REGION
-  RYAZANSKAYA_ADMINISTRATIVE_REGION
-  SAKHALINSKAYA_ADMINISTRATIVE_REGION
-  SAMARSKAYA_ADMINISTRATIVE_REGION
-  SARATOVSKAYA_ADMINISTRATIVE_REGION
-  SMOLENSKAYA_ADMINISTRATIVE_REGION
-  SVERDLOVSKAYA_ADMINISTRATIVE_REGION
-  TAMBOVSKAYA_ADMINISTRATIVE_REGION
-  TOMSKAYA_ADMINISTRATIVE_REGION
-  TUL_SKAYA_ADMINISTRATIVE_REGION
-  TVERSKAYA_ADMINISTRATIVE_REGION
-  TYUMENSKAYA_ADMINISTRATIVE_REGION
-  UL_YANOVSKAYA_ADMINISTRATIVE_REGION
-  VLADIMIRSKAYA_ADMINISTRATIVE_REGION
-  VOLGOGRADSKAYA_ADMINISTRATIVE_REGION
-  VOLOGODSKAYA_ADMINISTRATIVE_REGION
-  VORONEZHSKAYA_ADMINISTRATIVE_REGION
-  YAROSLAVSKAYA_ADMINISTRATIVE_REGION
-  MOSKVA_CITY
-  SANKT_PETERBURG_CITY
-  YEVREYSKAYA_AUTONOMOUS_ADMINISTRATIVE_REGION
-  CHUKOTSKIY_AUTONOMOUS_DISTRICT
-  KHANTY_MANSIYSKIY_AUTONOMOUS_DISTRICT
-  NENETSKIY_AUTONOMOUS_DISTRICT
-  YAMALO_NENETSKIY_AUTONOMOUS_DISTRICT
-  ALASKA
-  ALABAMA
-  ARKANSAS
-  ARIZONA
-  CALIFORNIA
-  COLORADO
-  CONNECTICUT
-  DISTRICT_OF_COLUMBIA
-  DELAWARE
-  FLORIDA
-  GEORGIA
-  HAWAII
-  IOWA
-  IDAHO
-  ILLINOIS
-  INDIANA
-  KANSAS
-  KENTUCKY
-  LOUISIANA
-  MASSACHUSETTS
-  MARYLAND
-  MAINE
-  MICHIGAN
-  MINNESOTA
-  MISSOURI
-  MISSISSIPPI
-  MONTANA
-  NORTH_CAROLINA
-  NORTH_DAKOTA
-  NEBRASKA
-  NEW_HAMPSHIRE
-  NEW_JERSEY
-  NEW_MEXICO
-  NEVADA
-  NEW_YORK
-  OHIO
-  OKLAHOMA
-  OREGON
-  PENNSYLVANIA
-  RHODE_ISLAND
-  SOUTH_CAROLINA
-  SOUTH_DAKOTA
-  TENNESSEE
-  TEXAS
-  UTAH
-  VIRGINIA
-  VERMONT
-  WASHINGTON
-  WISCONSIN
-  WEST_VIRGINIA
-  WYOMING
-  EUROZONE
-  WORLD
-}
+model RelatedProduct {
+  id                      BigInt    @id @default(autoincrement())
+  product_id              BigInt
+  product                 CatalogProduct @relation("ProductFrom", fields: [product_id], references: [id], onDelete: Cascade)
+  related_product_id      BigInt
+  related_product         CatalogProduct @relation("ProductTo", fields: [related_product_id], references: [id], onDelete: Cascade)
 
-enum list50 {
-  CENTIMETERS
-  GRAMS
-  INCHES_US
-  KILOGRAMS
-  POUNDS_US
-  MILLIMETERS
-  OUNCES_US
-  PIXELS
-}
+  relation_code           String    @db.Char(2)
 
-enum list51 {
-  UNSPECIFIED
-  INCLUDES
-  IS_PART_OF
-  REPLACES
-  HAS_COMPANION_PRODUCT
-  REPLACED_BY
-  ALTERNATIVE_FORMAT
-  HAS_ANCILLARY_PRODUCT
-  IS_ANCILLARY_TO
-  IS_REMAINDERED_AS
-  IS_REMAINDER_OF
-  IS_OTHER_LANGUAGE_VERSION_OF
-  PUBLISHER_S_SUGGESTED_ALTERNATIVE
-  EPUBLICATION_BASED_ON_PRINT_PRODUCT
-  POD_REPLACEMENT_FOR
-  REPLACED_BY_POD
-  IS_SPECIAL_EDITION_OF
-  HAS_SPECIAL_EDITION
-  IS_PREBOUND_EDITION_OF
-  IS_ORIGINAL_OF_PREBOUND_EDITION
-  PRODUCT_BY_SAME_AUTHOR
-  SIMILAR_PRODUCT
-  IS_FACSIMILE_OF
-  IS_ORIGINAL_OF_FACSIMILE
-  IS_LICENSE_FOR
-  ELECTRONIC_VERSION_AVAILABLE_AS
-  ENHANCED_VERSION_AVAILABLE_AS
-  BASIC_VERSION_AVAILABLE_AS
-  PRODUCT_IN_SAME_COLLECTION
-  HAS_ALTERNATIVE_IN_A_DIFFERENT_MARKET_SECTOR
-  HAS_EQUIVALENT_INTENDED_FOR_A_DIFFERENT_MARKET
-  HAS_ALTERNATIVE_INTENDED_FOR_DIFFERENT_MARKET
-  CITES
-  IS_CITED_BY
-  IS_SIGNED_VERSION_OF
-  HAS_SIGNED_VERSION
-  HAS_RELATED_STUDENT_MATERIAL
-  HAS_RELATED_TEACHER_MATERIAL
-  SOME_CONTENT_SHARED_WITH
-  IS_LATER_EDITION_OF_FIRST_EDITION
-  ADAPTED_FROM
-  ADAPTED_AS
-  HAS_LINKED_PRODUCT_OFFER
-  MAY_BE_SUBSTITUTED_BY
-  MAY_BE_SUBSTITUTED_FOR
-  IS_LINKED_PRODUCT_OFFER
+  @@unique([product_id, related_product_id])
+  @@index([product_id])
+  @@index([related_product_id])
+  @@schema("public")
 }
 
-enum list64 {
-  UNSPECIFIED
-  CANCELLED
-  FORTHCOMING
-  POSTPONED_INDEFINITELY
-  ACTIVE
-  NO_LONGER_OUR_PRODUCT
-  OUT_OF_STOCK_INDEFINITELY
-  OUT_OF_PRINT
-  INACTIVE
-  UNKNOWN
-  REMAINDERED
-  WITHDRAWN_FROM_SALE
-  RECALLED
-  ACTIVE_BUT_NOT_SOLD_SEPARATELY
-  RECALLED_2
-  TEMPORARILY_WITHDRAWN_FROM_SALE
-  PERMANENTLY_WITHDRAWN_FROM_SALE
-  ACTIVE_BUT_NOT_SOLD_AS_SET
-}
+// ================================================================
+// ONIX_CODE_LISTS: ДОВІДНИКИ КОДІВ (schema: codelist)
+// ================================================================
 
-enum list65 {
-  CANCELLED
-  NOT_YET_AVAILABLE_POSTPONED_INDEFINITELY
-  NOT_YET_AVAILABLE
-  AWAITING_STOCK
-  NOT_YET_AVAILABLE_WILL_BE_POD
-  AVAILABLE
-  IN_STOCK
-  TO_ORDER
-  POD
-  TEMPORARILY_UNAVAILABLE
-  OUT_OF_STOCK
-  REPRINTING
-  AWAITING_REISSUE
-  TEMPORARILY_WITHDRAWN_FROM_SALE
-  NOT_AVAILABLE_REASON_UNSPECIFIED
-  NOT_AVAILABLE_REPLACED_BY_NEW_PRODUCT
-  NOT_AVAILABLE_OTHER_FORMAT_AVAILABLE
-  NO_LONGER_SUPPLIED_BY_THE_SUPPLIER
-  APPLY_DIRECT
-  NOT_SOLD_SEPARATELY
-  WITHDRAWN_FROM_SALE
-  REMAINDERED
-  NOT_AVAILABLE_REPLACED_BY_POD
-  RECALLED
-  NOT_SOLD_AS_SET
-  NOT_AVAILABLE_PUBLISHER_INDICATES_OP
-  NOT_AVAILABLE_PUBLISHER_NO_LONGER_SELLS_PRODUCT_IN_THIS_MARKET
-  NO_RECENT_UPDATE_RECEIVED
-  NO_LONGER_RECEIVING_UPDATES
-  CONTACT_SUPPLIER
-}
+model CodeListProductForm {
+  code                    String    @id @db.Char(2)
+  description             String    @db.VarChar(200)
+  category                String?   @db.VarChar(50)
 
-enum measuretype {
-  HEIGHT
-  WIDTH
-  THICKNESS
-  WEIGHT
+  @@map("product_form")
+  @@schema("codelist")
 }
 
-enum measureunit {
-  CENTIMETERS
-  MILLIMETERS
-  INCHES
-  GRAMS
-  OUNCES
-  POUNDS
-  KILOGRAMS
-}
+model CodeListPublishingStatus {
+  code                    String    @id @db.Char(2)
+  description             String    @db.VarChar(200)
 
-enum notificationtype {
-  EARLY_NOTIFICATION
-  ADVANCE_NOTIFICATION
-  NOTIFICATION_CONFIRMED
-  DELETE
-  OLD_RECORD
-  ON_DEMAND
+  @@map("publishing_status")
+  @@schema("codelist")
 }
 
-enum pricetype {
-  RRP_EXC_TAX
-  RRP_INC_TAX
-  FIXED_RETAIL_PRICE
-  SUPPLIER_NET_PRICE
-  SPECIAL_SALE_PRICE
-}
+model CodeListContributorRole {
+  code                    String    @id @db.VarChar(3)
+  description             String    @db.VarChar(200)
+  category                String?   @db.VarChar(50)
 
-enum productavailability {
-  CANCELLED
-  NOT_YET_AVAILABLE
-  AWAITING_STOCK
-  AVAILABLE
-  IN_STOCK
-  TO_ORDER
-  MANUFACTURED_ON_DEMAND
-  TEMPORARILY_UNAVAILABLE
-  OUT_OF_STOCK
-  REPRINTING
-  AWAITING_REPRINT
-  NOT_AVAILABLE_GENERIC
+  @@map("contributor_role")
+  @@schema("codelist")
 }
 
-enum productform {
-  AUDIO
-  BOOK
-  HARDCOVER
-  PAPERBACK
-  LOOSE_LEAF
-  DIGITAL
-  EBOOK
-}
+model CodeListPriceType {
+  code                    String    @id @db.Char(2)
+  description             String    @db.VarChar(200)
 
-enum productformdetail {
-  A_FORMAT_PAPERBACK
-  B_FORMAT_PAPERBACK
-  TRADE_PAPERBACK
-  POCKET_BOOK
-  SEWN
-  GLUED
-  EPUB
-  PDF
-  MOBI
-  MP3
-  WAV
+  @@map("price_type")
+  @@schema("codelist")
 }
 
-enum productrelation {
-  REPLACES
-  REPLACED_BY
-  ALTERNATIVE_FORMAT
-  DIGITAL_VERSION
-  PRINT_VERSION
-  PART_OF_SET
-}
+model CodeListTextType {
+  code                    String    @id @db.Char(2)
+  description             String    @db.VarChar(200)
 
-enum publishingstatus {
-  UNSPECIFIED
-  CANCELLED
-  FORTHCOMING
-  POSTPONED
-  ACTIVE
-  NO_LONGER_OUR_PRODUCT
-  OUT_OF_STOCK_INDEFINITELY
-  OUT_OF_PRINT
-  INACTIVE
-  REMAINDERED
-  WITHDRAWN
-  RECALLED
+  @@map("text_type")
+  @@schema("codelist")
 }
 
-enum regioncode {
-  UA
-  US
-  GB
-  EU
-  WORLD
-}
+model CodeListAudience {
+  code                    String    @id @db.Char(2)
+  description             String    @db.VarChar(200)
 
-enum subjectschemeidentifier {
-  DEWEY
-  LOC
-  UDC
-  BISAC_SUBJECT
-  BIC_SUBJECT
-  KEYWORDS
-  PROPRIETARY
-  THEMA_SUBJECT
+  @@map("audience")
+  @@schema("codelist")
 }
+
+model CodeListSubjectScheme {
+  code                    String    @id @db.VarChar(10)
+  description             String    @db.VarChar(200)
+  url                     String?   @db.VarChar(500)
 
-enum textcontenttype {
-  SENDER_DEFINED_TEXT
-  SHORT_DESCRIPTION
-  MAIN_DESCRIPTION
-  TABLE_OF_CONTENTS
-  REVIEW_QUOTE
-  PROMOTIONAL_HEADLINE
-  BIOGRAPHICAL_NOTE
-  EXCERPT
-  BACK_COVER_COPY
+  @@map("subject_scheme")
+  @@schema("codelist")
 }
+
+// ================================================================
+// AUDIT: ЛОГУВАННЯ ЗМІН
+// ================================================================
+
+model AuditLog {
+  id                      BigInt    @id @default(autoincrement())
+  table_name              String    @db.VarChar(50)
+  record_id               BigInt
+  operation               String    @db.VarChar(10) // INSERT, UPDATE, DELETE
+  old_data                Json?
+  new_data                Json?
+  changed_by              String?   @db.VarChar(100)
+  changed_at              DateTime  @default(now()) @db.Timestamptz(6)
 
-enum titletype {
-  DISTINCTIVE_TITLE
-  ORIGINAL_TITLE
-  ACRONYM
-  ALTERNATIVE_TITLE
-  EXPANDED_TITLE
+  @@index([table_name, record_id])
+  @@index([changed_at])
+  @@schema("public")
 }

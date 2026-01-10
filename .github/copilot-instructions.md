@@ -1,146 +1,232 @@
-# Copilot Instructions (Total Harvester)
+# Copilot Instructions - ONIX Aggregator
 
-## Big Picture
-- **CLI-first web crawler** for book metadata extraction from Ukrainian bookstores.
-- **Two-phase discovery**: Sitemap "Vacuum" + Recursive BFS "Bloodhound".
-- **Distributed workers**: PostgreSQL `SKIP LOCKED` for zero-conflict parallelism.
-- **Self-healing scraping**: LLM fallback when CSS selectors break.
+## Project Overview
 
-## Key Entry Points
+**ONIX Aggregator** is a high-performance book metadata & pricing system for Ukrainian bookstores with dual capabilities:
+1. **REST API** for querying catalogued books (FastAPI + 3-tier architecture)
+2. **Web crawler** for discovering & extracting product data from retailers
 
-| File | Purpose |
+**69k+ Ukrainian books | Prisma ORM | PostgreSQL + async/await**
+
+---
+
+## Architecture: The Big Picture
+
+### Three Layers (Prisma ORM)
+
+**1. Repository Layer** (`app/repositories/prisma_repositories.py`)
+- Pure data access via Prisma client
+- `PrismaProductRepository.get_all()`, `search()`, `get_by_isbn()`
+- Returns Prisma models; handles includes/relations
+
+**2. Service Layer** (`app/services/`)
+- Business rules + ORM → dict/DTO mapping
+- `PrismaCatalogService.get_catalog()` calculates pagination, enriches data
+- Injects Prisma client
+
+**3. Router Layer** (`app/routers/catalog.py`)
+- FastAPI endpoints with request validation
+- Routes: `GET /catalog/products`, `/catalog/products/{isbn13}`, `/catalog/search`
+- Returns dicts/DTOs; automatic OpenAPI schema
+
+**Data Flow**: `Router` → `PrismaCatalogService(db)` → `PrismaProductRepository` → DB → Map → Response
+
+### Database: Two Schemas
+
+- **public**: Main product data (catalog_products, Contributor, Subject, etc.)
+- **codelist**: ONIX reference codes (product_form, publishing_status, etc.)
+
+### ORM: Prisma Only
+
+- **Prisma** (`prisma/schema.prisma`, `0.15.0`): All database operations
+  - Run `prisma generate` after schema changes
+  - Run `prisma db push` for schema sync (dev)
+  - Multi-schema support enabled
+
+---
+
+## Development Quick Start
+
+```bash
+# 1. Setup
+cd onix_project && source .venv/bin/activate
+
+# 2. Database (required)
+cat > .env << 'EOF'
+DATABASE_URL=postgresql://onix_user:onix_pass@localhost:5432/onix_db
+PRISMA_DATABASE_URL=postgresql://onix_user:onix_pass@localhost:5432/onix_db
+EOF
+
+# 3. Generate Prisma client
+prisma generate
+
+# 4. Run API
+python main.py  # FastAPI on :8000/docs
+
+# 5. Test
+pytest tests/ -v
+```
+
+---
+
+## Key Patterns & Rules
+
+### 1. Prisma Client Usage
+
+```python
+from prisma import Prisma
+from app.core.prisma_db import get_db
+
+# In router - dependency injection
+@router.get("/products")
+async def list_products(db: Prisma = Depends(get_db)):
+    products = await db.catalogproduct.find_many(
+        take=20,
+        include={"contributors": True, "subjects": True}
+    )
+    return products
+```
+
+### 2. Services: Inject Prisma Client
+
+```python
+class PrismaCatalogService:
+    def __init__(self, db: Prisma):
+        self.db = db
+        self.product_repo = PrismaProductRepository(db)
+    
+    async def get_catalog(self, limit, offset):
+        products, total = await self.product_repo.get_all(limit, offset)
+        return {"total": total, "items": products}
+```
+
+### 3. Routers: Dependency Injection
+
+```python
+from app.core.prisma_db import get_db
+
+@router.get("/products")
+async def list_products(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+    db: Prisma = Depends(get_db),
+) -> dict:
+    service = PrismaCatalogService(db)
+    return await service.get_catalog(limit, (page-1)*limit)
+```
+
+### 4. N:N Relations (Contributors, Subjects)
+
+```python
+# Contributors are N:N via ProductContributor junction
+product = await db.catalogproduct.find_unique(
+    where={"isbn13": isbn},
+    include={
+        "contributors": {
+            "include": {"contributor": True}
+        },
+        "subjects": {
+            "include": {"subject": True}
+        }
+    }
+)
+
+# Get all books by an author
+contributor = await db.contributor.find_first(
+    where={"person_name": "Тарас Шевченко"},
+    include={"products": {"include": {"product": True}}}
+)
+```
+
+### 5. ONIX Conventions
+
+- **Field naming**: `isbn13`, `product_form_code`, `language_code`
+- **Enums**: Defined in `app/models/codes_v71.py`
+- **Scheme codes**: 20=Keywords, 24=Proprietary categories, 93=Thema
+
+---
+
+## Common Tasks
+
+### Adding a New API Endpoint
+
+1. **Add repository method** (`app/repositories/prisma_repositories.py`)
+   ```python
+   async def filter_by_format(self, form_code: str, limit: int):
+       return await self.db.catalogproduct.find_many(
+           where={"product_form_code": form_code},
+           take=limit
+       )
+   ```
+
+2. **Add service method** (`app/services/prisma_catalog_service.py`)
+   ```python
+   async def get_by_format(self, form_code: str):
+       products = await self.product_repo.filter_by_format(form_code, 100)
+       return [self._format_product(p) for p in products]
+   ```
+
+3. **Add router endpoint** (`app/routers/catalog.py`)
+   ```python
+   @router.get("/products/format/{form_code}")
+   async def list_by_format(form_code: str, db: Prisma = Depends(get_db)):
+       service = PrismaCatalogService(db)
+       return await service.get_by_format(form_code)
+   ```
+
+### Modifying Schema
+
+1. Edit `prisma/schema.prisma`
+2. Run `prisma generate` to update client
+3. Run `prisma db push` (dev) or create migration
+4. Update DTOs in `app/schemas/` if needed
+
+---
+
+## Testing Patterns
+
+```bash
+pytest tests/ -v  # All tests
+```
+
+**Test structure**:
+- Mock Prisma client for unit tests
+- Use `@pytest.mark.asyncio` for async tests
+
+---
+
+## File Reference
+
+| Path | Purpose |
 |------|---------|
-| `run_spider.py` | 🕷️ Main autonomous crawler (884 lines) |
-| `manage.py` | 🎮 CLI management (typer + rich) |
-| `scripts/seed_configs.py` | Initialize domain configurations |
+| `main.py` | FastAPI app + lifespan + CORS |
+| `app/core/prisma_db.py` | Prisma client + get_db dependency |
+| `app/models/codes_v71.py` | ONIX code Enums |
+| `app/repositories/prisma_repositories.py` | Data access layer |
+| `app/services/prisma_catalog_service.py` | Business logic |
+| `app/services/prisma_ingestion_service.py` | Data import |
+| `app/routers/catalog.py` | FastAPI endpoints |
+| `app/schemas/*.py` | Pydantic DTOs |
+| `prisma/schema.prisma` | Database schema |
+| `scripts/import_yakaboo_prisma.py` | Import script |
 
-## Critical Commands
+---
 
-```bash
-# Start crawler (production: use tmux/screen)
-python run_spider.py -w spider-01 -c 15
+## Database Stats
 
-# Check status
-python manage.py status
+| Table | Count |
+|-------|-------|
+| Products | 69,375 |
+| Unique Contributors | 26,879 |
+| Unique Subjects | 54,129 |
+| Product-Contributor links | 88,084 |
+| Product-Subject links | 604,207 |
 
-# Real-time TUI monitor
-python manage.py monitor
+---
 
-# Add new domain
-python manage.py add https://example.ua
+## References
 
-# Clear stale locks
-python manage.py flush
-
-# Retry failed URLs
-python manage.py reset-errors
-```
-
-## Required Environment
-
-```bash
-# .env file (required)
-DATABASE_URL=postgresql+asyncpg://user:pass@host:5432/db
-
-# Optional LLM config
-OLLAMA_BASE_URL=http://localhost:11434/v1
-LLM_MODEL=qwen2.5:3b
-```
-
-## Database Schema
-
-- `scraper_configs` — Domain configurations with `SKIP LOCKED` locking
-- `product_links` — Discovered URLs (status: discovered/scraped/error)
-- `product_sources` — Raw scraped data per (isbn13, domain)
-- `products` — Merged "golden record" with ONIX JSON
-
-## Scraping Architecture
-
-### ScraperFactory (DB-driven only)
-```python
-# All scraping goes through factory
-scraper = await ScraperFactory.get_scraper(url, db)
-```
-- Factory queries `ScraperConfig` for domain
-- Custom providers in `app/scraper/providers/{module}/scraper.py`
-- Default: `UniversalProvider` with config selectors
-- **No hardcoded `if domain == ...`** outside factory
-
-### UniversalProvider Extraction Order
-1. JSON-LD structured data (`<script type="application/ld+json">`)
-2. Next.js / Nuxt.js hydration (`__NEXT_DATA__`, `__NUXT__`)
-3. CSS selectors from `ScraperConfig.selectors`
-4. **LLM fallback** via Ollama (self-healing)
-
-## MDM Merge Rules
-
-`ProductMerger.DOMAIN_PRIORITY` (lower = more trusted):
-```python
-PRIORITY = {
-    "vivat.com.ua": 1,   # Publisher
-    "yakaboo.ua": 2,
-    "book-ye.com.ua": 3,
-    # ...
-}
-```
-
-| Field | Strategy |
-|-------|----------|
-| Title/Form/Language | Highest-priority source |
-| Description | Longest wins |
-| Images | Union, sorted by priority |
-
-Provenance stored in `Product.onix_json["extra"]["source_contributions"]`.
-
-## DB Code Rules
-
-- **Async SQLAlchemy 2.x** throughout (`AsyncSession`)
-- If mutating `Product.onix_json`, call `flag_modified(product, "onix_json")`
-- Use PostgreSQL upserts where established:
-  - `ProductSource`: ON CONFLICT on `(isbn13, domain)`
-  - `ProductLink`: ON CONFLICT DO NOTHING on `url`
-
-## Config Seeding
-
-`scripts/seed_configs.py` **must not overwrite** configs with `is_dirty=True`.
-
-## Testing
-
-```bash
-pytest -v
-```
-- Tests use fixtures/mocks (no network)
-- Sample HTML in `tests/test_scraper.py`
-- All scraping through `ScraperFactory`
-
-## Project Structure
-
-```
-onix_project/
-├── run_spider.py          # Main crawler
-├── manage.py              # CLI interface
-├── requirements.txt       # Minimal deps (13 packages)
-│
-├── app/
-│   ├── core/              # Database, config
-│   ├── models/            # SQLAlchemy models
-│   ├── scraper/           # Extraction logic
-│   │   ├── factory.py
-│   │   └── core/
-│   │       └── universal_provider.py
-│   └── services/          # Business logic
-│       ├── product_merger.py
-│       └── discovery_service.py
-│
-├── scripts/
-│   └── seed_configs.py
-│
-└── tests/
-```
-
-## When Changing Code
-
-1. **Models**: Use async SQLAlchemy patterns, `flag_modified` for JSONB
-2. **Scraping**: Go through `ScraperFactory`, extend `UniversalProvider`
-3. **CLI**: Use typer + rich, keep commands in `manage.py`
-4. **Tests**: No network calls, use fixtures
+- **API Docs**: `http://localhost:8000/docs` (OpenAPI)
+- **Prisma Studio**: `npx prisma studio`
+- **docs/YAKABOO_SIMPLE_MAPPING.md**: Field mapping reference
+- **docs/DB_SCHEMA.md**: Full table schema

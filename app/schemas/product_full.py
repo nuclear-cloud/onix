@@ -3,7 +3,7 @@
 DTO для повного опису продукту.
 Використовується в Шляху 1 (Daily Catalog Import).
 """
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 
@@ -62,8 +62,8 @@ class ProductFullDTO(BaseModel):
     created_at: Optional[datetime] = Field(None, description="Дата створення у джерелі")
     updated_at: Optional[datetime] = Field(None, description="Дата оновлення у джерелі")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "isbn13": "978-0441172719",
                 "name": "Дюна",
@@ -80,8 +80,10 @@ class ProductFullDTO(BaseModel):
                 "in_stock": True,
             }
         }
+    )
     
-    @validator('isbn13')
+    @field_validator('isbn13', mode='before')
+    @classmethod
     def validate_isbn13(cls, v):
         """Валідація ISBN-13."""
         if not v:
@@ -92,7 +94,8 @@ class ProductFullDTO(BaseModel):
             raise ValueError(f'Invalid ISBN-13: {v}')
         return clean
     
-    @validator('price', 'old_price')
+    @field_validator('price', 'old_price', mode='before')
+    @classmethod
     def validate_price(cls, v):
         """Валідація цін."""
         if v is not None and v < 0:
@@ -110,7 +113,8 @@ class ProductCreateDTO(BaseModel):
     source: str
     price: Optional[float] = None
     
-    @validator('isbn13')
+    @field_validator('isbn13', mode='before')
+    @classmethod
     def validate_isbn13(cls, v):
         clean = v.replace('-', '').replace(' ', '')
         if len(clean) != 13 or not clean.isdigit():

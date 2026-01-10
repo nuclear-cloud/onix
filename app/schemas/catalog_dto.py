@@ -8,7 +8,7 @@ from typing import Optional, List
 from decimal import Decimal
 from datetime import datetime
 from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 # =====価格 (Price) =====
@@ -19,14 +19,15 @@ class PriceDTO(BaseModel):
     currency: str = Field(default="UAH", description="Валюта (ISO 4217)")
     type: str = Field(default="RRP", description="Тип ціни (RRP/Net)")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "amount": "299.99",
                 "currency": "UAH",
                 "type": "RRP"
             }
         }
+    )
 
 
 # ===== КАТАЛОГ =====
@@ -37,14 +38,15 @@ class ContributorDTO(BaseModel):
     role: str = Field(..., description="ONIX код ролі (A01/B06)")
     role_label: Optional[str] = Field(None, description="Лабель українською")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "name": "Марко Вовк",
                 "role": "A01",
                 "role_label": "Автор"
             }
         }
+    )
 
 
 class TitleDTO(BaseModel):
@@ -53,14 +55,15 @@ class TitleDTO(BaseModel):
     subtitle: Optional[str] = None
     type: str = Field(default="01", description="Тип назви")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "title": "Марко Вовк. Квітник",
                 "subtitle": "Сучасна лірика",
                 "type": "01"
             }
         }
+    )
 
 
 class SubjectDTO(BaseModel):
@@ -68,13 +71,14 @@ class SubjectDTO(BaseModel):
     code: str = Field(..., description="THEMA код (Y, YF, YFB)")
     label: Optional[str] = Field(None, description="Назва категорії")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "code": "YF",
                 "label": "Художна фікція"
             }
         }
+    )
 
 
 class ProductCardDTO(BaseModel):
@@ -88,8 +92,8 @@ class ProductCardDTO(BaseModel):
     is_buyable: bool
     is_archived: bool
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "550e8400-e29b-41d4-a716-446655440001",
                 "isbn": "9786177902421",
@@ -101,6 +105,7 @@ class ProductCardDTO(BaseModel):
                 "is_archived": False
             }
         }
+    )
 
 
 class ProductDetailDTO(BaseModel):
@@ -144,8 +149,8 @@ class ProductDetailDTO(BaseModel):
     # Видавець
     publisher: Optional[str] = None
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "550e8400-e29b-41d4-a716-446655440001",
                 "isbn": "9786177902421",
@@ -174,6 +179,7 @@ class ProductDetailDTO(BaseModel):
                 "pages": 256
             }
         }
+    )
 
 
 class PriceDetailDTO(BaseModel):
@@ -184,8 +190,8 @@ class PriceDetailDTO(BaseModel):
     final_price: Optional[Decimal] = Field(None, description="Ціна після знижки")
     availability: str = Field(default="in_stock", description="in_stock|preorder|out_of_stock")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "product_id": "550e8400-e29b-41d4-a716-446655440001",
                 "price": {
@@ -198,6 +204,7 @@ class PriceDetailDTO(BaseModel):
                 "availability": "in_stock"
             }
         }
+    )
 
 
 class CatalogSearchRequestDTO(BaseModel):
@@ -210,8 +217,8 @@ class CatalogSearchRequestDTO(BaseModel):
     page: int = Field(default=1, ge=1)
     limit: int = Field(default=20, ge=1, le=100)
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "query": "Марко Вовк",
                 "thema_code": "DSU",
@@ -220,6 +227,7 @@ class CatalogSearchRequestDTO(BaseModel):
                 "limit": 20
             }
         }
+    )
 
 
 class CatalogSearchResponseDTO(BaseModel):
@@ -229,8 +237,8 @@ class CatalogSearchResponseDTO(BaseModel):
     limit: int
     items: List[ProductCardDTO]
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "total": 150,
                 "page": 1,
@@ -249,6 +257,7 @@ class CatalogSearchResponseDTO(BaseModel):
                 ]
             }
         }
+    )
 
 
 # ===== ERRORS =====
@@ -259,11 +268,12 @@ class ErrorDTO(BaseModel):
     message: str
     details: Optional[dict] = None
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "code": "PRODUCT_NOT_FOUND",
                 "message": "Товар не знайдено",
                 "details": {"product_id": "550e8400-..."}
             }
         }
+    )

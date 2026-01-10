@@ -1,0 +1,67 @@
+# Pipeline Configuration
+# =====================
+# This file configures the data ingestion pipeline for ONIX Aggregator
+
+# Active data source adapter
+active_adapter: yakaboo
+
+# Database settings
+database:
+  url: ${DATABASE_URL}
+  pool_size: 20
+  max_overflow: 40
+  pool_timeout: 30
+  echo: false
+
+# Import settings
+import_config:
+  batch_size: 2000
+  max_concurrent_batches: 4
+  commit_every_n_batches: 5
+  skip_on_error: true
+  log_every_n_records: 5000
+  max_retries: 3
+  retry_delay_seconds: 1.0
+  strict_mode: false
+  fail_fast: false
+
+# Adapter configurations
+adapters:
+  yakaboo:
+    name: "Yakaboo Catalog"
+    adapter_type: yakaboo
+    enabled: true
+    priority: 1
+    batch_size: 2000
+    features:
+      validate_isbn_checksum: false
+      skip_missing_isbn: true
+      extract_all_images: true
+      parse_description_html: true
+    field_mappings: {}
+  
+  ksd:
+    name: "KSD Books"
+    adapter_type: ksd
+    enabled: false
+    priority: 2
+    base_url: "https://api.ksd.ua"
+    api_key: ${KSD_API_KEY}
+    batch_size: 1000
+  
+  vivat:
+    name: "Vivat Publishing"
+    adapter_type: vivat
+    enabled: false
+    priority: 3
+    base_url: "https://vivat.com.ua"
+    batch_size: 500
+
+# Logging
+log_level: INFO
+log_file: logs/pipeline.log
+
+# Feature flags
+enable_embeddings: false
+enable_price_history: true
+enable_audit_log: true

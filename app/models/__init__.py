@@ -1,6 +1,7 @@
 """
 Core Models Package.
-Exports all database models for easy import.
+Exports enums and code mappings. 
+ORM models are handled by Prisma (see prisma/schema.prisma).
 """
 
 from app.models.enums import (
@@ -12,29 +13,7 @@ from app.models.enums import (
     map_status,
 )
 from app.models.codes_v71 import *
-from app.models.catalog import (
-    RefOnixCodelist,
-    CatalogProduct,
-    CatalogTitle,
-    Contributor,
-    CatalogProductContributor,
-    Collection,
-    CatalogProductCollection,
-    CatalogLanguage,
-    CatalogExtent,
-    CatalogMeasure,
-    CatalogAudienceRange,
-    CatalogSubject,
-    CatalogPrize,
-    CatalogTextContent,
-    CatalogCitedContent,
-    CatalogRelatedProduct,
-    CatalogPublishingDate,
-    Publisher,
-    RefThemaSubject
-)
-from app.models.market import (
-    Supplier,
-    Offer,
-    PriceHistory
-)
+
+# Use Prisma client for database operations:
+# from prisma import Prisma
+# from prisma.models import CatalogProduct, etc.

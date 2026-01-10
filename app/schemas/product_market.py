@@ -3,7 +3,7 @@
 DTO для швидкого оновлення маркет-даних (ціни, наявність).
 Використовується в Шляху 2 (Hourly Market Sync).
 """
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -29,8 +29,8 @@ class ProductMarketDTO(BaseModel):
     # --- Метадані ---
     source: str = Field(..., description="Джерело (yakaboo, ksd)")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "isbn13": "978-0441172719",
                 "sku": "BOOK-999",
@@ -42,8 +42,10 @@ class ProductMarketDTO(BaseModel):
                 "source": "yakaboo"
             }
         }
+    )
     
-    @validator('isbn13')
+    @field_validator('isbn13', mode='before')
+    @classmethod
     def validate_isbn13(cls, v):
         """Валідація ISBN-13."""
         if not v:
@@ -53,7 +55,8 @@ class ProductMarketDTO(BaseModel):
             raise ValueError(f'Invalid ISBN-13: {v}')
         return clean
     
-    @validator('price', 'old_price')
+    @field_validator('price', 'old_price', mode='before')
+    @classmethod
     def validate_price(cls, v):
         """Валідація цін."""
         if v is not None and v < 0:
@@ -70,7 +73,8 @@ class ProductPriceUpdateDTO(BaseModel):
     currency: str = "UAH"
     source: str
     
-    @validator('price')
+    @field_validator('price', mode='before')
+    @classmethod
     def validate_price(cls, v):
         if v < 0:
             raise ValueError('Price cannot be negative')
@@ -88,8 +92,8 @@ class MarketUpdateResult(BaseModel):
     skipped: int = Field(..., description="Пропущено")
     duration_seconds: float = Field(..., description="Час виконання")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "total": 1000,
                 "updated": 950,
@@ -99,3 +103,4 @@ class MarketUpdateResult(BaseModel):
                 "duration_seconds": 45.2
             }
         }
+    )
