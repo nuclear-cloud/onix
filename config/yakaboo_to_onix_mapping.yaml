@@ -1,0 +1,142 @@
+# Yakaboo to ONIX Code Mapping (Auto-generated)
+# Maps Yakaboo e-commerce categories to ONIX standard code lists
+# Date: 1766099361.704801
+#
+# ONIX Code Lists:
+#   21  = Product Type (book, journal, etc.)
+#   68  = Language of Text (eng, ukr, rus, etc.)
+#   83  = Product Form (hardcover, paperback, ebook, audiobook, etc.)
+#   93  = Thema Subject Classification
+#   96  = Digital Product Type
+#   49  = Product Form Detail (PDF, EPUB, etc.)
+#
+# See: http://www.editeur.org/14/Code-Lists/
+
+version: "2.0"
+description: "Yakaboo category to ONIX code list mapping"
+total_categories: 3623
+
+# Primary Code Lists for Book Categorization
+onix_code_lists:
+  '21':
+    name: "Product Type"
+    description: "Distinguishes between books, journals, other publications"
+    relevant_categories: ["Художня література", "Навчальна література", "Комікси", "Журнали"]
+  
+  '68':
+    name: "Language of Text"
+    description: "ISO 639 language codes for book content"
+    relevant_categories: ["Українська літератури", "Англійська мова", "Французька мова"]
+  
+  '83':
+    name: "Product Form"
+    description: "Physical format: Hardcover, Paperback, Ebook, Audio, etc."
+    codes:
+      - "BC: Hardback"
+      - "BB: Paperback"
+      - "EA: Ebook"
+      - "AF: Audiobook (downloadable)"
+      - "BL: Colouring / Activity book"
+  
+  '93':
+    name: "Thema Subject Classification"
+    description: "Subject classification - same as THEMA codes"
+    note: "Use mapping from yakaboo_to_thema_mapping_full.yaml"
+
+# ONIX Codes Applicable to Yakaboo Categories
+mappings_by_level:
+
+  level_1:
+    "1":  # Books root
+      default_product_type: "02"  # Book
+      applicable_lists: ["21", "68", "83", "93"]
+
+  level_2:
+    "fiction":
+      product_type: "02"
+      onix_codes:
+        list_21: ["02"]  # Book
+        list_93: ["F", "FC", "FF", "FM", "FR", "FK", "FJ", "FL", "FD", "DA", "DC"]
+    
+    "non_fiction":
+      product_type: "02"
+      onix_codes:
+        list_21: ["02"]  # Book
+        list_93: ["DNC", "NH", "L", "P", "KJJ", "VS", "JN"]
+    
+    "children":
+      product_type: "02"
+      onix_codes:
+        list_21: ["02"]  # Book
+        list_93: ["Y", "5A", "5AF", "5AH", "5AK", "YX"]
+    
+    "comics":
+      product_type: "02"
+      onix_codes:
+        list_21: ["02"]  # Book (some systems use 10 for comics)
+        list_83: ["BC", "BB"]  # Hardcover, Paperback
+        list_93: ["X"]
+
+  level_3_to_7:
+    description: "Detailed subcategories inherit parent ONIX codes"
+    mapping_strategy: |
+      1. Inherit parent's list_21 (Product Type)
+      2. Match category name against keyword patterns
+      3. Add specific list_83 (Product Form) if applicable
+      4. Assign list_93 (Thema) based on category content
+      5. Assign list_68 (Language) if language-specific
+
+# Sample Mappings by Yakaboo Category Type
+category_templates:
+  
+  "Художня література":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["BC", "BB"]  # Can be hardcover or paperback
+    list_93: ["F"]  # Fiction
+    language_default: "68:ukr"
+
+  "Навчальна література":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["BC", "BB"]
+    list_93: ["JN"]  # Educational materials
+    language_default: "68:ukr"
+
+  "Комікси":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["BC", "BB", "BL"]  # Can be hardcover, paperback, or special format
+    list_93: ["X"]  # Comics/Graphic novels
+
+  "Комп'ютерні книги":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["BC", "BB", "EA"]  # Physical + digital
+    list_93: ["U"]  # Information technology/Computers
+
+  "Дитячі книги":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["BC", "BB"]
+    list_93: ["Y"]  # Children's/Young adult
+
+  "Електронні книги":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["EA"]  # Ebook/Digital
+    list_93: ["F", "DNC", "Y"]  # Can be any subject
+
+  "Аудіокниги":
+    product_type: "02"  # Book
+    list_21: "02"
+    list_83: ["AF"]  # Audio download
+    list_93: ["F", "DNC", "Y"]  # Can be any subject
+
+# Notes on Implementation
+notes: |
+  - ONIX Product Type (21) will be determined by database table structure
+  - Language (68) should be extracted from book metadata, default to 'ukr'
+  - Product Form (83) depends on inventory/edition data in Yakaboo
+  - Thema (93) should use values from yakaboo_to_thema_mapping_full.yaml
+  - Some categories map to multiple ONIX lists depending on product variant

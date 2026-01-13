@@ -1,6 +1,13 @@
 {
-  "dependencies": {
-    "@prisma/client": "^7.2.0",
-    "prisma": "^7.2.0"
+  "scripts": {
+    "studio": "prisma studio --port 5555",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate",
+    "seed": "node prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "5.17.0",
+    "dotenv": "^17.2.3",
+    "prisma": "5.17.0"
   }
 }
