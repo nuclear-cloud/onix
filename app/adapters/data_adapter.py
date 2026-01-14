@@ -364,8 +364,8 @@ class BaseDataAdapter(ABC):
 
 class YakabooDataAdapter(BaseDataAdapter):
     UKRAINIAN_LANGUAGE_ID = 332272
-    BOOK_ATTRIBUTE_SET_ID = 20
     BOOK_CATEGORY_ID = 4723
+    BOOK_ATTRIBUTE_SET_IDS = {20, 211}  # 20=simple, 211=downloadable (e-books)
 
     def should_ingest(self, raw_data: Dict[str, Any]) -> bool:
         allowed, _ = self.should_ingest_with_reason(raw_data)
@@ -377,13 +377,15 @@ class YakabooDataAdapter(BaseDataAdapter):
         attribute_set_id = raw_data.get("attribute_set_id")
         if (
             attribute_set_id is not None
-            and attribute_set_id != self.BOOK_ATTRIBUTE_SET_ID
+            and attribute_set_id not in self.BOOK_ATTRIBUTE_SET_IDS
         ):
             return False, "not_book"
 
         category_ids = raw_data.get("category_ids")
         if isinstance(category_ids, list) and self.BOOK_CATEGORY_ID not in category_ids:
             return False, "not_book"
+        # If category_ids is None or not a list, skip the category check
+        # (data might already be filtered or have different structure)
 
         language_code = self._map_language(raw_data)
         if language_code != "ukr":

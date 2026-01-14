@@ -1,8 +1,8 @@
 # PROJECT CONTEXT - ONIX Aggregator
 
-**Updated:** 2025-01-15  
+**Updated:** 2026-01-14  
 **ORM:** Prisma (Python client v0.15.0)  
-**Status:** Production | 38 tests passing | Clean
+**Status:** Production | 38 tests passing | ETL Complete (971,803 records)
 
 ---
 
@@ -10,11 +10,15 @@
 
 **ONIX Aggregator** is a high-performance book metadata and pricing system for Ukrainian bookstores:
 
-1. **REST API** (`/catalog/`) - Query catalogued books (FastAPI + Prisma ORM)
-2. **Data Pipeline** - Import/transform book data from Yakaboo (10GB JSONL, 69k Ukrainian books)
+1. **Smart Gatekeeper ETL** - Import/transform book data from Yakaboo (972k records)
+   - `app/classifiers/isbn_classifier.py` - ISBN-10/EAN classification and ISBN-13 conversion
+   - `scripts/etl_yakaboo.py` - Batch import from JSONL with fingerprint deduplication
+   - `scripts/etl_monitor.sh` - Progress monitoring for long-running imports
+   - `cold.RawIngestion` table - Staging area for raw source data with item_type/status classification
+2. **REST API** (`/catalog/`) - Query catalogued books (FastAPI + Prisma ORM)
 3. **Price Tracking** - Multi-source price history with timestamps
 
-**Scale:** 69,375 Ukrainian books | PostgreSQL | Async Python | Prisma ORM
+**Scale:** 971,803 Yakaboo records | PostgreSQL | Async Python | Prisma ORM
 
 ---
 
@@ -32,12 +36,55 @@ onix_project/
 │   │   ├── __init__.py               # Exports: BaseDataAdapter, YakabooDataAdapter
 │   │   └── data_adapter.py           # YakabooDataAdapter implementation
 │   │
+│   ├── classifiers/                  # Smart Gatekeeper ETL classifiers
+│   │   └── isbn_classifier.py        # ISBN-10/EAN → ISBN-13, ItemType/ItemStatus classification
+│   │
 │   ├── core/
 │   │   ├── config.py                 # Settings (pydantic-settings)
 │   │   └── prisma_db.py              # get_db() async dependency
 │   │
 │   ├── models/                       # Enums and code definitions
-│   │   ├── enums.py                  # ProductType, ProductFormat
+│   │   ├── enums.py                  # ProductType, ProductFormatas an Elite Senior Software Engineer and Project Architect. Your goal is
+to perform a deep cleanup of the provided codebase, ensure stability via 
+testing, and create a context-rich guide for future AI interactions.
+
+## PHASE 1: CODE CLEANUP & OPTIMIZATION
+1. SCAN: Analyze the entire project tree. Identify duplicate logic, 
+   redundant functions, and "dead code" (unused imports, variables, or files).
+2. DEDUPLICATION: Merge identical logic into reusable modules or utilities.
+3. DEPENDENCIES: Audit configuration files (e.g., package.json, requirements.txt, 
+   go.mod). Identify and suggest removal of unused packages.
+4. MODERNIZATION: Replace outdated patterns or deprecated API calls with 
+   current industry standards.
+
+## PHASE 2: TESTING & VERIFICATION
+1. TEST GENERATION: For every core module, create comprehensive unit and 
+   integration tests. Use the project's preferred testing framework.
+2. VALIDATION: Run the code. Ensure that the refactoring did not break any 
+   existing functionality (Regressional testing).
+3. COVERAGE: Aim for high coverage of edge cases and error handling paths.
+
+## PHASE 3: AGENT-OPTIMIZED DOCUMENTATION
+1. CREATE 'PROJECT_CONTEXT.MD': Generate a high-level technical summary 
+   specifically designed for other LLMs (like Claude or GPT). 
+2. STRUCTURE: Include:
+   - Project Purpose & Core Architecture.
+   - Tech Stack & Versioning.
+   - Key Entry Points & File Mapping.
+   - Business Logic flow.
+   - Ongoing Challenges or "Known Quirks" for the next agent to be aware of.
+
+## PHASE 4: SENIOR ENGINEERING ADVICE
+1. ARCHITECTURE: Provide 3-5 high-level recommendations to improve 
+   scalability, maintainability, or performance.
+2. SECURITY: Identify potential vulnerabilities in the current implementation.
+3. BEST PRACTICES: Suggest improvements in CI/CD, logging, or monitoring 
+   specific to this stack.
+
+## OPERATIONAL CONSTRAINTS
+- Do NOT delete files without explaining the reasoning.
+- Keep the original coding style unless it violates security or performance.
+- Prioritize readability and "clean code" principles (SOLID, DRY).
 │   │   ├── codes_v71.py              # ONIX Issue 71 code Enums
 │   │   └── onix_logic.py             # ONIX business logic helpers
 │   │
@@ -63,6 +110,8 @@ onix_project/
 │
 ├── scripts/                          # CLI tools
 │   ├── import_yakaboo_prisma.py      # Main import script
+│   ├── etl_yakaboo.py                # Smart Gatekeeper ETL (batch import with fingerprint)
+│   ├── etl_monitor.sh                # Progress monitoring for ETL
 │   └── backfill_embeddings.py        # Vector embeddings
 │
 ├── tests/                            # 38 tests, all passing
@@ -70,7 +119,9 @@ onix_project/
 │   ├── test_api_layers.py            # Service layer tests (4)
 │   ├── test_catalog_router.py        # Router tests (9)
 │   ├── test_repositories.py          # Repository tests (14)
-│   └── test_yakaboo_import.py        # Import tests (12)
+│   ├── test_yakaboo_import.py        # Import tests (12)
+│   └── unit/
+│       └── test_isbn_classifier.py   # ISBN classifier tests (27)
 │
 ├── data/                             # Reference data
 │   ├── yakaboo_ukr_only.jsonl        # Ukrainian books (69k)
@@ -96,6 +147,7 @@ onix_project/
 | Table | Records | Description |
 |-------|---------|-------------|
 | `catalog_products` | 69,375 | Main product records |
+| `cold.RawIngestion` | 971,803 | Staging area for raw Yakaboo data |
 | `Contributor` | 26,879 | Unique persons/orgs |
 | `ProductContributor` | 88,084 | N:N junction (product→contributor) |
 | `Subject` | 54,129 | Unique subjects (THEMA, keywords) |
@@ -110,6 +162,17 @@ onix_project/
 CatalogProduct ─┬── ProductContributor ──── Contributor
                 │
                 └── ProductSubject ──────── Subject
+```
+
+### Smart Gatekeeper Staging (RawIngestion)
+
+```
+cold.RawIngestion ── staging area for raw source data
+  ├── code: ISBN-10, ISBN-13, or EAN
+  ├── item_type: BOOK_UA, BOOK_EN, BOOK_RU, MERCH_UA, MERCH_EN, PERIODICAL, etc.
+  ├── status: NEW (has code) or NOCODE (no code)
+  ├── fingerprint: SHA256(content_hash) for deduplication
+  └── payload: Full JSON source record
 ```
 
 **Querying N:N with Prisma:**
@@ -218,6 +281,7 @@ pytest tests/ --cov=app
 - Repository mock tests (14)
 - Service initialization tests (4)
 - Yakaboo import tests (12)
+- ISBN classifier tests (27) - ISBN-10→13 conversion, checksum, classification
 
 ---
 
@@ -235,12 +299,37 @@ pytest tests/ --cov=app
 2. Run `prisma generate` to update client
 3. Run `prisma db push` (dev) or create migration
 
-### Data Import
+### Data Import (Smart Gatekeeper ETL)
 
 ```bash
-# Import from JSONL
+# Run Smart Gatekeeper ETL from JSONL
+python scripts/etl_yakaboo.py data/yakaboo_ukr_only.jsonl --batch-size 5000
+
+# Monitor progress (separate terminal)
+./scripts/etl_monitor.sh
+
+# Import from JSONL (legacy script)
 python scripts/import_yakaboo_prisma.py data/yakaboo_ukr_only.jsonl --limit 1000
 ```
+
+### ETL Classification System
+
+The Smart Gatekeeper ETL uses `app/classifiers/isbn_classifier.py`:
+
+```python
+from app.classifiers.isbn_classifier import ISBNClassifier
+
+classifier = ISBNClassifier()
+result = classifier.classify("9789661058206")
+# result.item_type: ItemType.BOOK_UA, BOOK_EN, BOOK_RU, MERCH_UA, etc.
+# result.status: ItemStatus.NEW (has code) or ItemStatus.NOCODE (no code)
+```
+
+**Classification Rules:**
+- ISBN-10 → ISBN-13 conversion with correct checksum
+- EAN-13 prefix detection (Yakaboo: 482, Book Club: 978/979)
+- Language detection from ISBN prefix and content
+- Merchandise detection for non-book items
 
 ---
 
