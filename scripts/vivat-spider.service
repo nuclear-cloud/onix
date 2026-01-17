@@ -1,0 +1,14 @@
+[Unit]
+Description=Vivat Spider Service
+After=network.target docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/onix_project
+ExecStart=/bin/bash /home/ubuntu/onix_project/scripts/run_vivat_service.sh
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

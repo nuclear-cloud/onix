@@ -1,0 +1,21 @@
+{
+  "source_name": "vivat",
+  "selectors": {
+    "external_id": "id",
+    "sku": ["attributes", "product.code"],
+    "title": ["attributes", "product.label"],
+    "price": ["relationships", "price", "data", 0, "attributes", "price.value"],
+    "isbn": {
+      "path": ["relationships", "attribute", "data"],
+      "filter": {
+        "key": ["attributes", "attribute.type"],
+        "value": "ean_isbn"
+      },
+      "extract": ["attributes", "attribute.code"]
+    }
+  },
+  "identification_priority": ["isbn", "sku", "external_id"],
+  "validation_rules": {
+    "isbn": "strict_isbn13"
+  }
+}

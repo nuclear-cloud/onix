@@ -1,70 +1,72 @@
-# AGENTS.md - ONIX Aggregator Guidelines
+# PROJECT KNOWLEDGE BASE
 
-This file provides context and guidelines for AI agents working on the ONIX Aggregator project.
+**Generated:** 2026-01-17
+**Status:** Active Development
 
-## 🚀 Quick Start & Verification
-**Core Commands**
-- **Install**: `pip install -r requirements.txt && prisma generate`
-- **Run App**: `python main.py` (FastAPI on http://localhost:8000)
-- **Run All Tests**: `pytest tests/ -v`
-- **Run Single Test**: `pytest tests/test_repositories.py::test_product_search -v`
-- **Lint/Format**: Use existing project style (autopep8/black patterns observed).
+## OVERVIEW
+**ONIX Aggregator** is a high-performance Python/FastAPI ETL system designed to ingest, normalize, and track price changes for millions of books from multiple sources (Yakaboo, Vivat). It uses a distributed architecture with Redis queues and a "Universal Worker" pattern.
 
-## 🏗 Architecture & Stack
-- **Framework**: FastAPI (Async/Await)
-- **Database**: PostgreSQL (Prisma ORM - Source of Truth)
-- **Schemas**: `public` (Catalog), `codelist` (ONIX codes)
-- **Key Pattern**: 3-Tier Architecture (Router → Service → Repository)
-  - `Router`: `app/routers/` (HTTP, Validation)
-  - `Service`: `app/services/` (Business Logic, DTO mapping)
-  - `Repository`: `app/repositories/` (Prisma Queries)
-- **Data Flow**: `Router` calls `Service` → `Service` calls `Repository` → `Repository` executes Prisma query.
+## STRUCTURE
+```
+.
+├── app/
+│   ├── core/
+│   │   ├── adapters/   # JSON configs mapping external APIs to internal schema
+│   │   └── engine/     # The "Universal Worker" logic (ETL core)
+│   └── classifiers/    # ISBN/Category classification logic
+├── scripts/            # Spiders, service runners, and maintenance tools
+├── prisma/             # Database schema (PostgreSQL) and migrations
+├── data/               # Raw data dumps (JSONL) - mostly historical/reference
+└── vendor/             # EXTERNAL CODE (OpenCode) - DO NOT MODIFY
+```
 
-## 📝 Code Style & Conventions
-**1. Imports**
-- Group: Stdlib → Third-party → Local app.
-- Local imports should use absolute paths: `from app.core.config import settings`.
+## WHERE TO LOOK
+| Task | Location | Notes |
+|------|----------|-------|
+| **Add Source** | `app/core/adapters/` | Create new JSON config |
+| **ETL Logic** | `app/core/engine/worker.py` | The brain of the operation |
+| **Spiders** | `scripts/*_spider.py` | Data fetching logic (Producer) |
+| **Services** | `scripts/run_*_service.sh` | Infinite loop supervisors |
+| **Schema** | `prisma/schema.prisma` | DB definition (modify here -> generate) |
 
-**2. Naming**
-- **Variables/Functions**: `snake_case` (e.g., `get_product_by_isbn`)
-- **Classes**: `PascalCase` (e.g., `PrismaCatalogService`)
-- **Files**: `snake_case.py`
-- **ONIX Fields**: Keep `isbn13`, `product_form_code` matching DB schema.
+## KEY COMPONENTS
 
-**3. Types & DTOs**
-- Use **Pydantic V2**: `model_config = ConfigDict(...)` (NOT `class Config`).
-- Return DTOs from routers, not raw DB models.
-- Use Type hints everywhere: `def func(a: int) -> str:`.
+### 1. Ingestion Engine (`app/core/engine/worker.py`)
+- **Pattern**: Reliable Queue (Redis `BRPOPLPUSH`).
+- **Feature**: Dynamic Adapter Loading. Loads all `*.json` from `adapters/` and dispatches based on `source` field.
+- **Logic**: JSONPath extraction -> Deduplication (Redis Lock) -> Content Hash Check -> UPSERT.
 
-**4. Database Access (Prisma)**
-- **NEVER** instantiate `Prisma()` directly in handlers.
-- **ALWAYS** use dependency injection: `db: Prisma = Depends(get_db)`.
-- **N:N Relations**: Use explicit `include` in queries (e.g., `include={"contributors": {"include": {"contributor": True}}}`).
+### 2. Spiders (`scripts/`)
+- **Yakaboo**: `yakaboo_spider.py` (Deep pagination via POST).
+- **Vivat**: `vivat_spider.py` (JSONAPI with nested attributes).
+- **Architecture**: Stateful (save offset to JSON), Backpressure-aware (pauses if queue > 50k).
 
-**5. Error Handling**
-- Service layer: Raise specific exceptions (e.g., `ValueError`).
-- Router layer: Catch exceptions and raise `HTTPException`.
+## CONVENTIONS
+- **Imports**: Absolute imports only (`from app.core import...`).
+- **Async**: Everything is async (`aiohttp`, `redis.asyncio`).
+- **DB Access**: STRICTLY via `Prisma` ORM. No raw `psycopg2` unless necessary for migrations.
+- **JSONB**: We store FULL raw response in `products.raw_data` to allow future re-parsing without scraping.
 
-## 🛡 Copilot/Agent Rules (from .github/copilot-instructions.md)
-- **Prisma Client**: Always use `app.core.prisma_db.get_db` for sessions.
-- **Schema Changes**:
-  1. Edit `prisma/schema.prisma`
-  2. Run `prisma generate`
-  3. Run `prisma db push` (dev only)
-- **Testing**:
-  - Mock Prisma client for unit tests.
-  - Use `@pytest.mark.asyncio` for async tests.
+## COMMANDS
+```bash
+# Install
+pip install -r requirements.txt && prisma generate
 
-## ⚠️ Important Notes
-- **Context Limit**: Be mindful of large files like `schema.prisma`. Read only relevant sections if possible.
-- **Secrets**: NEVER commit `.env` or hardcoded credentials.
-- **Legacy Code**: Ignore code in `archive/`. Focus on `app/` and `prisma/`.
-- **Environment**: If `DB_USER` is missing in env, defaults are `onix_user`/`onix_pass`.
+# Run Spiders (Background Service)
+nohup ./scripts/run_yakaboo_service.sh &
+nohup ./scripts/run_vivat_service.sh &
 
-## 📂 Key Files Map
-- `main.py`: App entry point.
-- `prisma/schema.prisma`: DB Schema Definition.
-- `app/routers/catalog.py`: Main API endpoints.
-- `app/services/prisma_catalog_service.py`: Core logic.
-- `app/repositories/prisma_repositories.py`: DB queries.
-- `tests/`: Pytest suite (38+ tests).
+# Run Workers (Universal)
+# Runs indefinitely, pulling from ANY queue defined in adapters
+python -m app.core.engine.worker --all-adapters
+```
+
+## ANTI-PATTERNS (THIS PROJECT)
+- **NEVER** put parsing logic in Spiders. Spiders must be "dumb" fetchers. Parsing happens in Worker via Adapters.
+- **NEVER** modify `vendor/` directory.
+- **NEVER** commit secrets (`.env`).
+
+## NOTES
+- **DB Migration**: `isbn` and `sku` columns are `VARCHAR(64)` to handle long codes from some sources.
+- **Queues**: `queue:yakaboo`, `queue:vivat`.
+- **DLQ**: Failed tasks go to `queue:<source>:dlq`.

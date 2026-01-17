@@ -1,37 +1,99 @@
-version: '3.8'
-
 services:
-  # 1. Головна база даних
-  db:
-    image: postgres:16-alpine  # Використовуємо легку Alpine версію
-    container_name: onix_postgres
-    restart: always
+  # --- PRODUCTION STACK ---
+  postgres_prod:
+    image: postgres:16-alpine
+    container_name: onix_postgres_prod
     environment:
-      POSTGRES_USER: ${DB_USER:?DB_USER is required}      # REQUIRED - no default
-      POSTGRES_PASSWORD: ${DB_PASS:?DB_PASS is required}  # REQUIRED - no default
-      POSTGRES_DB: ${DB_NAME:-onix_db}
+      POSTGRES_USER: ${PROD_DB_USER:-onix_user}
+      POSTGRES_PASSWORD: ${PROD_DB_PASS:-onix_pass}
+      POSTGRES_DB: ${PROD_DB_NAME:-onix_db}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME:-onix_db}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  # 2. Зручна адмінка (Опційно)
-  pgweb:
-    image: sosedoff/pgweb
-    container_name: onix_pgweb
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - onix_prod_net
     restart: always
-    environment:
-      PGWEB_DATABASE_URL: postgres://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME:-onix_db}?sslmode=disable
+
+  redis_prod:
+    image: redis:7-alpine
+    container_name: onix_redis_prod
+    # FIXED: Enabled persistence (AOF + RDB) and safe eviction policy
+    command: >
+      redis-server 
+      --maxmemory 2gb 
+      --maxmemory-policy volatile-lru
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
     ports:
-      - "8081:8081"
-    depends_on:
-      db:
-        condition: service_healthy
+      - "6379:6379"
+    volumes:
+      - redis_prod_data:/data
+    networks:
+      - onix_prod_net
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 2.5G
+
+  qdrant_prod:
+    image: qdrant/qdrant:latest
+    container_name: onix_qdrant_prod
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_prod_data:/qdrant/storage
+    networks:
+      - onix_prod_net
+    restart: always
+
+  # --- DEVELOPMENT STACK ---
+  postgres_dev:
+    image: postgres:16-alpine
+    container_name: onix_postgres_dev
+    environment:
+      POSTGRES_USER: ${DEV_DB_USER:-onix_user}
+      POSTGRES_PASSWORD: ${DEV_DB_PASS:-onix_pass}
+      POSTGRES_DB: ${DEV_DB_NAME:-onix_dev}
+    ports:
+      - "5433:5432" # Mapped to 5433 on host
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - onix_dev_net
+    restart: always
+
+  redis_dev:
+    image: redis:7-alpine
+    container_name: onix_redis_dev
+    command: redis-server --appendonly yes
+    ports:
+      - "6380:6379" # Mapped to 6380 on host
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - onix_dev_net
+    restart: always
+
+networks:
+  onix_prod_net:
+    driver: bridge
+  onix_dev_net:
+    driver: bridge
 
 volumes:
-  postgres_data:  # Оголошуємо волюм для збереження даних
+  postgres_prod_data:
+  redis_prod_data:
+  qdrant_prod_data:
+  postgres_dev_data:
+  redis_dev_data:

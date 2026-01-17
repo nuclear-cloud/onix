@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     # Database (required)
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     PRISMA_DATABASE_URL: str = os.getenv("PRISMA_DATABASE_URL", "")
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    YAKABOO_API_URL: str = os.getenv("YAKABOO_API_URL", "https://api2.yakaboo.ua/api/catalog/vue_storefront_catalog_1/product/_search")
+    VIVAT_API_URL: str = os.getenv("VIVAT_API_URL", "https://vivat.com.ua/jsonapi/product")
     
     # API Keys (secrets - won't be logged)
     GROQ_API_KEY: SecretStr = SecretStr(os.getenv("GROQ_API_KEY", ""))

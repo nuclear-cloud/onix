@@ -1,137 +1,98 @@
-# ONIX Aggregator (V2 Architecture)
+# ONIX Aggregator v1.0 (Universal Ingestion Engine)
 
-[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![PostgreSQL](https://img.shields.io/badge/postgresql-14+-blue.svg)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/prisma-0.15.0-2D3748.svg)](https://prisma-client-py.readthedocs.io/)
-[![SQLAlchemy](https://img.shields.io/badge/sqlalchemy-2.0-red.svg)](https://www.sqlalchemy.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/redis-7-red.svg)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/docker-compose-blue.svg)](https://www.docker.com/)
 
-**Centralized Book Catalog & Price Aggregator for Ukraine**
+**High-performance distributed ingestion engine for the Ukrainian book market.**
 
-This project implements a high-performance system for aggregating book metadata and prices from multiple retailers, strictly adhering to the **ONIX for Books 3.0** standard.
+This system handles millions of metadata records using a resilient queue-based architecture, featuring real-time price tracking and source-agnostic normalization.
 
-> 📚 **Currently contains: 897,918 Ukrainian books from Yakaboo**
+## 🏗 Architecture 1.0
+- **Multi-Source Spiders**: Resilient async crawlers for Yakaboo (API) and Vivat (JSONAPI).
+- **Universal Ingestion Engine**: A single worker logic that handles diverse data structures via JSON adapters.
+- **Reliable Queue (Redis)**: Uses `BRPOPLPUSH` to guarantee zero data loss during ingestion.
+- **Delta Price Tracking**: Records price history only on actual changes using SHA256 content hashing.
+- **Auto-Scaling**: Modular design allows running multiple workers across different sources concurrently.
 
-## 🏗 Architecture
+## 🚀 Quick Start
 
-The system uses a **Hybrid Database Architecture** split into two domains:
-
-### 1. Catalog (Static Data)
-Stores the "Golden Record" for each book. Optimized for complex search and filtering.
-*   **Source of Truth**: ONIX 3.0 Standard.
-*   **Storage**: Normalized SQL tables (`catalog_products`, `catalog_contributors`...) + JSONB backup.
-*   **Models**: `app/models/catalog.py`
-
-### 2. Market (Dynamic Data)
-Stores high-frequency price and availability updates.
-*   **Focus**: Speed and freshness.
-*   **Storage**: Hot table (`offers`) for current state + Cold table (`price_history`) for logs.
-*   **Models**: `app/models/market.py`
-
-## 🛠 Tech Stack
-*   **Language**: Python 3.10+
-*   **Database**: PostgreSQL (Async/Await)
-*   **ORM**: SQLAlchemy 2.0 (Async) + **Prisma** (Type-safe queries)
-*   **Validation**: Pydantic v2
-*   **Testing**: Pytest + Asyncio
-
-## 🚀 Getting Started
-
-### Prerequisites
-*   PostgreSQL 14+
-*   Python 3.10+
-
-### Setup
-
-1.  **Environment**:
-    Copy `.env.example` to `.env` (if available) or create one:
-    ```bash
-    DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/db_name
-    PRISMA_DATABASE_URL=postgresql://user:pass@localhost:5432/db_name
-    ```
-
-2.  **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    prisma generate  # Generate Prisma client
-    ```
-
-3.  **Initialize Database**:
-    ⚠️ **Warning**: This destroys existing data.
-    ```bash
-    python scripts/init_final_db.py --force
-    ```
-
-## 🧪 Testing
-
-Run the integration tests to verify DB models and relations:
-
+### 1. Infrastructure
 ```bash
-# Ensure PYTHONPATH includes the root directory
-PYTHONPATH=. pytest tests/test_db_models.py -v
+docker-compose up -d
 ```
 
-## 🔍 Prisma Integration
-
-The project supports **dual ORMs** - both SQLAlchemy and Prisma. Prisma provides type-safe, modern database queries:
-
+### 2. Environment
 ```bash
-# Quick test
-python test_prisma.py
-
-# Run examples
-python examples/prisma_simple.py
-python examples/prisma_advanced.py
+pip install -r requirements.txt
+prisma generate
 ```
 
-**Documentation:**
-- [Prisma Complete Guide](./docs/PRISMA_GUIDE.md) - Full documentation
-- [Prisma Quick Reference](./docs/PRISMA_QUICKREF.md) - Syntax cheat sheet
-- [Integration Summary](./PRISMA_INTEGRATION_COMPLETE.md) - What was done
+### 3. Run Ingestion Services
+```bash
+# Start Yakaboo Spider Service
+nohup ./scripts/run_spider_service.sh &
 
-**Quick Example:**
-```python
-from prisma import Prisma
+# Start Vivat Spider Service
+nohup ./scripts/run_vivat_service.sh &
 
-async def query():
-    db = Prisma()
-    await db.connect()
-    
-    # Type-safe queries with auto-completion
-    books = await db.catalogproduct.find_many(
-        where={'isbn13': {'not': None}},
-        include={'publisher': True, 'titles': True},
-        take=10
-    )
-    
-    await db.disconnect()
+# Start Universal Workers
+# For Yakaboo:
+python -m app.core.engine.worker --adapter app/core/adapters/yakaboo.json
+# For Vivat:
+python -m app.core.engine.worker --adapter app/core/adapters/vivat.json
 ```
+
+## 📊 Operations & Monitoring
+- **Queue Health**: `python scripts/queue_monitor.py status`
+- **DB Stats**: `docker exec onix_postgres_prod psql -U onix_user -d onix_db -c "SELECT source_name, count(*) FROM products GROUP BY source_name;"`
+- **Logs**: Centralized logs in `logs/` directory and service-specific logs (e.g., `vivat_service.log`).
 
 ## 📂 Project Structure
-
 ```
 onix_project/
 ├── app/
-│   ├── models/          # SQLAlchemy Database Models
-│   │   ├── catalog.py   # Static Book Data (ONIX)
-│   │   ├── market.py    # Dynamic Prices (Offers)
-│   │   └── codes.py     # ONIX Enum Definitions
-│   ├── core/            # Config & DB Connection
-│   └── scraper/         # Data Transformers
-├── scripts/             # DevOps scripts (init_db, etc.)
-├── tests/               # Integration & Unit tests
-├── data/                # Local data files
-└── archive/             # Legacy code (V1)
+│   ├── core/
+│   │   ├── adapters/     # Declarative Mapping (JSON)
+│   │   └── engine/       # Universal Worker logic
+│   └── classifiers/      # Data sanitization (ISBN/EAN)
+├── scripts/              # Spiders, Supervisors & Maintenance
+├── prisma/               # Database Schema & Migrations
+└── data/                 # Raw datasets (historical)
 ```
 
-## 📚 Key Database Tables
 
-| Domain | Table Name | Description |
-| :--- | :--- | :--- |
-| **Catalog** | `catalog_products` | Main book registry. Includes `onix_full` (JSONB). |
-| | `catalog_titles` | All title variations (Original, Translated). |
-| | `catalog_product_contributors` | Authors, Translators, Illustrators. |
-| | `catalog_publishers` | Publisher registry. |
-| **Market** | `offers` | Current price & stock status per store. |
-| | `price_history` | Historical log of price changes. |
-| | `suppliers` | Retailer registry (Yakaboo, Knygarnya Ye). |
+### 2. Environment
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 3. Run Ingestion
+```bash
+export PYTHONPATH=$(pwd)
+# Start 5 workers in background
+for i in {1..5}; do ./venv/bin/python -m app.core.engine.worker --adapter app/core/adapters/yakaboo.json >> worker.log 2>&1 & done
+
+# Enqueue a file
+./venv/bin/python scripts/enqueue_task.py --file data/yakaboo_complete_final.jsonl
+```
+
+## 📊 Operations & Monitoring
+- **Web UI**: Access OpenCode at `http://localhost:3000`
+- **Queue Stats**: `./venv/bin/python scripts/check_redis.py`
+- **DB Stats**: `docker exec onix_postgres_prod psql -U onix_user -d onix_db -c "SELECT count(*) FROM products;"`
+
+## 📂 Structure
+```
+onix_project/
+├── app/
+│   ├── core/
+│   │   ├── adapters/     # JSON Mapping configs
+│   │   └── engine/       # Distributed Worker logic
+│   └── classifiers/      # ISBN/EAN brain
+├── scripts/              # Ops and Debug scripts
+├── prisma/               # Schema and DB models
+└── docker-compose.yml    # Infrastructure
+```

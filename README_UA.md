@@ -1,87 +1,61 @@
-# ONIX Aggregator
+# ONIX Aggregator (Високопродуктивна Агрегація)
 
-**Централізований каталог книг та агрегатор цін для України**
+**Централізована система збору метаданих та історії цін для книжкового ринку України.**
 
-Система для агрегації метаданих книг та цін від рітейлерів, на основі стандарту **ONIX for Books 3.0**.
+Проєкт оптимізовано для масштабного збору даних (~1 млн записів) з рітейлерів (наприклад, Yakaboo), з акцентом на відстеження динаміки цін та сувору валідацію ISBN.
 
-## 🏗 Архітектура
+## 🏗 Ключові Особливості
+- **Розумний Імпорт**: Дедуплікація на основі фінгерпринтів гарантує цілісність даних.
+- **Delta Price Tracking**: Система фіксує лише *зміни* ціни, що економить до 90% дискового простору, зберігаючи повну історію.
+- **Стандартизація ISBN**: Автоматична конвертація ISBN-10 у сучасний ISBN-13 та перевірка контрольних сум.
+- **Prisma ORM**: Сучасний, типізований рівень доступу до бази даних.
 
-- **ORM**: Prisma (Python client v0.15.0)
-- **База даних**: PostgreSQL з двома схемами:
-  - `public` - основні дані (товари, автори, теми)
-  - `codelist` - довідники ONIX кодів
+## 🛠 Технологічний Стек
+- **Backend**: Python 3.12
+- **База Даних**: PostgreSQL (Схеми Cold та Fact)
+- **ORM**: Prisma (Python Client)
+- **Класифікація**: Власна логіка для ISBN/EAN (`app/classifiers`)
 
-## 📊 Статистика
+## 🚀 Швидкий Старт
 
-| Таблиця | Записів |
-|---------|---------|
-| Товари | 69,375 |
-| Унікальні автори | 26,879 |
-| Унікальні теми | 54,129 |
-| Зв'язки товар-автор | 88,084 |
-| Зв'язки товар-тема | 604,207 |
-
-## 🛠 Технології
-
-- Python 3.12+
-- PostgreSQL 14+
-- Prisma ORM 0.15.0
-- FastAPI
-- Pydantic v2
-
-## 🚀 Швидкий старт
-
+### 1. Налаштування Середовища
 ```bash
-# 1. Налаштування
-cd onix_project && source .venv/bin/activate
-
-# 2. Середовище
-cat > .env << 'EOF'
-DATABASE_URL=postgresql://user:pass@localhost:5432/onix_db
-PRISMA_DATABASE_URL=postgresql://user:pass@localhost:5432/onix_db
-EOF
-
-# 3. Генерація Prisma клієнта
-prisma generate
-
-# 4. Запуск API
-python main.py  # http://localhost:8000/docs
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-## 🧪 Тестування
-
+### 2. Синхронізація Бази Даних
 ```bash
-pytest tests/ -v
+# Вкажіть ваш DATABASE_URL у .env
+npx prisma db push
+npx prisma generate
 ```
 
-## 📂 Структура
+### 3. Запуск Імпорту
+```bash
+# Імпорт даних з Yakaboo JSONL
+./venv/bin/python scripts/etl_yakaboo.py data/yakaboo_ukr_only.jsonl --limit 1000
+```
 
+## 📊 Моніторинг
+Перевірка поточної статистики бази даних:
+```bash
+./venv/bin/python scripts/etl_yakaboo.py data/yakaboo_ukr_only.jsonl --stats
+```
+
+## 📂 Структура Проєкту
 ```
 onix_project/
-├── main.py                     # FastAPI entry point
-├── prisma/schema.prisma        # Database schema
 ├── app/
-│   ├── core/prisma_db.py       # Prisma client
-│   ├── models/                 # Enums, ONIX codes
-│   ├── repositories/           # Data access (Prisma)
-│   ├── services/               # Business logic
-│   ├── routers/                # API endpoints
-│   └── schemas/                # Pydantic DTOs
-├── scripts/                    # Import scripts
-└── tests/                      # Pytest tests
+│   ├── classifiers/      # Логіка класифікації та валідації ISBN
+│   └── core/             # Конфігурація та Prisma клієнт
+├── scripts/              # Скрипти високопродуктивного ETL
+├── prisma/               # Визначення схеми бази даних
+└── data/                 # Сирі набори даних
 ```
 
-## 📡 API Endpoints
-
-| Endpoint | Опис |
-|----------|------|
-| `GET /catalog/products` | Список товарів |
-| `GET /catalog/products/{isbn13}` | Деталі за ISBN |
-| `GET /catalog/search?q=` | Пошук |
-| `GET /catalog/stats` | Статистика |
-
-## 📚 Документація
-
-- **API Docs**: http://localhost:8000/docs
-- **Prisma Studio**: `npx prisma studio`
-- **Mapping**: `docs/YAKABOO_SIMPLE_MAPPING.md`
+## 📅 План Розвитку (Roadmap)
+- [x] Рівень високопродуктивного збору даних (Raw Ingestion)
+- [x] Відстеження історії цін (Price History)
+- [ ] Нормалізація каталогу (Мапінг у стандарт ONIX 3.0)
+- [ ] API для семантичного пошуку

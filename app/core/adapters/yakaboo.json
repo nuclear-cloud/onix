@@ -1,0 +1,14 @@
+{
+  "source_name": "yakaboo",
+  "selectors": {
+    "external_id": "id",
+    "sku": "sku",
+    "isbn": "barcode",
+    "title": "name",
+    "price": "final_price"
+  },
+  "identification_priority": ["isbn", "sku", "external_id"],
+  "validation_rules": {
+    "isbn": "strict_isbn13"
+  }
+}
